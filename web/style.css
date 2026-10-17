@@ -290,7 +290,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 #dTerms { margin: var(--s2) 4px 0; font-size: 13.5px; }
 .report { display: inline-block; margin: var(--s3) 4px var(--s1); font-size: 13.5px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
 
-.foot { padding: var(--s6) 0 var(--s7); color: var(--ink-2); font-size: 14px; max-width: 80ch; }
+.foot { padding: var(--s6) 0 var(--s7); color: var(--ink-2); font-size: 14px; text-align: center; white-space: nowrap; }
+@media (max-width: 1000px) { .foot { white-space: normal; text-wrap: balance; } }
 
 .scrim { position: fixed; inset: 0; background: rgba(14, 14, 16, .4); z-index: 39; }
 .toast {
