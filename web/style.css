@@ -24,12 +24,18 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #0E0E10; --ink: #F2F2F4; --ink-2: #A9A9B1; --ink-3: #7A7A83;
     --hair: #2A2A2F; --edge: #3A3A41; --wash: #18181B; --grid: #19191C; --on-ink: #0E0E10; --on-ink-2: #55555C;
     --pop-shadow: 0 14px 36px -10px rgba(0, 0, 0, .7), 0 0 0 1.5px #2A2A2F;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --paper: #0E0E10; --ink: #F2F2F4; --ink-2: #A9A9B1; --ink-3: #7A7A83;
+  --hair: #2A2A2F; --edge: #3A3A41; --wash: #18181B; --grid: #19191C; --on-ink: #0E0E10; --on-ink-2: #55555C;
+  --pop-shadow: 0 14px 36px -10px rgba(0, 0, 0, .7), 0 0 0 1.5px #2A2A2F;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -176,8 +182,9 @@ html[lang="ar"] #q { letter-spacing: 0; }
 .count { font-size: 15px; color: var(--ink-3); font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* filters and the command they produce share one row; the command takes the space left */
-.filter-row { margin-top: var(--s4); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: relative; }
+/* the command hugs its text; when the chips need the room it shrinks and ends in an ellipsis */
+.filter-row { margin-top: var(--s4); display: flex; flex-wrap: nowrap; gap: 10px; align-items: flex-start; }
+.filters { flex: 0 0 auto; max-width: calc(100% - 190px); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: relative; }
 .fwrap { position: relative; }
 .chip {
   height: 42px; padding: 0 12px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair);
@@ -217,15 +224,15 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .pop .foot-row { display: flex; justify-content: space-between; align-items: center; margin-top: var(--s2); padding: var(--s2) var(--s1) 0; font-size: 13.5px; color: var(--ink-2); }
 .pop .foot-row button { font-weight: 600; color: var(--ink); }
 
-.agent-line { flex: 1 1 280px; min-width: 240px; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
+.agent-line { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
 .copy-cmd { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--on-ink); transition: transform .12s ease; }
 .copy-cmd:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
 .copy-cmd:active { transform: scale(.94); }
 .copy-cmd .ui { width: 16px; height: 16px; }
 /* the command reads left to right in both languages, so its copy button stays on the right */
-.agent-line code { flex: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.agent-line code { flex: 0 1 auto; min-width: 0; font-size: 14px; line-height: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 .agent-line .gt, .agent-line s { color: var(--ink-3); text-decoration: none; }
-.agent-line .cursor { margin-top: 9px; }
+.agent-line .cursor { margin: 0 0 0 4px; vertical-align: -1px; }
 
 .shell { display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: var(--s7); margin-top: var(--s7); padding-bottom: var(--s8); align-items: start; }
 .grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 12px; align-content: start; }
@@ -345,6 +352,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
       .pop { position: fixed; inset: auto 12px 12px 12px; top: auto; min-width: 0; max-height: 70dvh; overflow: auto; }
   .pop.cats { width: auto; }
   .sws { grid-template-columns: repeat(4, 1fr); }
+  .filter-row { flex-wrap: wrap; }
+  .filters { max-width: none; }
   .agent-line { flex-basis: 100%; }
   .agent-line code { font-size: 12.5px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 8px; }

@@ -24,6 +24,7 @@ const INSTALL = [
 
 const T = {
   ar: {
+    themeLight: "الوضع الفاتح", themeDark: "الوضع الداكن",
     lang: "English", skip: "انتقل إلى البحث", navBrowse: "تصفّح", navAgents: "للوكلاء",
     title: "أيقونات يفهمها وكيلك",
     tag: (n, s) => `${n} أيقونة، ${s} مكتبة`,
@@ -68,6 +69,7 @@ const T = {
     foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
   },
   en: {
+    themeLight: "Light mode", themeDark: "Dark mode",
     lang: "العربية", skip: "Skip to search", navBrowse: "Browse", navAgents: "For agents",
     title: "icons your agent understands",
     tag: (n, s) => `${n} icons, ${s} libraries`,
@@ -703,6 +705,7 @@ function applyLang() {
     if (typeof v === "string") el.textContent = v;
   });
   $("lang").textContent = L.lang;
+  renderTheme();
   $("q").placeholder = "";
   renderHint();
   $("lede").innerHTML = L.lede;
@@ -720,6 +723,24 @@ function applyLang() {
   if (meta) { renderFilters(); run(); loadDemo(); }
   if (current) open(current, current.pinned);
 }
+// light / dark: follows the device until the visitor picks one, then remembers it
+const isDark = () => (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+function renderTheme() {
+  const dark = isDark();
+  $("theme").innerHTML = ui(dark ? "sun" : "moon");
+  const label = dark ? t().themeLight : t().themeDark;
+  $("theme").setAttribute("aria-label", label);
+  $("theme").title = label;
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", dark ? "#0E0E10" : "#FFFFFF"));
+}
+$("theme").addEventListener("click", () => {
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("theme", next); } catch { /* private mode */ }
+  renderTheme();
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderTheme);
+
 $("lang").addEventListener("click", () => {
   lang = lang === "ar" ? "en" : "ar";
   try { localStorage.setItem("lang", lang); } catch { /* private mode */ }
