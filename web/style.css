@@ -175,9 +175,6 @@ html[lang="ar"] #q { letter-spacing: 0; }
 #q::-webkit-search-cancel-button { display: none; }
 .count { font-size: 15px; color: var(--ink-3); font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-.rel-line { margin-top: var(--s3); padding: 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
-.rel-line button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hair); font-size: 14px; font-weight: 600; color: var(--ink); }
-.rel-line button:hover { border-color: var(--ink); }
 /* filters and the command they produce share one row; the command takes the space left */
 .filter-row { margin-top: var(--s4); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: relative; }
@@ -345,9 +342,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   .count { display: none; }
   .filters { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
-  .rel-line { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scrollbar-width: none; white-space: nowrap; }
-  .rel-line::-webkit-scrollbar { display: none; }
-  .pop { position: fixed; inset: auto 12px 12px 12px; top: auto; min-width: 0; max-height: 70dvh; overflow: auto; }
+      .pop { position: fixed; inset: auto 12px 12px 12px; top: auto; min-width: 0; max-height: 70dvh; overflow: auto; }
   .pop.cats { width: auto; }
   .sws { grid-template-columns: repeat(4, 1fr); }
   .agent-line { flex-basis: 100%; }

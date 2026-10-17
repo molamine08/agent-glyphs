@@ -51,7 +51,6 @@ const T = {
     clear: "امسح الفلاتر", copyCmd: "انسخ الأمر", more: "اعرض المزيد",
     stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
     loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
-    alsoIncludes: "يشمل أيضاً:",
     count: (n, s) => `${n} أيقونة من ${s} مكتبة`, none: "لا نتائج. جرّب كلمة قريبة في المعنى أو خفّف الفلاتر.",
     tabs: { same: "نفس المعنى", agent: "لوكيلك", details: "التفاصيل" },
     noAlts: "لا توجد نسخة لهذه الأيقونة في مكتبات أخرى.",
@@ -96,7 +95,6 @@ const T = {
     clear: "Clear filters", copyCmd: "Copy command", more: "Show more",
     stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
     loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
-    alsoIncludes: "Also includes:",
     count: (n, s) => `${n} icons from ${s} libraries`, none: "No results. Try a word with a similar meaning or loosen the filters.",
     tabs: { same: "Same meaning", agent: "For your agent", details: "Details" },
     noAlts: "No other library draws this icon.",
@@ -438,7 +436,6 @@ function render(res) {
   grid.innerHTML = "";
   const L = t();
   $("status").textContent = res.total ? L.count(fmt(res.total), fmt(res.sets)) : "";
-  renderRel(res.rel || []);
   if (openPop === "cat") renderFilters();
   if (!res.items.length) {
     const li = document.createElement("li");
@@ -469,18 +466,6 @@ function render(res) {
   if (desktop() && (!current || !res.items.some((i) => i.p === current.p && i.n === current.n)) && !current?.pinned) open(res.items[0], false);
 }
 
-// related meanings the search also covers ("مسلم" also finds mosque, crescent…); one click searches just that
-function renderRel(rel) {
-  const el = $("relLine");
-  el.hidden = !rel.length;
-  if (!rel.length) { el.innerHTML = ""; return; }
-  const label = (tok) => (lang === "ar" && (labels[tok] || (terms[tok] && terms[tok][0]))) || tok;
-  el.innerHTML = `<span>${esc(t().alsoIncludes)}</span>` + rel.slice(0, 6).map((tok) => `<button type="button" data-tok="${esc(tok)}">${esc(label(tok))}</button>`).join("");
-  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
-    $("q").value = lang === "ar" ? label(b.dataset.tok) : b.dataset.tok;
-    newSearch();
-  }));
-}
 
 worker.onmessage = (e) => {
   const m = e.data;
