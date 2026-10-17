@@ -85,7 +85,7 @@ code, pre, .mono { font-family: var(--mono); }
 
 /* ------------------------------------------------------------ hero, on the 24 px grid icons are drawn on */
 .hero {
-  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 64px 56px;
+  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 0 56px;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 540px); gap: var(--s7); align-items: center;
 }
 .hero::before {
@@ -156,6 +156,16 @@ html[lang="ar"] .label { letter-spacing: 0; }
 .search { margin-top: var(--s5); display: flex; align-items: center; gap: var(--s4); height: 80px; padding: 0 28px; border-radius: 999px; background: var(--wash); transition: box-shadow .15s ease; }
 .search:focus-within { box-shadow: 0 0 0 1.5px var(--edge); }
 .search-icon .ui { width: 24px; height: 24px; color: var(--ink-2); }
+.q-wrap { position: relative; flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; }
+/* the placeholder, drawn so its last word can change with where the visitor is */
+.q-hint {
+  position: absolute; inset-inline-start: 0; inset-inline-end: 0; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: clamp(24px, 2.6vw, 36px); font-weight: 600; letter-spacing: -.03em; color: var(--ink-3);
+}
+html[lang="ar"] .q-hint { letter-spacing: 0; }
+.q-hint[hidden] { display: none; }
+.q-word { display: inline-block; color: var(--ink-2); transition: opacity .25s ease, transform .25s ease; }
+.q-word.out { opacity: 0; transform: translateY(-.25em); }
 #q {
   flex: 1; min-width: 0; border: 0; outline: 0; background: none; height: 100%;
   font-size: clamp(24px, 2.6vw, 36px); font-weight: 600; letter-spacing: -.03em; caret-color: var(--ink);
@@ -163,7 +173,7 @@ html[lang="ar"] .label { letter-spacing: 0; }
 html[lang="ar"] #q { letter-spacing: 0; }
 #q::placeholder { color: var(--ink-3); opacity: .55; }
 #q::-webkit-search-cancel-button { display: none; }
-.count { font-size: 15px; color: var(--ink-2); font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.count { font-size: 15px; color: var(--ink-3); font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .rel-line { margin-top: var(--s3); padding: 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
 .rel-line button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hair); font-size: 14px; font-weight: 600; color: var(--ink); }
@@ -280,7 +290,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 #dTerms { margin: var(--s2) 4px 0; font-size: 13.5px; }
 .report { display: inline-block; margin: var(--s3) 4px var(--s1); font-size: 13.5px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
 
-.foot { padding: var(--s6) 0 var(--s7); color: var(--ink-2); font-size: 14px; max-width: 80ch; }
+.foot { padding: var(--s6) 0 var(--s7); color: var(--ink-2); font-size: 14px; text-align: center; white-space: nowrap; }
+@media (max-width: 1000px) { .foot { white-space: normal; text-wrap: balance; } }
 
 .scrim { position: fixed; inset: 0; background: rgba(14, 14, 16, .4); z-index: 39; }
 .toast {
@@ -300,7 +311,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   html[dir="rtl"] .inspector { transform: translateX(-110%); }
   .inspector[aria-hidden="false"] { transform: none !important; visibility: visible; }
   .canvas .close { display: grid; }
-  .hero { grid-template-columns: 1fr; padding: 56px 40px; }
+  .hero { grid-template-columns: 1fr; padding: 56px 0; }
   .stack { max-width: 560px; }
 }
 
@@ -309,7 +320,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   :root { --gutter: 16px; }
   .bar { height: 64px; gap: var(--s3); }
   .nav { display: none; }
-  .hero { padding: 36px 4px 44px; gap: 44px; }
+  .hero { padding: 36px 0 44px; gap: 44px; }
   .hero::before { background-size: 20px 20px; }
   .lede { font-size: 16.5px; }
   .ctas .pill { flex: 1 1 auto; }
