@@ -85,7 +85,7 @@ code, pre, .mono { font-family: var(--mono); }
 
 /* ------------------------------------------------------------ hero, on the 24 px grid icons are drawn on */
 .hero {
-  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 64px 72px;
+  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 64px 56px;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 540px); gap: var(--s7); align-items: center;
 }
 .hero::before {
@@ -150,7 +150,7 @@ html[dir="rtl"] #next .ui { transform: scaleX(-1); }
 @keyframes blink { 50% { opacity: 0; } }
 
 /* ------------------------------------------------------------ browse */
-.browse { padding-top: 96px; scroll-margin-top: var(--s4); }
+.browse { padding-top: var(--s5); scroll-margin-top: var(--s4); }
 .label { font-size: 30px; letter-spacing: -.03em; color: var(--ink); font-weight: 700; }
 html[lang="ar"] .label { letter-spacing: 0; }
 .search { margin-top: var(--s5); display: flex; align-items: center; gap: var(--s4); height: 80px; padding: 0 28px; border-radius: 999px; background: var(--wash); transition: box-shadow .15s ease; }
@@ -322,7 +322,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   .term { font-size: 16px; }
   .ask-bubble { font-size: 18px; }
   .picks span { width: 44px; height: 44px; }
-  .browse { padding-top: 64px; }
+  .browse { padding-top: var(--s4); }
   .label { font-size: 24px; }
   .search { height: 60px; gap: var(--s3); padding: 0 20px; }
   .search-icon .ui { width: 22px; height: 22px; }
