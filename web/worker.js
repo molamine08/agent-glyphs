@@ -105,7 +105,7 @@ function expand(text) {
   const parts = [];
   for (let i = 0; i < words.length;) {
     let hit = null;
-    for (const n of [3, 2]) {
+    for (const n of [5, 4, 3, 2]) {
       if (i + n <= words.length && words.slice(i, i + n).every((w) => AR.test(w))) {
         const g = lookupAr(words.slice(i, i + n).join(" "));
         if (g.length) { hit = [words.slice(i, i + n).join(" "), g, n]; break; }

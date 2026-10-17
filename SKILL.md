@@ -94,6 +94,9 @@ Full list: `python scripts/sets.py` (filter with `--search`).
 - Right-to-left (Arabic) interfaces: directional icons (arrows, chevrons, back/next,
   send, undo/redo) must point the other way — export them with `get.py --mirror`.
   Do not mirror icons that show real-world objects or clocks/checkmarks.
+- Islamic and Arabic glyphs that no icon library draws (﷽ ﷺ ﷻ ۞ ۩, honorifics such as رضي الله عنه,
+  ornate Quranic brackets, mosque, kaaba, prayer beads) are in the library `x-islamic-glyphs`, drawn from
+  open fonts in three calligraphic styles (`-amiri`, `-naskh`, `-scheherazade`). Licence OFL-1.1.
 - Search by meaning, not exact names. Arabic and English words are expanded through ~3,900 concept
   groups: synonyms, plurals and dialect or loanwords (سيتنج → settings, داشبورد → dashboard,
   مسلمين → islam), and closely related things ("مسلم" also finds mosque, crescent, quran). Each JSON
