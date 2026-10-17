@@ -37,7 +37,7 @@ const T = {
     done: (f, l) => `أُضيفت ${f}، ورخصة ${l} مسجّلة في ATTRIBUTION.md`,
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "الخطوة التالية",
-    browseLabel: "(تصفّح)", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…",
+    browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…",
     style: "النمط", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
     any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
     strokeTitle: "سُمك الخط على شبكة 24px",
@@ -47,6 +47,7 @@ const T = {
     clear: "امسح الفلاتر", copyCmd: "انسخ الأمر", more: "اعرض المزيد",
     stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
     loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
+    alsoIncludes: "يشمل أيضاً:",
     count: (n, s) => `${n} أيقونة من ${s} مكتبة`, none: "لا نتائج. جرّب كلمة قريبة في المعنى أو خفّف الفلاتر.",
     tabs: { same: "نفس المعنى", agent: "لوكيلك", details: "التفاصيل" },
     noAlts: "لا توجد نسخة لهذه الأيقونة في مكتبات أخرى.",
@@ -81,7 +82,7 @@ const T = {
     done: (f, l) => `Added ${f}. ${l} licence recorded in ATTRIBUTION.md`,
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "Next step",
-    browseLabel: "(browse)", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…",
+    browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…",
     style: "Style", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
     any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
     strokeTitle: "Stroke weight on a 24 px grid",
@@ -91,6 +92,7 @@ const T = {
     clear: "Clear filters", copyCmd: "Copy command", more: "Show more",
     stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
     loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
+    alsoIncludes: "Also includes:",
     count: (n, s) => `${n} icons from ${s} libraries`, none: "No results. Try a word with a similar meaning or loosen the filters.",
     tabs: { same: "Same meaning", agent: "For your agent", details: "Details" },
     noAlts: "No other library draws this icon.",
@@ -113,7 +115,7 @@ const SIZES = [16, 20, 24, 32, 48];
 const WEIGHTS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
 let lang = (() => { try { return localStorage.getItem("lang") || "ar"; } catch { return "ar"; } })();
-let meta = null, terms = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
+let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
 const state = { style: null, corners: null, cat: null, weight: null, commercial: true };
 const view = { color: null, size: 24, stroke: null, mirror: false };
 const cache = new Map();
@@ -385,6 +387,7 @@ function render(res) {
   grid.innerHTML = "";
   const L = t();
   $("status").textContent = res.total ? L.count(fmt(res.total), fmt(res.sets)) : "";
+  renderRel(res.rel || []);
   if (openPop === "cat") renderFilters();
   if (!res.items.length) {
     const li = document.createElement("li");
@@ -415,11 +418,25 @@ function render(res) {
   if (desktop() && (!current || !res.items.some((i) => i.p === current.p && i.n === current.n)) && !current?.pinned) open(res.items[0], false);
 }
 
+// related meanings the search also covers ("مسلم" also finds mosque, crescent…); one click searches just that
+function renderRel(rel) {
+  const el = $("relLine");
+  el.hidden = !rel.length;
+  if (!rel.length) { el.innerHTML = ""; return; }
+  const label = (tok) => (lang === "ar" && (labels[tok] || (terms[tok] && terms[tok][0]))) || tok;
+  el.innerHTML = `<span>${esc(t().alsoIncludes)}</span>` + rel.slice(0, 6).map((tok) => `<button type="button" data-tok="${esc(tok)}">${esc(label(tok))}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    $("q").value = lang === "ar" ? label(b.dataset.tok) : b.dataset.tok;
+    newSearch();
+  }));
+}
+
 worker.onmessage = (e) => {
   const m = e.data;
   if (m.type === "ready") {
     meta = m.meta;
     terms = m.terms;
+    labels = m.labels || {};
     applyLang();
   } else if ((m.type === "results" || m.type === "alts") && pending.has(m.seq)) {
     pending.get(m.seq)(m); pending.delete(m.seq);

@@ -94,7 +94,11 @@ Full list: `python scripts/sets.py` (filter with `--search`).
 - Right-to-left (Arabic) interfaces: directional icons (arrows, chevrons, back/next,
   send, undo/redo) must point the other way — export them with `get.py --mirror`.
   Do not mirror icons that show real-world objects or clocks/checkmarks.
-- Arabic queries work with or without "ال" and hamza variants (سلة = السلة, اعدادات = إعدادات).
+- Search by meaning, not exact names. Arabic and English words are expanded through ~3,900 concept
+  groups: synonyms, plurals and dialect or loanwords (سيتنج → settings, داشبورد → dashboard,
+  مسلمين → islam), and closely related things ("مسلم" also finds mosque, crescent, quran). Each JSON
+  result has `"match": "same"` or `"related"`; same-meaning icons always rank first. Hamza, "ال",
+  plurals and common suffixes do not matter (سلة = السلة = بالسلة).
 - No network for the index? Set `AGENT_GLYPHS_DATA` to a folder containing `atlas.db`.
   Icons are fetched from npm (`@iconify-json/<prefix>`) or the Iconify API and cached in
   `~/.cache/agent-glyphs`; set `ICONIFY_JSON_DIR` to use local Iconify JSON files instead.

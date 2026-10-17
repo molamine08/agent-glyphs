@@ -1,7 +1,7 @@
 // Agent Glyphs search engine for the page. Runs in a Web Worker so typing stays smooth
 // while 400k icon names are scanned. Mirrors scripts/atlas/query.py.
 
-let meta, rows, vocab, vocabKeys, rev, styleTokens;
+let meta, rows, vocab, vocabKeys, styleTokens, C, termsAr;
 
 const AR = /[؀-ۿ]/;
 function normAr(text) {
@@ -23,7 +23,8 @@ async function load(base) {
     fetch(base + "ar.json").then((r) => r.json()),
   ]);
   meta = m;
-  rev = ar.rev;
+  C = { g: ar.g, ax: ar.ax, as: ar.as, en: ar.en };
+  termsAr = ar.terms;
   styleTokens = new Set(meta.styleTokens);
   const setIndex = new Map(meta.setsInfo.map((s, i) => [s.p, i]));
   rows = [];
@@ -46,42 +47,102 @@ async function load(base) {
     }
   }
   vocabKeys = [...vocab.keys()];
-  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms });
+  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms, labels: ar.lab || {} });
 }
 
 function rowsForTokens(tokens) {
   const out = new Set();
-  for (const t of tokens) for (const id of vocab.get(t) || []) out.add(id);
+  for (const t of tokens) {
+    if (t.includes("-")) {
+      // a compound like "log-out": icons whose names use every part
+      const sets = t.split("-").map((x) => vocab.get(x) || []).sort((a, b) => a.length - b.length);
+      const rest = sets.slice(1).map((x) => new Set(x));
+      for (const id of sets[0]) if (rest.every((r) => r.has(id))) out.add(id);
+    } else for (const id of vocab.get(t) || []) out.add(id);
+  }
   return out;
+}
+
+// ---- meaning-aware expansion, mirrors scripts/atlas/concepts.py
+const AR_PREFIXES = ["و", "ف", "ب", "ك", "ل"];
+const AR_SUFFIXES = ["يات", "ات", "ون", "ين", "ان", "يه", "ها", "هم", "كم", "نا", "ه", "ي"];
+const EN_SUFFIXES = [["ies", "y"], ["es", ""], ["s", ""], ["ing", ""], ["ed", ""]];
+
+function arForms(word) {
+  const w = normAr(word);
+  if (!w) return [];
+  const out = [w], bases = [w];
+  if (w.length >= 4 && AR_PREFIXES.includes(w[0])) {
+    const b = normAr(w.slice(1));
+    if (b.length >= 3) { bases.push(b); out.push(b); }
+  }
+  for (const b of bases) {
+    for (const suf of AR_SUFFIXES) {
+      if (b.endsWith(suf) && b.length - suf.length >= 3) { out.push(b.slice(0, -suf.length)); break; }
+    }
+  }
+  return [...new Set(out)];
+}
+function enForms(word) {
+  const w = word.toLowerCase(), out = [w];
+  for (const [suf, rep] of EN_SUFFIXES) if (w.endsWith(suf) && w.length - suf.length >= 3) out.push(w.slice(0, -suf.length) + rep);
+  return [...new Set(out)];
+}
+function lookupAr(phrase) {
+  if (phrase.includes(" ")) return C.ax[normAr(phrase)] || [];
+  const forms = arForms(phrase);
+  for (const f of forms) if (C.ax[f]) return C.ax[f];
+  for (const f of forms) if (C.as[f]) return C.as[f];
+  return [];
+}
+function lookupEn(word) {
+  for (const f of enForms(word)) if (C.en[f]) return C.en[f];
+  return [];
+}
+function expand(text) {
+  const words = text.toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+  const parts = [];
+  for (let i = 0; i < words.length;) {
+    let hit = null;
+    for (const n of [3, 2]) {
+      if (i + n <= words.length && words.slice(i, i + n).every((w) => AR.test(w))) {
+        const g = lookupAr(words.slice(i, i + n).join(" "));
+        if (g.length) { hit = [words.slice(i, i + n).join(" "), g, n]; break; }
+      }
+    }
+    if (!hit) { const w = words[i]; hit = [w, AR.test(w) ? lookupAr(w) : lookupEn(w), 1]; }
+    const [t, gids, n] = hit;
+    const part = { text: t, ar: AR.test(t), strong: new Set(), related: new Set(), groups: gids };
+    for (const gi of gids) { C.g[gi][0].forEach((x) => part.strong.add(x)); C.g[gi][1].forEach((x) => part.related.add(x)); }
+    if (!part.ar) enForms(t).forEach((x) => part.strong.add(x));
+    part.strong.forEach((x) => part.related.delete(x));
+    parts.push(part);
+    i += n;
+  }
+  return parts;
+}
+function level(ctoks, concept, part) {
+  if (part.strong.has(concept)) return 3;
+  for (const t of ctoks) if (part.strong.has(t)) return 2;
+  if (part.related.has(concept)) return 1;
+  for (const t of ctoks) if (part.related.has(t)) return 1;
+  return 0;
 }
 
 function parse(query) {
   const q = query.trim().toLowerCase();
   if (!q) return null;
-  const words = q.split(/\s+/).filter(Boolean);
+  const parts = expand(q);
   const isAr = AR.test(q);
-  const groups = [];          // one set of name-words per query word (AND across groups)
-  let exact = new Set();      // concepts that exactly mean the whole query
-  let enTarget = "";
-  if (isAr) {
-    const nq = normAr(q);
-    exact = new Set(rev[nq] || []);
-    for (const w of nq.split(" ")) {
-      const toks = new Set(rev[w] || []);
-      for (const [phrase, list] of Object.entries(rev)) {
-        if (phrase.split(" ")[0] === w) list.forEach((t) => toks.add(t));
-      }
-      if (toks.size) groups.push(toks);
-    }
-    if (!groups.length && exact.size) groups.push(exact);
-  } else {
-    enTarget = words.join("-");
-    for (const w of words) {
-      const toks = new Set(vocabKeys.filter((k) => k.startsWith(w)));
-      groups.push(toks);
-    }
-  }
-  return { groups, exact, enTarget, isAr };
+  // rows each part can reach: the word itself (English: as a name prefix), its synonyms, related things
+  const groups = parts.map((p) => {
+    const toks = new Set([...p.strong, ...p.related]);
+    if (!p.ar) vocabKeys.forEach((k) => { if (k.startsWith(p.text)) toks.add(k); });
+    return toks;
+  });
+  const rel = [];
+  for (const p of parts) for (const gi of p.groups) for (const r of C.g[gi][1]) if (!p.strong.has(r) && !rel.includes(r)) rel.push(r);
+  return { parts, groups, enTarget: isAr ? "" : (q.match(/[a-z0-9]+/g) || []).join("-"), isAr, rel: rel.slice(0, 8) };
 }
 
 function search(opts) {
@@ -95,7 +156,6 @@ function search(opts) {
   } else {
     candidates = rows.map((_, i) => i);
   }
-  const union = p && p.isAr ? new Set(p.groups.flatMap((g) => [...g])) : null;
   const scored = [];
   const counts = new Array(meta.categories.length).fill(0);  // per category, before the category filter
   let all = 0;
@@ -113,12 +173,17 @@ function search(opts) {
     let score = r.pr / 10;
     if (p) {
       const parts = r.concept.split("-");
-      if (p.enTarget) {
-        if (r.concept === p.enTarget) score += 8;
-        else if (r.concept.startsWith(p.enTarget)) score += 2;
-      } else if (p.isAr) {
-        if (p.exact.has(r.concept)) score += 8;
-        else if (parts.every((t) => union.has(t)) && p.groups.every((g) => parts.some((t) => g.has(t)))) score += 6;
+      const ctoks = new Set(parts);
+      if (p.enTarget && r.concept === p.enTarget) score += 8;
+      else if (p.enTarget && r.concept.startsWith(p.enTarget)) score += 2;
+      else {
+        const lv = p.parts.map((pt) => level(ctoks, r.concept, pt));
+        const lo = Math.min(...lv);
+        const allStrong = parts.every((t) => p.parts.some((pt) => pt.strong.has(t)));
+        const top = p.isAr ? 8 : 6;  // an English synonym ranks just below the word itself
+        if (lo === 3 || (p.parts.length > 1 && lo >= 2 && allStrong)) score += top;
+        else if (lo >= 2) score += top - 3;
+        else if (lo >= 1) score += 1.5;
       }
       score -= 0.15 * (parts.length - 1);
     }
@@ -136,7 +201,7 @@ function search(opts) {
   }
   if (items.length < opts.limit) items.push(...overflow.slice(0, opts.limit - items.length));
   return {
-    total: scored.length, sets: setCount, counts, all,
+    total: scored.length, sets: setCount, counts, all, rel: p ? p.rel : [],
     items: items.map((id) => {
       const r = rows[id];
       return { p: meta.setsInfo[r.s].p, n: r.n, st: r.st, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
