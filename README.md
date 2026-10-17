@@ -11,7 +11,7 @@ the right icon, in your style, with the right licence. Kept up to date by daily 
 npx skills add molamine08/agent-glyphs
 ```
 
-Browse it yourself: https://molamine08.github.io/agent-glyphs/ · For LLMs: [`llms.txt`](web/llms.txt)
+Browse it yourself: https://agentglyphs.com/ · For LLMs: [`llms.txt`](web/llms.txt)
 
 [العربية ↓](#بالعربية)
 
@@ -113,7 +113,7 @@ missing licences are never added.
 والكثافة البصرية، حتى يختار وكيلك الأيقونة المناسبة بأسلوبك وبرخصة صحيحة.
 
 - **التثبيت:** `npx skills add molamine08/agent-glyphs`
-- **تصفّحها بنفسك:** https://molamine08.github.io/agent-glyphs/
+- **تصفّحها بنفسك:** https://agentglyphs.com/
 - **البحث بالعربية:** `python scripts/search.py "محفظة" --style outline --weight 1.5`
   ويفهم الكلمة مع «ال» أو بدونها، وبالهمزة أو بدونها.
 - **طابق أسلوبي:** `python scripts/match.py ./أيقوناتي --need سلة جرس تقويم`
