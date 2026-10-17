@@ -85,7 +85,7 @@ code, pre, .mono { font-family: var(--mono); }
 
 /* ------------------------------------------------------------ hero, on the 24 px grid icons are drawn on */
 .hero {
-  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 64px 56px;
+  position: relative; isolation: isolate; margin-top: var(--s2); padding: 72px 0 56px;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 540px); gap: var(--s7); align-items: center;
 }
 .hero::before {
@@ -311,7 +311,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   html[dir="rtl"] .inspector { transform: translateX(-110%); }
   .inspector[aria-hidden="false"] { transform: none !important; visibility: visible; }
   .canvas .close { display: grid; }
-  .hero { grid-template-columns: 1fr; padding: 56px 40px; }
+  .hero { grid-template-columns: 1fr; padding: 56px 0; }
   .stack { max-width: 560px; }
 }
 
@@ -320,7 +320,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   :root { --gutter: 16px; }
   .bar { height: 64px; gap: var(--s3); }
   .nav { display: none; }
-  .hero { padding: 36px 4px 44px; gap: 44px; }
+  .hero { padding: 36px 0 44px; gap: 44px; }
   .hero::before { background-size: 20px 20px; }
   .lede { font-size: 16.5px; }
   .ctas .pill { flex: 1 1 auto; }
