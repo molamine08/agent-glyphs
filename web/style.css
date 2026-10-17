@@ -193,7 +193,7 @@ html[lang="ar"] #q { letter-spacing: 0; }
 html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .chip small { font-size: 14.5px; font-weight: 500; color: var(--ink-2); }
 .chip:hover { border-color: var(--ink-3); }
-.chip.set { border: var(--line); }
+.chip.set { outline: 1.5px solid var(--ink); outline-offset: -4.5px; }
 .chip[aria-expanded="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 .chip[aria-expanded="true"] small { color: var(--on-ink-2); }
 .clear { font-size: 14.5px; font-weight: 600; color: var(--ink-2); height: 42px; padding: 0 var(--s2); }
@@ -224,12 +224,14 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .pop .foot-row { display: flex; justify-content: space-between; align-items: center; margin-top: var(--s2); padding: var(--s2) var(--s1) 0; font-size: 13.5px; color: var(--ink-2); }
 .pop .foot-row button { font-weight: 600; color: var(--ink); }
 
-.agent-line { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
+.agent-line { flex: 0 1 auto; min-width: 0; margin-left: auto; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
 .copy-cmd { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--on-ink); transition: transform .12s ease; }
 .copy-cmd:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
 .copy-cmd:active { transform: scale(.94); }
 .copy-cmd .ui { width: 16px; height: 16px; }
-/* the command reads left to right in both languages, so its copy button stays on the right */
+/* the command reads left to right in both languages, so its copy button stays on the right;
+   it sits at the far end of the filter row (left in Arabic, right in English) */
+html[dir="rtl"] .agent-line { margin-left: 0; margin-right: auto; }
 .agent-line code { flex: 0 1 auto; min-width: 0; font-size: 14px; line-height: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 .agent-line .gt, .agent-line s { color: var(--ink-3); text-decoration: none; }
 .agent-line .cursor { margin: 0 0 0 4px; vertical-align: -1px; }
