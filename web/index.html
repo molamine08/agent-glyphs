@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>أطلس الأيقونات · Icon Atlas</title>
+  <meta name="description" content="ابحث في أكثر من 400 ألف أيقونة مفتوحة المصدر بالمعنى، بالعربية أو الإنجليزية، وبسُمك الخط والزوايا والنمط.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23233076' stroke-width='2' stroke-linecap='round' d='M4 4h16v16H4zM4 12h16M12 4v16'/%3E%3C/svg%3E">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="./" data-i18n="brand">أطلس الأيقونات</a>
+    <nav class="bar-actions">
+      <button id="lang" class="link-btn" type="button" aria-label="Switch language">English</button>
+      <a class="link-btn" href="https://github.com/molamine08/icone-atlas" data-i18n="source">المصدر على GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <h1 id="title" data-i18n="title">ابحث عن الأيقونة بمعناها وبشكلها</h1>
+      <p class="lede" id="lede"></p>
+      <form class="search" role="search" onsubmit="return false">
+        <label class="visually-hidden" for="q" data-i18n="searchLabel">ابحث عن أيقونة</label>
+        <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="محفظة، سلة تسوق، wallet…">
+      </form>
+    </section>
+
+    <section class="filters" aria-label="Filters">
+      <fieldset class="filter">
+        <legend data-i18n="style">النمط</legend>
+        <div class="chips" id="styleChips"></div>
+      </fieldset>
+
+      <fieldset class="filter weight">
+        <legend><span data-i18n="weight">سُمك الخط</span> <output id="weightOut"></output></legend>
+        <div class="weight-row">
+          <label class="toggle"><input id="weightOn" type="checkbox"> <span data-i18n="weightOn">حدّد السُّمك</span></label>
+          <input id="weight" type="range" min="0.5" max="3" step="0.25" value="1.5" aria-label="Stroke weight" disabled>
+          <svg class="stroke-sample" viewBox="0 0 64 24" aria-hidden="true"><path id="strokeSample" d="M6 12h52" stroke-linecap="round"/></svg>
+        </div>
+      </fieldset>
+
+      <fieldset class="filter">
+        <legend data-i18n="corners">الزوايا</legend>
+        <div class="chips" id="cornerChips"></div>
+      </fieldset>
+
+      <fieldset class="filter">
+        <legend data-i18n="category">التصنيف</legend>
+        <select id="cat" aria-label="Category"></select>
+      </fieldset>
+
+      <fieldset class="filter">
+        <legend data-i18n="license">الرخصة</legend>
+        <label class="toggle"><input id="commercial" type="checkbox" checked> <span data-i18n="commercial">تسمح بالاستخدام التجاري</span></label>
+      </fieldset>
+    </section>
+
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+    <ul class="grid" id="grid" aria-label="Results"></ul>
+    <button class="more" id="more" type="button" hidden data-i18n="more">اعرض المزيد</button>
+  </main>
+
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-labelledby="dName">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel" role="dialog" aria-modal="true">
+      <button class="close" type="button" data-close aria-label="Close">×</button>
+      <div class="stage">
+        <svg class="keylines" viewBox="0 0 24 24" aria-hidden="true">
+          <g class="kgrid"></g>
+          <circle cx="12" cy="12" r="10"/><rect x="3" y="3" width="18" height="18" rx="2"/>
+        </svg>
+        <div class="stage-icon" id="dIcon"></div>
+      </div>
+      <h2 id="dName"></h2>
+      <p class="d-set" id="dSet"></p>
+      <dl class="facts" id="dFacts"></dl>
+      <p class="license-note" id="dLicense"></p>
+
+      <div class="controls">
+        <label><span data-i18n="color">اللون</span> <input id="dColor" type="color" value="#233076"></label>
+        <label><span data-i18n="size">الحجم</span>
+          <select id="dSize"><option>16</option><option>20</option><option selected>24</option><option>32</option><option>48</option></select>
+        </label>
+        <label id="dStrokeWrap"><span data-i18n="stroke">السُّمك</span>
+          <input id="dStroke" type="range" min="0.5" max="3" step="0.25">
+        </label>
+        <label class="toggle"><input id="dMirror" type="checkbox"> <span data-i18n="mirror">عكس للواجهات العربية</span></label>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="copySvg" type="button" data-i18n="copySvg">انسخ SVG</button>
+        <button id="copyJsx" type="button" data-i18n="copyJsx">انسخ كمكوّن React</button>
+        <button id="download" type="button" data-i18n="download">نزّل الملف</button>
+      </div>
+      <p class="d-terms" id="dTerms"></p>
+      <a class="report" id="report" target="_blank" rel="noopener" data-i18n="report">التصنيف غير دقيق؟ أخبرنا</a>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
