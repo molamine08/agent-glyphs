@@ -221,8 +221,9 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .pop .foot-row button { font-weight: 600; color: var(--ink); }
 
 .agent-line { flex: 1 1 280px; min-width: 240px; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
-.copy-cmd { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); }
-.copy-cmd:hover { background: var(--wash); color: var(--ink); }
+.copy-cmd { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--on-ink); transition: transform .12s ease; }
+.copy-cmd:hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
+.copy-cmd:active { transform: scale(.94); }
 .copy-cmd .ui { width: 16px; height: 16px; }
 /* the command reads left to right in both languages, so its copy button stays on the right */
 .agent-line code { flex: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
