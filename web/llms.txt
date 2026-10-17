@@ -42,4 +42,4 @@ The index (atlas.db) downloads itself on first use from the latest GitHub releas
 - Skill instructions: https://github.com/molamine08/agent-glyphs/blob/main/SKILL.md
 - Source: https://github.com/molamine08/agent-glyphs
 - Measured accuracy: https://github.com/molamine08/agent-glyphs/blob/main/ACCURACY.md
-- Browse in a browser: https://molamine08.github.io/agent-glyphs/
+- Browse in a browser: https://agentglyphs.com/
