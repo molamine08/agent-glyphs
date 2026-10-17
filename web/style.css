@@ -40,6 +40,9 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* the page never scrolls sideways: anything wider is cut at the screen edge */
+html, body { max-width: 100%; overflow-x: clip; }
+@supports not (overflow: clip) { html, body { overflow-x: hidden; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
 body {
   background: var(--paper); color: var(--ink); font-family: var(--font-en);
@@ -355,9 +358,10 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   .pop.cats { width: auto; }
   .sws { grid-template-columns: repeat(4, 1fr); }
   .filter-row { flex-wrap: wrap; }
-  .filters { max-width: none; }
+  /* chips scroll inside their own row, edge to edge, instead of widening the page */
+  .filters { flex: 0 0 calc(100% + 2 * var(--gutter)); max-width: none; min-width: 0; }
   .agent-line { flex-basis: 100%; }
-  .agent-line code { font-size: 12.5px; }
+  .agent-line code { font-size: 12.5px; flex: 1; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 8px; }
   .tile { border-radius: 16px; }
   .tile .ic svg { width: 26px; height: 26px; }
