@@ -6,6 +6,8 @@ An open agent skill for designers and vibe-coders: ~400,000 icons from ~250 libr
 (English **and Arabic**), drawing style, stroke weight, corner roundness, curviness,
 stroke contrast and visual density — and kept up to date by a daily bot.
 
+**Try it in the browser: https://molamine08.github.io/icone-atlas/**
+
 [العربية ↓](#بالعربية)
 
 ```bash
@@ -96,6 +98,7 @@ Libraries with non-commercial or missing licences are never proposed.
 مُعاد تصنيفها حسب المعنى (بالعربية والإنجليزية)، ونمط الرسم، وسُمك الخط، وانحناء الزوايا،
 ونسبة المنحنيات، وتباين السُّمك، والكثافة البصرية، مع بوت يحدّثها يومياً.
 
+- **جرّبها في المتصفح:** https://molamine08.github.io/icone-atlas/
 - **البحث بالعربية:** `python scripts/search.py "محفظة" --style outline --weight 1.5`
   ويفهم الكلمة مع «ال» أو بدونها، وبالهمزة أو بدونها.
 - **طابق أسلوبي:** `python scripts/match.py ./أيقوناتي --need سلة جرس تقويم`

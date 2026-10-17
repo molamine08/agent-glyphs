@@ -1,0 +1,55 @@
+name: Web page
+
+# Publishes web/ to GitHub Pages with data built from the latest index
+# release. Runs after every index update and whenever the page changes.
+on:
+  workflow_run:
+    workflows: ["Daily index update"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths: ["web/**", "scripts/build_web.py", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Get the latest index
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p data
+          gh release download --pattern atlas.db.gz --dir data
+          gunzip -f data/atlas.db.gz
+
+      - name: Build page data
+        run: python scripts/build_web.py --db data/atlas.db --out web/data
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
