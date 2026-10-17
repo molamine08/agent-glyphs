@@ -1,4 +1,4 @@
-// Search engine for the page. Runs in a Web Worker so typing stays smooth
+// Agent Glyphs search engine for the page. Runs in a Web Worker so typing stays smooth
 // while 400k icon names are scanned. Mirrors scripts/atlas/query.py.
 
 let meta, rows, vocab, vocabKeys, rev, styleTokens;
@@ -97,14 +97,19 @@ function search(opts) {
   }
   const union = p && p.isAr ? new Set(p.groups.flatMap((g) => [...g])) : null;
   const scored = [];
+  const counts = new Array(meta.categories.length).fill(0);  // per category, before the category filter
+  let all = 0;
   for (const id of candidates) {
     const r = rows[id];
     const set = meta.setsInfo[r.s];
     if (f.commercial && set.t > 1) continue;
     if (f.style !== null && r.st !== f.style) continue;
     if (f.corners !== null && r.c !== f.corners) continue;
-    if (f.cat !== null && r.k !== f.cat && r.k2 !== f.cat) continue;
     if (f.weight !== null && (r.w < 0 || Math.abs(r.w / 10 - f.weight) > 0.3)) continue;
+    all++;
+    counts[r.k]++;
+    if (r.k2 >= 0) counts[r.k2]++;
+    if (f.cat !== null && r.k !== f.cat && r.k2 !== f.cat) continue;
     let score = r.pr / 10;
     if (p) {
       const parts = r.concept.split("-");
@@ -120,6 +125,7 @@ function search(opts) {
     scored.push([score, id]);
   }
   scored.sort((a, b) => b[0] - a[0]);
+  const setCount = new Set(scored.map(([, id]) => rows[id].s)).size;
   // variety: at most two icons per library in a row of results
   const items = [], perSet = new Map(), overflow = [];
   for (const [, id] of scored) {
@@ -130,12 +136,27 @@ function search(opts) {
   }
   if (items.length < opts.limit) items.push(...overflow.slice(0, opts.limit - items.length));
   return {
-    total: scored.length,
+    total: scored.length, sets: setCount, counts, all,
     items: items.map((id) => {
       const r = rows[id];
       return { p: meta.setsInfo[r.s].p, n: r.n, st: r.st, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
     }),
   };
+}
+
+// the same concept drawn by other libraries, best-known libraries first
+function alternatives(prefix, concept, commercial) {
+  const seen = new Set([prefix]), out = [];
+  const ids = (vocab.get(concept.split("-")[0]) || []).filter((id) => rows[id].concept === concept);
+  ids.sort((a, b) => rows[b].pr - rows[a].pr);
+  for (const id of ids) {
+    const r = rows[id], set = meta.setsInfo[r.s];
+    if (seen.has(set.p) || (commercial && set.t > 1)) continue;
+    seen.add(set.p);
+    out.push({ p: set.p, n: r.n, st: r.st, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept });
+    if (out.length >= 12) break;
+  }
+  return out;
 }
 
 onmessage = async (e) => {
@@ -144,5 +165,7 @@ onmessage = async (e) => {
     try { await load(m.base); } catch (err) { postMessage({ type: "error", message: String(err) }); }
   } else if (m.type === "search") {
     postMessage({ type: "results", seq: m.seq, ...search(m) });
+  } else if (m.type === "alts") {
+    postMessage({ type: "alts", seq: m.seq, items: alternatives(m.p, m.concept, m.commercial) });
   }
 };

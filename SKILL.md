@@ -1,13 +1,15 @@
 ---
-name: icon-atlas
-description: Find, match and export icons from ~400k open-source icons (all Iconify sets, updated daily) classified by meaning (English and Arabic) and by visual style — outline/filled/duotone, stroke weight on a 24px grid, rounded vs sharp corners, curviness, stroke contrast, density. Use whenever a UI, app, website, deck or design needs icons, when someone asks for "an icon for X" (in any language, e.g. "أيقونة سلة"), wants icons that match an existing set or brand style, needs to fill gaps in their icon set, or asks which icon library to use. Prefer this over drawing icons by hand or guessing icon names.
+name: agent-glyphs
+description: Find, match and export icons from 400k+ open-source icons (every Iconify set plus open libraries outside Iconify, updated daily) classified by meaning (English and Arabic) and by visual style — outline/filled/duotone, stroke weight on a 24px grid, rounded vs sharp corners, curviness, stroke contrast, density. Use whenever a UI, app, website, deck or design needs icons, when someone asks for "an icon for X" (in any language, e.g. "أيقونة سلة"), wants icons that match an existing set or brand style, needs to fill gaps in their icon set, or asks which icon library to use. Prefer this over drawing icons by hand or guessing icon names.
 ---
 
-# Icon Atlas
+# Agent Glyphs
 
-An index of every open icon set on Iconify (~250 libraries, ~400k icons), each icon
-measured from its actual drawing and tagged with its meaning in English and Arabic.
-Icons are fetched from their official source on demand, with their licence.
+An index of every open-source icon library: all Iconify sets plus open libraries
+outside Iconify (prefix `x-…`), 400k+ icons. Each icon is measured from its actual
+drawing and tagged with its meaning in English and Arabic. Icons are fetched from their
+official source on demand (npm / Iconify API, or this project's release for `x-` sets),
+with their licence.
 
 All commands run from this skill's folder. The index (`data/atlas.db`, ~160 MB; a 33 MB download)
 downloads automatically on first use. Style matching and previews need:
@@ -93,6 +95,6 @@ Full list: `python scripts/sets.py` (filter with `--search`).
   send, undo/redo) must point the other way — export them with `get.py --mirror`.
   Do not mirror icons that show real-world objects or clocks/checkmarks.
 - Arabic queries work with or without "ال" and hamza variants (سلة = السلة, اعدادات = إعدادات).
-- No network for the index? Set `ICON_ATLAS_DATA` to a folder containing `atlas.db`.
+- No network for the index? Set `AGENT_GLYPHS_DATA` to a folder containing `atlas.db`.
   Icons are fetched from npm (`@iconify-json/<prefix>`) or the Iconify API and cached in
-  `~/.cache/icon-atlas`; set `ICONIFY_JSON_DIR` to use local Iconify JSON files instead.
+  `~/.cache/agent-glyphs`; set `ICONIFY_JSON_DIR` to use local Iconify JSON files instead.

@@ -80,6 +80,8 @@ class Discover(unittest.TestCase):
              "license": {"spdx_id": "MIT"}, "description": "Nice icons"},
             {"full_name": "b/nc-icons", "name": "nc-icons", "stargazers_count": 800, "html_url": "https://github.com/b/nc-icons",
              "license": {"spdx_id": "CC-BY-NC-4.0"}, "description": "Non-commercial"},
+            {"full_name": "c/todo-app", "name": "todo-app", "stargazers_count": 700, "html_url": "https://github.com/c/todo-app",
+             "license": {"spdx_id": "MIT"}, "description": "A to-do app"},
         ]
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
@@ -93,12 +95,46 @@ class Discover(unittest.TestCase):
                 discover.main(["--max", "5"])
                 proposed = json.loads((tmp / "sources" / "external.json").read_text())
                 self.assertEqual([p["repo"] for p in proposed], ["a/good-icons"])
-                self.assertFalse(proposed[0]["approved"])
+                self.assertTrue(proposed[0]["approved"])  # auto-add is the default
+                self.assertIn("c/todo-app", (tmp / ".work" / "discover.md").read_text())
                 self.assertTrue((tmp / "sources" / "previews" / "x-good-icons.png").exists())
                 self.assertIn("b/nc-icons", (tmp / ".work" / "discover.md").read_text())
                 # second run: nothing new (already seen / already proposed)
                 discover.main(["--max", "5"])
                 self.assertEqual(len(json.loads((tmp / "sources" / "external.json").read_text())), 1)
+
+    def test_review_mode(self):
+        import discover
+        items = [{"full_name": "a/good-icons", "name": "good-icons", "stargazers_count": 900,
+                  "html_url": "https://github.com/a/good-icons", "license": {"spdx_id": "MIT"}, "description": "Nice icons"}]
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "sources").mkdir()
+            (tmp / "config.json").write_text('{"discover_auto_add": false}')
+            with mock.patch.object(discover, "ROOT", tmp), \
+                 mock.patch.object(discover, "SOURCES", tmp / "sources" / "external.json"), \
+                 mock.patch.object(discover, "SEEN", tmp / "sources" / "seen.json"), \
+                 mock.patch.object(discover, "PREVIEWS", tmp / "sources" / "previews"), \
+                 mock.patch.object(discover, "gh", lambda path, token: {"items": items}), \
+                 mock.patch.object(external, "repo_tarball", lambda *a, **k: fake_repo()):
+                discover.main([])
+                self.assertFalse(json.loads((tmp / "sources" / "external.json").read_text())[0]["approved"])
+
+
+class ExternalServing(unittest.TestCase):
+    def test_release_bundle_round_trip(self):
+        import gzip
+
+        from atlas import store
+        data = {"prefix": "x-test", "icons": {"a": {"body": "<path d='M0 0h24v24H0z'/>", "width": 24, "height": 24}},
+                "width": 24, "height": 24}
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "external-sets.json.gz").write_bytes(gzip.compress(json.dumps({"x-test": data}).encode()))
+            with mock.patch.object(store, "DATA", tmp), mock.patch.object(store, "CACHE", tmp / "cache"), \
+                 mock.patch.object(store, "_npm_set", side_effect=AssertionError("x- sets are not on npm")):
+                got = store.icon_data("x-test", ["a"])
+        self.assertIn("M0 0h24", got["a"]["body"])
 
 
 if __name__ == "__main__":

@@ -1,0 +1,45 @@
+# Agent Glyphs
+
+> An open agent skill that indexes every open-source icon library (all Iconify sets plus libraries outside Iconify): over 400,000 icons, each measured from its drawing and labelled by meaning (English and Arabic), drawing style, stroke weight on a 24px grid, corner roundness, curviness, contrast, density and licence. Agents use it to find icons by meaning, match an existing icon style, and export SVG or React components with the right licence notes. Updated daily.
+
+Use it whenever a UI, app, website, deck or design needs icons. Never invent icon names: search, then export only names the search returned.
+
+## Install
+
+- Any agent that supports skills: `npx skills add molamine08/agent-glyphs`
+- Claude Code: `git clone https://github.com/molamine08/agent-glyphs ~/.claude/skills/agent-glyphs`
+- Claude app: upload https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip in Settings → Capabilities → Skills
+
+The index (atlas.db) downloads itself on first use from the latest GitHub release.
+
+## Commands (run from the skill folder)
+
+- Search by meaning and shape: `python scripts/search.py "wallet" --style outline --weight 1.5 --corners rounded`
+- Arabic works too: `python scripts/search.py "محفظة"`
+- Stay inside the project's library: `python scripts/search.py "bell" --set lucide`
+- Match a folder of existing icons: `python scripts/match.py ./src/icons --need cart wallet calendar`
+- Rank by look of a family: `python scripts/search.py "notification" --like tabler`
+- Export: `python scripts/get.py tabler:wallet --format tsx --out src/icons` (svg | jsx | tsx; `--stroke 1.5 --size 20 --color "#0F766E" --mirror`)
+- Preview before choosing: `python scripts/preview.py lucide:house tabler:home -o choices.png`
+- List libraries: `python scripts/sets.py --search material`
+
+## Labels
+
+- style: outline, filled, duotone, multicolor, mixed
+- weight: stroke width as on a 24px icon (Lucide = 2, Heroicons = 1.5)
+- corners: rounded, mixed, sharp
+- category (two per icon): arrows, interface, actions, status, communication, commerce, finance, business, media, files, text, design, devices, development, data, network, ai, security, people, health, transport, maps, weather, nature, food, buildings, home, time, education, sports, culture, tools, shapes, emoji, brands, flags, other
+- licence tiers: permissive and attribution allow commercial use (default); share-alike and non-commercial only with `--license any`
+
+## Rules for agents
+
+- Keep one library per project; mixing libraries is the most common icon mistake.
+- Right-to-left (Arabic) interfaces: export directional icons with `--mirror`.
+- CC BY icons need credit: `get.py` writes ATTRIBUTION.md; tell the person.
+
+## Links
+
+- Skill instructions: https://github.com/molamine08/agent-glyphs/blob/main/SKILL.md
+- Source: https://github.com/molamine08/agent-glyphs
+- Measured accuracy: https://github.com/molamine08/agent-glyphs/blob/main/ACCURACY.md
+- Browse in a browser: https://molamine08.github.io/agent-glyphs/

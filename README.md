@@ -1,12 +1,17 @@
-# Icon Atlas
+# Agent Glyphs
 
-**Every open-source icon, searchable by what it means and by how it looks.**
-An open agent skill for designers and vibe-coders: ~400,000 icons from ~250 libraries
-(everything on [Iconify](https://iconify.design)), re-classified by meaning
-(English **and Arabic**), drawing style, stroke weight, corner roundness, curviness,
-stroke contrast and visual density — and kept up to date by a daily bot.
+**Icons your agent understands.**
+An open agent skill for designers and vibe-coders: every open-source icon library in one
+index (all of [Iconify](https://iconify.design) plus open libraries outside it), 400,000+
+icons re-classified by meaning (English **and Arabic**), drawing style, stroke weight,
+corner roundness, curviness, stroke contrast and visual density, so an AI agent can pick
+the right icon, in your style, with the right licence. Kept up to date by daily bots.
 
-**Try it in the browser: https://molamine08.github.io/icone-atlas/**
+```bash
+npx skills add molamine08/agent-glyphs
+```
+
+Browse it yourself: https://molamine08.github.io/agent-glyphs/ · For LLMs: [`llms.txt`](web/llms.txt)
 
 [العربية ↓](#بالعربية)
 
@@ -20,7 +25,7 @@ python scripts/get.py lucide:house ph:bell --format tsx --out src/icons
 
 Icon libraries are organised by *who made them*. People look for icons by *what they
 mean* and *how they look*: "a 1.5px rounded outline wallet that fits next to my other
-icons". Icon Atlas measures every icon from its rendered drawing, so a library whose
+icons". Agent Glyphs measures every icon from its rendered drawing, so a library whose
 strokes were converted to shapes is measured the same way as a true stroke library,
 and every number is normalised to a 24px grid.
 
@@ -42,9 +47,12 @@ Labels: independent review of a random sample of 240 icons. Details and known li
 
 ## Use it as a skill
 
-Copy this folder into your agent's skills directory (Claude: Settings → Capabilities →
-Skills, or `~/.claude/skills/icon-atlas`). The agent reads `SKILL.md`; the index
-downloads itself on first use from the latest release.
+- Any agent that supports skills (Claude Code, Cursor, Codex…): `npx skills add molamine08/agent-glyphs`
+- Claude Code by hand: `git clone https://github.com/molamine08/agent-glyphs ~/.claude/skills/agent-glyphs`
+- Claude app: download the [zip](https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip)
+  and upload it in Settings → Capabilities → Skills.
+
+The agent reads `SKILL.md`; the index downloads itself on first use from the latest release.
 
 ## Looking at icons, not just their names
 
@@ -66,20 +74,25 @@ Two GitHub Actions run every day:
    rebuilds `atlas.db`, runs the tests, and publishes it as a release. `CHANGELOG.md`
    lists new and changed libraries. Fully automatic: Iconify's maintainers review every
    library before it reaches their package, and each carries its licence.
-2. **`discover.yml`** — searches GitHub for icon libraries that are *not* indexed yet,
-   checks their licence and SVG count, renders a preview, and opens a pull request that
-   adds them to `sources/external.json` with `"approved": false`.
-   **Nothing is added automatically.** A maintainer sets `"approved": true` on the ones
-   worth keeping and merges; the next daily update converts and indexes them.
+2. **`discover.yml`** — searches GitHub for icon libraries that are *not* indexed yet.
+   A library is added to `sources/external.json` automatically when its licence allows
+   commercial use (permissive or attribution) and it passes the checks: enough stars and
+   SVG files, files that parse, and a repo that describes itself as an icon library. The
+   bot then opens an issue with previews and starts the index update. Remove a library
+   with `"approved": false`; set `"discover_auto_add": false` in `config.json` to review
+   every library in a pull request instead.
 
-Libraries with non-commercial or missing licences are never proposed.
+Libraries outside Iconify have no npm package or public API, so their sanitised SVG data
+ships with each release as `external-sets.json.gz`. Libraries with non-commercial or
+missing licences are never added.
 
 ## Licences
 
 - Code: MIT (see `LICENSE`).
-- Icons are **not** redistributed by this repo. `get.py` fetches each icon from its
-  official package on npm (or the Iconify API) and records its licence in
-  `ATTRIBUTION.md`. Default search results only include licences that allow commercial
+- Iconify icons are **not** redistributed: `get.py` fetches each one from its official
+  package on npm (or the Iconify API). Libraries outside Iconify are redistributed as
+  sanitised SVG data under their own open licences. `get.py` records every icon's licence
+  in `ATTRIBUTION.md`. Default search results only include licences that allow commercial
   use; CC BY icons require credit to the author. Brand logos are trademarks.
 - The index (`atlas.db`) contains measurements, names and licence metadata.
 
@@ -93,12 +106,14 @@ Libraries with non-commercial or missing licences are never proposed.
 
 ## بالعربية
 
-**كل الأيقونات المفتوحة المصدر، قابلة للبحث بالمعنى وبالشكل.**
-مهارة مفتوحة المصدر للمصممين ومطوّري الـ vibe coding: قرابة 400 ألف أيقونة من نحو 250 مكتبة،
-مُعاد تصنيفها حسب المعنى (بالعربية والإنجليزية)، ونمط الرسم، وسُمك الخط، وانحناء الزوايا،
-ونسبة المنحنيات، وتباين السُّمك، والكثافة البصرية، مع بوت يحدّثها يومياً.
+**أيقونات يفهمها وكيلك.**
+مهارة مفتوحة المصدر للمصممين ومطوّري الـ vibe coding تجمع كل مكتبات الأيقونات المفتوحة في فهرس واحد:
+كل Iconify ومعها المكتبات المفتوحة من خارجه، أكثر من 400 ألف أيقونة مُعاد تصنيفها حسب المعنى
+(بالعربية والإنجليزية)، ونمط الرسم، وسُمك الخط، وانحناء الزوايا، ونسبة المنحنيات، وتباين السُّمك،
+والكثافة البصرية، حتى يختار وكيلك الأيقونة المناسبة بأسلوبك وبرخصة صحيحة.
 
-- **جرّبها في المتصفح:** https://molamine08.github.io/icone-atlas/
+- **التثبيت:** `npx skills add molamine08/agent-glyphs`
+- **تصفّحها بنفسك:** https://molamine08.github.io/agent-glyphs/
 - **البحث بالعربية:** `python scripts/search.py "محفظة" --style outline --weight 1.5`
   ويفهم الكلمة مع «ال» أو بدونها، وبالهمزة أو بدونها.
 - **طابق أسلوبي:** `python scripts/match.py ./أيقوناتي --need سلة جرس تقويم`
@@ -107,7 +122,9 @@ Libraries with non-commercial or missing licences are never proposed.
   كملفات SVG أو مكونات React، مع ملف نسب الحقوق تلقائياً.
 
 **التحديث اليومي:** بوت يضيف ويصنّف تلقائياً كل ما يصدر في Iconify، وبوت ثانٍ يكتشف
-مكتبات جديدة خارجها ويفتح طلب مراجعة، ولا يُضاف شيء منها إلا بموافقة صاحب المستودع.
+مكتبات جديدة خارجها ويضيف تلقائياً كل مكتبة رخصتها تسمح بالاستخدام التجاري وتجتاز الفحوص،
+ثم يفتح Issue فيه تقرير ومعاينات. لإزالة مكتبة: `"approved": false`. وللعودة إلى المراجعة
+اليدوية: `"discover_auto_add": false` في config.json.
 
 **الدقة:** سُمك الخط بمتوسط خطأ 3%، النمط 94.9%، الزوايا 96.4%، التصنيف 81.6% (89.5% مع التصنيف الثاني). التفاصيل في ACCURACY.md.
 
