@@ -41,7 +41,7 @@ const T = {
     done: (f, l) => `أُضيفت ${f}، ورخصة ${l} مسجّلة في ATTRIBUTION.md`,
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "الخطوة التالية",
-    browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…",
+    browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…", hint: "ابحث عن أيقونات",
     style: "النمط", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
     any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
     strokeTitle: "سُمك الخط على شبكة 24px",
@@ -86,7 +86,7 @@ const T = {
     done: (f, l) => `Added ${f}. ${l} licence recorded in ATTRIBUTION.md`,
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "Next step",
-    browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…",
+    browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…", hint: "Search icons for",
     style: "Style", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
     any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
     strokeTitle: "Stroke weight on a 24 px grid",
@@ -118,7 +118,54 @@ const SWATCHES = [null, "#0E0E10", "#2563EB", "#16A34A", "#DC2626", "#D97706"];
 const SIZES = [16, 20, 24, 32, 48];
 const WEIGHTS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
-let lang = (() => { try { return localStorage.getItem("lang") || "ar"; } catch { return "ar"; } })();
+// ---------------------------------------------------------------- where the visitor is
+// Read from the browser's time zone: no request leaves the page, nothing is stored.
+const ZONE_COUNTRY = {
+  "Asia/Riyadh": "sa", "Asia/Dubai": "ae", "Asia/Qatar": "qa", "Asia/Kuwait": "kw", "Asia/Bahrain": "bh",
+  "Asia/Muscat": "om", "Asia/Aden": "ye", "Asia/Baghdad": "iq", "Asia/Amman": "jo", "Asia/Gaza": "ps",
+  "Asia/Hebron": "ps", "Asia/Beirut": "lb", "Asia/Damascus": "sy", "Africa/Cairo": "eg", "Africa/Khartoum": "sd",
+  "Africa/Tripoli": "ly", "Africa/Tunis": "tn", "Africa/Algiers": "dz", "Africa/Casablanca": "ma",
+  "Africa/El_Aaiun": "ma", "Africa/Nouakchott": "mr", "Africa/Djibouti": "dj", "Indian/Comoro": "km",
+};
+// words people around the visitor care about; every one returns icons in the index
+const LOCAL = {
+  sa: [["مسجد", "دلة", "نخلة", "ريال", "جمل"], ["mosque", "palm", "riyal", "camel", "coffee"]],
+  ae: [["برج", "صقر", "درهم", "نخلة", "دلة"], ["tower", "falcon", "dirham", "palm", "camel"]],
+  qa: [["صقر", "دلة", "ريال", "مسجد", "قارب"], ["falcon", "riyal", "mosque", "boat", "camel"]],
+  kw: [["برج", "شراع", "دينار", "دلة", "نخلة"], ["tower", "sailboat", "coins", "palm", "coffee"]],
+  bh: [["لؤلؤ", "شراع", "دينار", "نخلة", "مسجد"], ["oyster", "sailboat", "coins", "palm", "mosque"]],
+  om: [["قلعة", "خنجر", "ريال", "قارب", "دلة"], ["castle", "boat", "rial", "camel", "coffee"]],
+  ye: [["قهوة", "قلعة", "ريال", "مسجد", "جمل"], ["coffee", "castle", "rial", "mosque", "camel"]],
+  iq: [["نخلة", "تمر", "دينار", "مسجد", "كتاب"], ["palm", "coins", "mosque", "book", "tea"]],
+  jo: [["قلعة", "زيتون", "دينار", "جمل", "قهوة"], ["castle", "olive", "coins", "camel", "coffee"]],
+  ps: [["زيتون", "مفتاح", "مسجد", "شجرة", "بيت"], ["olive", "key", "mosque", "tree", "home"]],
+  lb: [["شجرة", "قهوة", "ليرة", "بحر", "جبل"], ["tree", "coffee", "lira", "beach", "mountain"]],
+  sy: [["صابون", "زهرة", "قلعة", "ليرة", "قهوة"], ["soap", "flower", "castle", "lira", "coffee"]],
+  eg: [["هرم", "فول", "جنيه", "مسجد", "فانوس"], ["pyramid", "beans", "pound", "mosque", "lantern"]],
+  sd: [["جمل", "هرم", "نهر", "شاي", "نخلة"], ["camel", "pyramid", "river", "tea", "palm"]],
+  ly: [["نخلة", "دينار", "جمل", "زيتون", "بحر"], ["palm", "coins", "camel", "olive", "beach"]],
+  tn: [["زيتون", "دينار", "بحر", "شاي", "نخلة"], ["olive", "coins", "beach", "tea", "palm"]],
+  dz: [["مسجد", "زيتون", "دينار", "شاي", "نخلة"], ["mosque", "olive", "coins", "tea", "palm"]],
+  ma: [["شاي", "زليج", "درهم", "مسجد", "خيمة"], ["tea", "tile", "dirham", "mosque", "tent"]],
+  mr: [["جمل", "شاي", "خيمة", "نخلة", "مسجد"], ["camel", "tea", "tent", "palm", "mosque"]],
+  arab: [["مسجد", "محفظة", "سلة", "قهوة", "هلال"], ["mosque", "wallet", "cart", "coffee", "crescent"]],
+  Europe: [["دراجة", "قطار", "قهوة", "يورو", "مظلة"], ["bicycle", "train", "coffee", "euro", "umbrella"]],
+  America: [["سيارة", "دولار", "قهوة", "برغر", "كاميرا"], ["car", "dollar", "coffee", "burger", "camera"]],
+  Asia: [["شاي", "قطار", "ين", "سوشي", "جوال"], ["tea", "train", "yen", "sushi", "phone"]],
+  any: [["محفظة", "سلة", "جرس", "بيت", "قهوة"], ["wallet", "cart", "bell", "home", "coffee"]],
+};
+const ZONE = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch { return ""; } })();
+const COUNTRY = ZONE_COUNTRY[ZONE] || null;
+const speaksArabic = (navigator.languages || [navigator.language || ""]).some((l) => /^ar\b/i.test(l));
+function localWords(l) {
+  const key = COUNTRY || (speaksArabic ? "arab" : ["Europe", "America", "Asia"].find((r) => ZONE.startsWith(r + "/")) || "any");
+  return LOCAL[key][l === "ar" ? 0 : 1];
+}
+
+let lang = (() => {
+  try { const saved = localStorage.getItem("lang"); if (saved) return saved; } catch { /* private mode */ }
+  return COUNTRY || speaksArabic ? "ar" : "en";
+})();
 let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
 const state = { style: null, corners: null, cat: null, weight: null, commercial: true };
 const view = { color: null, size: 24, stroke: null, mirror: false };
@@ -625,6 +672,42 @@ $("download").addEventListener("click", () => {
 });
 document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", () => copy($(b.dataset.copy).textContent)));
 
+// ---------------------------------------------------------------- search hint and focus
+let hintIdx = 0, hintTimer = null;
+function renderHint() {
+  const words = localWords(lang);
+  $("qHintText").textContent = t().hint;
+  $("qWord").textContent = words[hintIdx % words.length];
+  $("qHint").hidden = !!$("q").value;
+  clearInterval(hintTimer);
+  if (reduced()) return;
+  hintTimer = setInterval(() => {
+    if ($("q").value) return;
+    const el = $("qWord");
+    el.classList.add("out");
+    setTimeout(() => { hintIdx++; el.textContent = localWords(lang)[hintIdx % words.length]; el.classList.remove("out"); }, 260);
+  }, 2400);
+}
+$("q").addEventListener("input", () => { $("qHint").hidden = !!$("q").value; });
+
+// the search is ready for typing as soon as it is on screen (not on touch screens,
+// where focusing would open the keyboard by itself)
+const fine = matchMedia("(pointer: fine)").matches;
+const typingElsewhere = () => /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "") || document.activeElement?.isContentEditable;
+if (fine) {
+  new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting && !typingElsewhere() && !openPop) $("q").focus({ preventScroll: true });
+    }
+  }, { threshold: 0.6 }).observe(document.querySelector(".search"));
+}
+// typing anywhere goes into the search
+document.addEventListener("keydown", (e) => {
+  if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey || typingElsewhere() || e.key === "/") return;
+  $("q").focus({ preventScroll: true });
+  if (!desktop() || $("browse").getBoundingClientRect().top > innerHeight) $("browse").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+});
+
 // ---------------------------------------------------------------- language
 function applyLang() {
   const L = t();
@@ -635,7 +718,8 @@ function applyLang() {
     if (typeof v === "string") el.textContent = v;
   });
   $("lang").textContent = L.lang;
-  $("q").placeholder = L.placeholder;
+  $("q").placeholder = "";
+  renderHint();
   $("lede").innerHTML = L.lede;
   $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
   $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;

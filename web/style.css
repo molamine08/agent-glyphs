@@ -156,6 +156,16 @@ html[lang="ar"] .label { letter-spacing: 0; }
 .search { margin-top: var(--s5); display: flex; align-items: center; gap: var(--s4); height: 80px; padding: 0 28px; border-radius: 999px; background: var(--wash); transition: box-shadow .15s ease; }
 .search:focus-within { box-shadow: 0 0 0 1.5px var(--edge); }
 .search-icon .ui { width: 24px; height: 24px; color: var(--ink-2); }
+.q-wrap { position: relative; flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; }
+/* the placeholder, drawn so its last word can change with where the visitor is */
+.q-hint {
+  position: absolute; inset-inline-start: 0; inset-inline-end: 0; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: clamp(24px, 2.6vw, 36px); font-weight: 600; letter-spacing: -.03em; color: var(--ink-3);
+}
+html[lang="ar"] .q-hint { letter-spacing: 0; }
+.q-hint[hidden] { display: none; }
+.q-word { display: inline-block; color: var(--ink-2); transition: opacity .25s ease, transform .25s ease; }
+.q-word.out { opacity: 0; transform: translateY(-.25em); }
 #q {
   flex: 1; min-width: 0; border: 0; outline: 0; background: none; height: 100%;
   font-size: clamp(24px, 2.6vw, 36px); font-weight: 600; letter-spacing: -.03em; caret-color: var(--ink);
