@@ -1,0 +1,7 @@
+# needed to search and export icons
+# (search/get/match only need the Python standard library + these for style matching & previews)
+numpy>=1.26
+scipy>=1.11
+scikit-image>=0.22
+resvg-py>=0.2
+Pillow>=10
