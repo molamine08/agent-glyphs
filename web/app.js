@@ -3,7 +3,11 @@
 // filters that read as the exact command an agent would run.
 // Icons come from the public Iconify API (or, for libraries outside Iconify,
 // from data/ext/) as they scroll into view; nothing else is downloaded.
-import { ui } from "./ui-icons.js";
+import { ui } from "./ui-icons.js?v=__BUILD__";
+
+// replaced with the commit and run number when the page is published, so browsers fetch
+// the new search engine and data after every update instead of a cached copy
+const BUILD = "__BUILD__";
 
 const API = "https://api.iconify.design";
 const REPO = "molamine08/agent-glyphs";
@@ -120,7 +124,7 @@ const state = { style: null, corners: null, cat: null, weight: null, commercial:
 const view = { color: null, size: 24, stroke: null, mirror: false };
 const cache = new Map();
 const extSets = new Map();
-const worker = new Worker("worker.js");
+const worker = new Worker(`worker.js?v=${BUILD}`);
 const t = () => T[lang];
 const fmt = (n) => Number(n).toLocaleString("en-US");
 const setOf = (p) => meta.setsInfo.find((s) => s.p === p);
@@ -655,4 +659,4 @@ $("searchIcon").innerHTML = ui("search");
 $("gh").innerHTML = ui("github");
 applyLang();
 $("status").textContent = t().loading;
-worker.postMessage({ type: "load", base: new URL("data/", location.href).href });
+worker.postMessage({ type: "load", base: new URL("data/", location.href).href, v: BUILD });

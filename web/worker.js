@@ -16,11 +16,12 @@ function normAr(text) {
   }).join(" ");
 }
 
-async function load(base) {
+async function load(base, v = "") {
+  const q = v ? `?v=${v}` : "";
   const [m, icons, ar] = await Promise.all([
-    fetch(base + "meta.json").then((r) => r.json()),
-    fetch(base + "icons.json").then((r) => r.json()),
-    fetch(base + "ar.json").then((r) => r.json()),
+    fetch(base + "meta.json" + q).then((r) => r.json()),
+    fetch(base + "icons.json" + q).then((r) => r.json()),
+    fetch(base + "ar.json" + q).then((r) => r.json()),
   ]);
   meta = m;
   C = { g: ar.g, ax: ar.ax, as: ar.as, en: ar.en };
@@ -227,7 +228,7 @@ function alternatives(prefix, concept, commercial) {
 onmessage = async (e) => {
   const m = e.data;
   if (m.type === "load") {
-    try { await load(m.base); } catch (err) { postMessage({ type: "error", message: String(err) }); }
+    try { await load(m.base, m.v); } catch (err) { postMessage({ type: "error", message: String(err) }); }
   } else if (m.type === "search") {
     postMessage({ type: "results", seq: m.seq, ...search(m) });
   } else if (m.type === "alts") {
