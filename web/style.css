@@ -162,6 +162,9 @@ html[lang="ar"] #q { letter-spacing: 0; }
 #q::-webkit-search-cancel-button { display: none; }
 .count { font-size: 15px; color: var(--ink-2); font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
+.rel-line { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.rel-line button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hair); font-size: 14px; font-weight: 600; color: var(--ink); }
+.rel-line button:hover { border-color: var(--ink); }
 .filters { margin-top: 20px; display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; position: relative; }
 .fwrap { position: relative; }
 .chip {

@@ -7,7 +7,8 @@ import re
 import sqlite3
 from dataclasses import dataclass
 
-from .semantics import arabic_to_tokens, has_arabic, norm_ar
+from .concepts import expand, level
+from .semantics import has_arabic, norm_ar
 
 COMMERCIAL_TIERS = ("permissive", "attribution")
 
@@ -80,17 +81,25 @@ class Filters:
     min_conf: str | None = None  # high | medium
 
 
-def _fts_query(text: str) -> str:
-    """Prefix-match every word; Arabic goes to the ar column."""
-    parts = []
-    for word in re.findall(r"[\w؀-ۿ]+", text.lower()):
-        if has_arabic(word):
-            word = norm_ar(word)
-            if word:
-                parts.append(f'ar:"{word}"*')
+def _fts_query(parts) -> str:
+    """Every query part must match (AND); within a part, the word itself
+    (prefix match, Arabic in the ar column) or any token that means the same
+    thing or is closely related to it (OR)."""
+    clauses = []
+    for p in parts:
+        alts = []
+        if has_arabic(p.text):
+            for w in p.text.split():
+                w = norm_ar(w)
+                if w:
+                    alts.append(f'ar:"{w}"*')
         else:
-            parts.append(f'{{en extra}}:"{word}"*')
-    return " AND ".join(parts)
+            alts.append(f'{{en extra}}:"{p.text}"*')
+        for tok in sorted(p.strong | p.related):
+            if re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", tok) and tok != p.text:
+                alts.append(f'en:"{tok.replace("-", " ")}"')  # "log-out" as a phrase
+        clauses.append("(" + " OR ".join(alts) + ")")
+    return " AND ".join(clauses)
 
 
 def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20,
@@ -122,7 +131,8 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
             "s.total AS set_total, fam.label AS family, COALESCE(c.sets, 1) AS concept_sets")
     joins = ("JOIN sets s ON s.prefix = i.prefix JOIN families fam ON fam.id = i.family_id "
              "LEFT JOIN concepts c ON c.concept = i.concept")
-    q = _fts_query(text) if text else ""
+    parts = expand(text) if text else []
+    q = _fts_query(parts) if parts else ""
     pool = max(limit * 300, 6000)
     if q:
         sql = (f"SELECT {cols}, bm25(icons_fts, 4.0, 3.0, 0.5) AS rank FROM icons_fts "
@@ -135,9 +145,7 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
         rows = db.execute(sql, args + [pool]).fetchall()
 
     words = [w for w in re.findall(r"[a-z0-9]+", (text or "").lower())]
-    target = "-".join(words)
-    ar_exact, ar_words = arabic_to_tokens(text) if text and has_arabic(text) else (set(), [])
-    ar_union = set().union(*ar_words) if ar_words else set()
+    target = "-".join(words) if text and not has_arabic(text) else ""
     results = []
     for r in rows:
         d = dict(r)
@@ -147,12 +155,18 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
             score += 8
         elif target and d["concept"].startswith(target):
             score += 2
-        if ar_words:
+        if parts and not (target and d["concept"].startswith(target)):
+            # meaning: same meaning first, then names that use it, then related things
             ctoks = set(d["concept"].split("-"))
-            if d["concept"] in ar_exact:
-                score += 8
-            elif ctoks <= ar_union and all(ctoks & w for w in ar_words if w):
-                score += 6
+            lv = [level(ctoks, d["concept"], p) for p in parts]
+            top = 8 if has_arabic(text) else 6  # an English synonym ranks just below the word itself
+            if min(lv) == 3 or (len(parts) > 1 and min(lv) >= 2 and ctoks <= set().union(*(p.strong for p in parts))):
+                score += top
+            elif min(lv) >= 2:
+                score += top - 3
+            elif min(lv) >= 1:
+                score += 1.5
+            d["match"] = "related" if min(lv) == 1 else "same"
         if like and like.get("prefix") == d["prefix"]:
             score += 3
         score -= 0.15 * d["concept"].count("-")

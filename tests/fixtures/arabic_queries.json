@@ -1,0 +1,699 @@
+{
+ "about": "Arabic queries designers and developers type, with name words an acceptable icon uses.",
+ "queries": {
+  "مسلم": [
+   "islam",
+   "muslim",
+   "mosque"
+  ],
+  "إسلامي": [
+   "islam",
+   "mosque",
+   "crescent",
+   "muslim"
+  ],
+  "رمضان": [
+   "ramadan",
+   "crescent",
+   "lantern"
+  ],
+  "عيد": [
+   "eid"
+  ],
+  "صلاة": [
+   "prayer"
+  ],
+  "القرآن": [
+   "quran"
+  ],
+  "الكعبة": [
+   "kaaba"
+  ],
+  "حج": [
+   "hajj",
+   "kaaba"
+  ],
+  "زكاة": [
+   "zakat",
+   "charity",
+   "donation",
+   "donate"
+  ],
+  "مسبحة": [
+   "tasbih",
+   "rosary",
+   "beads"
+  ],
+  "هلال": [
+   "crescent",
+   "moon"
+  ],
+  "سلة": [
+   "basket",
+   "cart"
+  ],
+  "سلة المشتريات": [
+   "cart",
+   "basket",
+   "shopping"
+  ],
+  "عربة التسوق": [
+   "cart",
+   "shopping",
+   "trolley"
+  ],
+  "تشيك اوت": [
+   "checkout",
+   "cart",
+   "payment"
+  ],
+  "الدفع": [
+   "payment",
+   "pay",
+   "card",
+   "wallet",
+   "cash"
+  ],
+  "محفظة": [
+   "wallet"
+  ],
+  "فاتورة": [
+   "invoice",
+   "receipt",
+   "bill"
+  ],
+  "خصم": [
+   "discount",
+   "percent",
+   "coupon",
+   "tag",
+   "sale"
+  ],
+  "كوبون": [
+   "coupon",
+   "ticket",
+   "discount",
+   "voucher"
+  ],
+  "توصيل": [
+   "delivery",
+   "truck",
+   "shipping"
+  ],
+  "شحن": [
+   "shipping",
+   "truck",
+   "delivery",
+   "charging",
+   "battery"
+  ],
+  "متجر": [
+   "store",
+   "shop",
+   "storefront"
+  ],
+  "منتج": [
+   "product",
+   "box",
+   "package"
+  ],
+  "مخزون": [
+   "inventory",
+   "warehouse",
+   "box",
+   "boxes"
+  ],
+  "ريال": [
+   "riyal",
+   "currency",
+   "money",
+   "coin",
+   "coins",
+   "sar"
+  ],
+  "فلوس": [
+   "money",
+   "cash",
+   "coin",
+   "coins",
+   "wallet",
+   "banknote"
+  ],
+  "بنك": [
+   "bank"
+  ],
+  "بطاقة": [
+   "card",
+   "credit"
+  ],
+  "الرئيسية": [
+   "home",
+   "house"
+  ],
+  "بيت": [
+   "home",
+   "house"
+  ],
+  "إعدادات": [
+   "settings",
+   "gear",
+   "cog"
+  ],
+  "سيتنج": [
+   "settings",
+   "gear",
+   "cog"
+  ],
+  "بحث": [
+   "search",
+   "magnifier",
+   "magnifying"
+  ],
+  "إشعارات": [
+   "notification",
+   "notifications",
+   "bell"
+  ],
+  "نوتيفيكيشن": [
+   "notification",
+   "notifications",
+   "bell"
+  ],
+  "جرس": [
+   "bell"
+  ],
+  "رسالة": [
+   "message",
+   "mail",
+   "chat",
+   "envelope"
+  ],
+  "رسائل": [
+   "message",
+   "messages",
+   "mail",
+   "chat",
+   "envelope"
+  ],
+  "دردشة": [
+   "chat",
+   "message",
+   "comment",
+   "conversation"
+  ],
+  "شات": [
+   "chat",
+   "message",
+   "comment"
+  ],
+  "بريد": [
+   "mail",
+   "email",
+   "envelope"
+  ],
+  "ايميل": [
+   "mail",
+   "email",
+   "envelope"
+  ],
+  "مستخدم": [
+   "user",
+   "person",
+   "account"
+  ],
+  "يوزر": [
+   "user",
+   "person",
+   "account"
+  ],
+  "بروفايل": [
+   "profile",
+   "user",
+   "account"
+  ],
+  "الملف الشخصي": [
+   "profile",
+   "user",
+   "account"
+  ],
+  "فريق": [
+   "team",
+   "users",
+   "group",
+   "people"
+  ],
+  "تسجيل الدخول": [
+   "login",
+   "signin",
+   "enter",
+   "log",
+   "in",
+   "sign"
+  ],
+  "تسجيل خروج": [
+   "logout",
+   "exit",
+   "signout",
+   "out"
+  ],
+  "خروج": [
+   "exit",
+   "logout",
+   "door"
+  ],
+  "قفل": [
+   "lock",
+   "padlock"
+  ],
+  "كلمة المرور": [
+   "password",
+   "key",
+   "lock"
+  ],
+  "مفتاح": [
+   "key"
+  ],
+  "بصمة": [
+   "fingerprint"
+  ],
+  "حماية": [
+   "shield",
+   "security",
+   "protect",
+   "protection"
+  ],
+  "لوحة التحكم": [
+   "dashboard"
+  ],
+  "داشبورد": [
+   "dashboard"
+  ],
+  "إحصائيات": [
+   "chart",
+   "statistics",
+   "analytics",
+   "graph",
+   "stats"
+  ],
+  "رسم بياني": [
+   "chart",
+   "graph"
+  ],
+  "ملف": [
+   "file",
+   "document"
+  ],
+  "مجلد": [
+   "folder"
+  ],
+  "رفع": [
+   "upload"
+  ],
+  "تحميل": [
+   "download"
+  ],
+  "تنزيل": [
+   "download"
+  ],
+  "حذف": [
+   "delete",
+   "trash",
+   "bin",
+   "remove"
+  ],
+  "سلة المهملات": [
+   "trash",
+   "bin",
+   "delete"
+  ],
+  "تعديل": [
+   "edit",
+   "pencil",
+   "pen"
+  ],
+  "اضافة": [
+   "add",
+   "plus"
+  ],
+  "نسخ": [
+   "copy",
+   "duplicate",
+   "clipboard"
+  ],
+  "مشاركة": [
+   "share"
+  ],
+  "حفظ": [
+   "save",
+   "bookmark",
+   "floppy",
+   "disk"
+  ],
+  "تحديث": [
+   "refresh",
+   "update",
+   "reload",
+   "sync"
+  ],
+  "مفضلة": [
+   "favorite",
+   "favourite",
+   "heart",
+   "star",
+   "bookmark"
+  ],
+  "قلب": [
+   "heart"
+  ],
+  "نجمة": [
+   "star"
+  ],
+  "تقييم": [
+   "star",
+   "rating",
+   "review",
+   "rate"
+  ],
+  "إعجاب": [
+   "like",
+   "thumbs",
+   "heart",
+   "thumb"
+  ],
+  "كاميرا": [
+   "camera"
+  ],
+  "صورة": [
+   "image",
+   "photo",
+   "picture"
+  ],
+  "صور": [
+   "image",
+   "images",
+   "photo",
+   "photos",
+   "picture",
+   "gallery"
+  ],
+  "فيديو": [
+   "video",
+   "film",
+   "play",
+   "movie"
+  ],
+  "موسيقى": [
+   "music",
+   "note"
+  ],
+  "ميكروفون": [
+   "microphone",
+   "mic"
+  ],
+  "سماعة": [
+   "headphones",
+   "headset",
+   "speaker",
+   "earphones"
+  ],
+  "تشغيل": [
+   "play"
+  ],
+  "إيقاف": [
+   "pause",
+   "stop"
+  ],
+  "صوت": [
+   "volume",
+   "sound",
+   "speaker",
+   "audio"
+  ],
+  "تقويم": [
+   "calendar"
+  ],
+  "موعد": [
+   "calendar",
+   "appointment",
+   "event",
+   "clock"
+  ],
+  "ساعة": [
+   "clock",
+   "watch",
+   "time"
+  ],
+  "منبه": [
+   "alarm",
+   "clock"
+  ],
+  "موقع": [
+   "location",
+   "map",
+   "pin",
+   "marker",
+   "globe"
+  ],
+  "خريطة": [
+   "map"
+  ],
+  "سيارة": [
+   "car"
+  ],
+  "طائرة": [
+   "plane",
+   "airplane",
+   "flight"
+  ],
+  "سفر": [
+   "travel",
+   "plane",
+   "luggage",
+   "suitcase",
+   "airplane",
+   "trip"
+  ],
+  "فندق": [
+   "hotel",
+   "bed",
+   "building"
+  ],
+  "مستشفى": [
+   "hospital"
+  ],
+  "دواء": [
+   "pill",
+   "pills",
+   "medicine",
+   "drug",
+   "capsule"
+  ],
+  "طبيب": [
+   "doctor",
+   "stethoscope",
+   "medical"
+  ],
+  "قهوة": [
+   "coffee",
+   "cup"
+  ],
+  "مطعم": [
+   "restaurant",
+   "food",
+   "fork",
+   "cutlery",
+   "utensils"
+  ],
+  "كود": [
+   "code"
+  ],
+  "برمجة": [
+   "code",
+   "programming",
+   "terminal",
+   "developer"
+  ],
+  "سيرفر": [
+   "server"
+  ],
+  "قاعدة بيانات": [
+   "database"
+  ],
+  "داتابيز": [
+   "database"
+  ],
+  "سحابة": [
+   "cloud"
+  ],
+  "ذكاء اصطناعي": [
+   "ai",
+   "robot",
+   "sparkles",
+   "brain",
+   "magic",
+   "sparkle",
+   "artificial"
+  ],
+  "روبوت": [
+   "robot",
+   "bot"
+  ],
+  "واتساب": [
+   "whatsapp"
+  ],
+  "انستقرام": [
+   "instagram"
+  ],
+  "تويتر": [
+   "twitter"
+  ],
+  "يوتيوب": [
+   "youtube"
+  ],
+  "السعودية": [
+   "sa",
+   "saudi",
+   "arabia"
+  ],
+  "الجزائر": [
+   "dz",
+   "algeria"
+  ],
+  "مصر": [
+   "eg",
+   "egypt"
+  ],
+  "الإمارات": [
+   "ae",
+   "emirates",
+   "arab"
+  ],
+  "علم": [
+   "flag"
+  ],
+  "كتاب": [
+   "book"
+  ],
+  "تعليم": [
+   "education",
+   "school",
+   "graduation",
+   "book",
+   "learning"
+  ],
+  "مدرسة": [
+   "school"
+  ],
+  "شهادة": [
+   "certificate",
+   "diploma",
+   "award",
+   "badge"
+  ],
+  "جائزة": [
+   "award",
+   "trophy",
+   "medal",
+   "prize"
+  ],
+  "هدية": [
+   "gift",
+   "present"
+  ],
+  "ترجمة": [
+   "translate",
+   "language",
+   "translation"
+  ],
+  "لغة": [
+   "language",
+   "translate",
+   "globe"
+  ],
+  "مصباح": [
+   "lamp",
+   "bulb",
+   "light",
+   "lightbulb"
+  ],
+  "الوضع الليلي": [
+   "moon",
+   "dark",
+   "night"
+  ],
+  "شمس": [
+   "sun"
+  ],
+  "مطر": [
+   "rain",
+   "cloud"
+  ],
+  "واي فاي": [
+   "wifi"
+  ],
+  "بطارية": [
+   "battery"
+  ],
+  "جوال": [
+   "phone",
+   "mobile",
+   "smartphone",
+   "cellphone",
+   "device"
+  ],
+  "لابتوب": [
+   "laptop",
+   "computer"
+  ],
+  "طابعة": [
+   "printer",
+   "print"
+  ],
+  "قائمة": [
+   "menu",
+   "list"
+  ],
+  "سهم": [
+   "arrow"
+  ],
+  "رجوع": [
+   "back",
+   "arrow",
+   "return",
+   "undo"
+  ],
+  "التالي": [
+   "next",
+   "arrow",
+   "forward",
+   "chevron"
+  ],
+  "تحقق": [
+   "check",
+   "verified",
+   "tick",
+   "done"
+  ],
+  "خطأ": [
+   "error",
+   "close",
+   "alert",
+   "warning",
+   "x"
+  ],
+  "تحذير": [
+   "warning",
+   "alert",
+   "triangle"
+  ],
+  "معلومات": [
+   "info",
+   "information"
+  ],
+  "مساعدة": [
+   "help",
+   "question",
+   "support"
+  ]
+ }
+}

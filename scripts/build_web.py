@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from atlas.query import set_prior  # noqa: E402
+from atlas.concepts import groups as concept_groups, tables as concept_tables  # noqa: E402
 from atlas.semantics import norm_ar, terms  # noqa: E402
 from atlas.taxonomy import CATEGORIES, STYLE_TOKENS  # noqa: E402
 
@@ -74,16 +75,21 @@ def main(argv=None):
         "categories": [[k, en, ar] for k, (en, ar) in CATEGORIES.items()],
         "styleTokens": sorted(STYLE_TOKENS),
     }
-    # Arabic search: normalised Arabic phrase -> English name words
-    ar = {}
-    for tok, e in terms().items():
-        for w in e.get("ar", []):
-            ar.setdefault(norm_ar(w), []).append(tok)
+    # Meaning-aware search (same tables as scripts/atlas/concepts.py): concept
+    # groups as [same-meaning tokens, related tokens], and the Arabic/English
+    # words that lead to them. Tokens absent from every icon name are dropped.
+    vocab = set()
+    for (c,) in db.execute("SELECT DISTINCT concept FROM icons"):
+        vocab.update(c.split("-"))
+    ar_exact, ar_stem, en_words = concept_tables()
+    known = lambda t: all(x in vocab for x in t.split("-"))  # noqa: E731
+    groups_out = [[[t for t in g["en"] if known(t)], [t for t in g["rel"] if known(t)]] for g in concept_groups()]
+    ar = {"g": groups_out, "ax": ar_exact, "as": ar_stem, "en": en_words}
     terms_out = {tok: e.get("ar", [])[:3] for tok, e in terms().items() if e.get("ar")}
 
     (out / "meta.json").write_text(json.dumps({**meta, "setsInfo": sets}, ensure_ascii=False, separators=(",", ":")))
     (out / "icons.json").write_text(json.dumps(icons, separators=(",", ":")))
-    (out / "ar.json").write_text(json.dumps({"rev": ar, "terms": terms_out}, ensure_ascii=False, separators=(",", ":")))
+    (out / "ar.json").write_text(json.dumps({**ar, "terms": terms_out}, ensure_ascii=False, separators=(",", ":")))
     if a.external and Path(a.external).exists():
         # icons outside Iconify cannot come from its API: serve them from the page itself
         import gzip
