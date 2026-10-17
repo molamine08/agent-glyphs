@@ -173,7 +173,7 @@ html[lang="ar"] .q-hint { letter-spacing: 0; }
 html[lang="ar"] #q { letter-spacing: 0; }
 #q::placeholder { color: var(--ink-3); opacity: .55; }
 #q::-webkit-search-cancel-button { display: none; }
-.count { font-size: 15px; color: var(--ink-2); font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.count { font-size: 15px; color: var(--ink-3); font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .rel-line { margin-top: var(--s3); padding: 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
 .rel-line button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hair); font-size: 14px; font-weight: 600; color: var(--ink); }
