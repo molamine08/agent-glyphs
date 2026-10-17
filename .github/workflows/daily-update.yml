@@ -25,6 +25,8 @@ jobs:
     timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -72,8 +74,13 @@ jobs:
           git config user.name  "icon-atlas-bot"
           git config user.email "icon-atlas-bot@users.noreply.github.com"
           git add CHANGELOG.md state.json
-          git commit -m "data: ${{ steps.update.outputs.tag }}" || echo "nothing to commit"
-          git push
+          git commit -m "data: ${{ steps.update.outputs.tag }}" || { echo "nothing to commit"; exit 0; }
+          # the branch may have moved while this job ran: replay our commit on top
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 10
+          done
+          exit 1
 
       - name: Publish release
         if: steps.update.outputs.changed == 'true'
