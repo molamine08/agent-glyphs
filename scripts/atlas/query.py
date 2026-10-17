@@ -97,7 +97,8 @@ def _fts_query(parts) -> str:
             alts.append(f'{{en extra}}:"{p.text}"*')
         for tok in sorted(p.strong | p.related):
             if re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", tok) and tok != p.text:
-                alts.append(f'en:"{tok.replace("-", " ")}"')  # "log-out" as a phrase
+                # the index has no word positions, so "log-out" means: uses both words
+                alts.append("(" + " AND ".join(f'en:"{x}"' for x in tok.split("-")) + ")" if "-" in tok else f'en:"{tok}"')
         clauses.append("(" + " OR ".join(alts) + ")")
     return " AND ".join(clauses)
 

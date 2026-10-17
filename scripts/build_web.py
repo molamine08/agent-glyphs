@@ -84,7 +84,12 @@ def main(argv=None):
     ar_exact, ar_stem, en_words = concept_tables()
     known = lambda t: all(x in vocab for x in t.split("-"))  # noqa: E731
     groups_out = [[[t for t in g["en"] if known(t)], [t for t in g["rel"] if known(t)]] for g in concept_groups()]
-    ar = {"g": groups_out, "ax": ar_exact, "as": ar_stem, "en": en_words}
+    # an Arabic name for each token, for the "also includes" chips
+    labels = {}
+    for g in concept_groups():
+        if g["en"] and g["ar"] and g["en"][0] in vocab:
+            labels.setdefault(g["en"][0], g["ar"][0])
+    ar = {"g": groups_out, "ax": ar_exact, "as": ar_stem, "en": en_words, "lab": labels}
     terms_out = {tok: e.get("ar", [])[:3] for tok, e in terms().items() if e.get("ar")}
 
     (out / "meta.json").write_text(json.dumps({**meta, "setsInfo": sets}, ensure_ascii=False, separators=(",", ":")))

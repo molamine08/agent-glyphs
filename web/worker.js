@@ -47,7 +47,7 @@ async function load(base) {
     }
   }
   vocabKeys = [...vocab.keys()];
-  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms });
+  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms, labels: ar.lab || {} });
 }
 
 function rowsForTokens(tokens) {

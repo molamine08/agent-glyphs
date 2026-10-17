@@ -15,7 +15,8 @@
   "رمضان": [
    "ramadan",
    "crescent",
-   "lantern"
+   "lantern",
+   "ramadhan"
   ],
   "عيد": [
    "eid"
@@ -229,12 +230,16 @@
   "بروفايل": [
    "profile",
    "user",
-   "account"
+   "account",
+   "person",
+   "avatar"
   ],
   "الملف الشخصي": [
    "profile",
    "user",
-   "account"
+   "account",
+   "person",
+   "avatar"
   ],
   "فريق": [
    "team",
