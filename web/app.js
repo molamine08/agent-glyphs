@@ -349,7 +349,7 @@ function renderFilters() {
   const el = $("filters");
   const keys = [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]];
   el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
-    + `<span class="sp"></span><button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
+    + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
     e.stopPropagation();
     openPop = openPop === w.dataset.key ? null : w.dataset.key;
@@ -723,7 +723,9 @@ function applyLang() {
   $("lede").innerHTML = L.lede;
   $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
   $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;
-  $("copyCmd").innerHTML = `${ui("copy")}<span>${esc(L.copyCmd)}</span>`;
+  $("copyCmd").innerHTML = ui("copy");
+  $("copyCmd").setAttribute("aria-label", L.copyCmd);
+  $("copyCmd").title = L.copyCmd;
   $("next").innerHTML = ui("next");
   $("next").setAttribute("aria-label", L.next);
   $("footText").textContent = meta ? L.foot(meta.version) : "";

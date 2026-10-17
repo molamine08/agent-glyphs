@@ -178,7 +178,9 @@ html[lang="ar"] #q { letter-spacing: 0; }
 .rel-line { margin-top: var(--s3); padding: 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
 .rel-line button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--hair); font-size: 14px; font-weight: 600; color: var(--ink); }
 .rel-line button:hover { border-color: var(--ink); }
-.filters { margin-top: var(--s4); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: relative; }
+/* filters and the command they produce share one row; the command takes the space left */
+.filter-row { margin-top: var(--s4); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: relative; }
 .fwrap { position: relative; }
 .chip {
   height: 42px; padding: 0 12px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair);
@@ -190,7 +192,6 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .chip.set { border: var(--line); }
 .chip[aria-expanded="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 .chip[aria-expanded="true"] small { color: var(--on-ink-2); }
-.filters .sp { flex: 1; }
 .clear { font-size: 14.5px; font-weight: 600; color: var(--ink-2); height: 42px; padding: 0 var(--s2); }
 .clear:hover { color: var(--ink); }
 .clear[hidden] { display: none; }
@@ -219,9 +220,12 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .pop .foot-row { display: flex; justify-content: space-between; align-items: center; margin-top: var(--s2); padding: var(--s2) var(--s1) 0; font-size: 13.5px; color: var(--ink-2); }
 .pop .foot-row button { font-weight: 600; color: var(--ink); }
 
-.agent-line { margin-top: var(--s3); display: flex; align-items: center; gap: var(--s3); min-height: 52px; padding: 6px 6px 6px 20px; border-radius: 26px; border: 1.5px solid var(--hair); }
+.agent-line { flex: 1 1 280px; min-width: 240px; display: flex; align-items: center; gap: var(--s2); height: 42px; padding: 0 4px 0 16px; border-radius: 999px; border: 1.5px solid var(--hair); }
+.copy-cmd { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); }
+.copy-cmd:hover { background: var(--wash); color: var(--ink); }
+.copy-cmd .ui { width: 16px; height: 16px; }
 /* the command reads left to right in both languages, so its copy button stays on the right */
-.agent-line code { flex: 1; min-width: 0; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.agent-line code { flex: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
 .agent-line .gt, .agent-line s { color: var(--ink-3); text-decoration: none; }
 .agent-line .cursor { margin-top: 9px; }
 
@@ -340,15 +344,13 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   .count { display: none; }
   .filters { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scrollbar-width: none; }
   .filters::-webkit-scrollbar { display: none; }
-  .filters .sp { display: none; }
   .rel-line { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter); scrollbar-width: none; white-space: nowrap; }
   .rel-line::-webkit-scrollbar { display: none; }
   .pop { position: fixed; inset: auto 12px 12px 12px; top: auto; min-width: 0; max-height: 70dvh; overflow: auto; }
   .pop.cats { width: auto; }
   .sws { grid-template-columns: repeat(4, 1fr); }
+  .agent-line { flex-basis: 100%; }
   .agent-line code { font-size: 12.5px; }
-  .agent-line .pill span { display: none; }
-  .agent-line .pill { width: 40px; padding: 0; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 8px; }
   .tile { border-radius: 16px; }
   .tile .ic svg { width: 26px; height: 26px; }
