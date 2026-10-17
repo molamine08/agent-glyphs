@@ -220,7 +220,7 @@ html[dir="rtl"] .chip { padding: 0 16px 0 12px; }
 .pop .foot-row button { font-weight: 600; color: var(--ink); }
 
 .agent-line { margin-top: var(--s3); display: flex; align-items: center; gap: var(--s3); min-height: 52px; padding: 6px 6px 6px 20px; border-radius: 26px; border: 1.5px solid var(--hair); }
-html[dir="rtl"] .agent-line { padding: 6px 20px 6px 6px; }
+/* the command reads left to right in both languages, so its copy button stays on the right */
 .agent-line code { flex: 1; min-width: 0; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
 .agent-line .gt, .agent-line s { color: var(--ink-3); text-decoration: none; }
 .agent-line .cursor { margin-top: 9px; }
