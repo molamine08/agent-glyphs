@@ -28,6 +28,8 @@ from pathlib import Path
 from .semantics import has_arabic, norm_ar, terms
 
 CONCEPTS_PATH = Path(__file__).with_name("concepts.json")
+# hand-written groups kept apart from the generated ones (e.g. the Islamic glyphs)
+CURATED_PATH = Path(__file__).with_name("concepts_curated.json")
 
 AR_PREFIXES = ("و", "ف", "ب", "ك", "ل")
 # longest first; a suffix is only removed when at least 3 letters remain
@@ -72,7 +74,8 @@ def en_forms(word: str) -> list[str]:
 @lru_cache(maxsize=1)
 def groups() -> list[dict]:
     """Concept groups plus the one-word translations of terms_ar.json."""
-    data = json.loads(CONCEPTS_PATH.read_text()) if CONCEPTS_PATH.exists() else []
+    data = json.loads(CURATED_PATH.read_text()) if CURATED_PATH.exists() else []
+    data += json.loads(CONCEPTS_PATH.read_text()) if CONCEPTS_PATH.exists() else []
     out = [{"ar": g.get("ar", []), "en": [e.lower() for e in g.get("en", [])],
             "rel": [r.lower() for r in g.get("rel", [])]} for g in data]
     for tok, e in terms().items():
@@ -137,7 +140,7 @@ def expand(text: str) -> list[Part]:
     i = 0
     while i < len(words):
         hit = None
-        for n in (3, 2):  # multi-word Arabic phrases such as "لوحة التحكم"
+        for n in (5, 4, 3, 2):  # multi-word Arabic phrases such as "لوحة التحكم", "صلى الله عليه وسلم"
             if i + n <= len(words) and all(has_arabic(w) for w in words[i:i + n]):
                 gids = _lookup_ar(" ".join(words[i:i + n]))
                 if gids:

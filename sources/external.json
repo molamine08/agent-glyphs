@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "prefix": "x-islamic-glyphs",
+  "name": "Islamic Glyphs",
+  "repo": "molamine08/agent-glyphs",
+  "folder": "sources/glyphs/islamic",
+  "license": "OFL-1.1",
+  "license_url": "https://github.com/molamine08/agent-glyphs/blob/main/sources/glyphs/islamic/LICENSE.md",
+  "author": "Agent Glyphs (outlines from Amiri, Scheherazade New, Noto)",
+  "category": "Thematic",
+  "include_subfolders": false,
+  "description": "Islamic and Arabic Unicode glyphs (ﷺ ﷽ ۞ ۩, honorifics, mosque, kaaba) drawn from open fonts",
+  "approved": true,
+  "auto": false,
+  "found": "2026-10-17"
+ }
+]
