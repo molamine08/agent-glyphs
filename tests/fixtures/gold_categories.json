@@ -1,0 +1,2815 @@
+{
+ "about": "Content categories judged acceptable by an independent reviewer for 2 random samples of 240 icons. 'tune' is used to choose vision_weight, 'test' only to report it.",
+ "icons": {
+  "akar-icons:triangle-left-fill": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "test"
+  },
+  "andrsrxn:battery-low": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "andrsrxn:bell-electric": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "andrsrxn:paste": {
+   "ok": [
+    "actions",
+    "files"
+   ],
+   "split": "test"
+  },
+  "ant-design:one-to-one-outlined": {
+   "ok": [
+    "media",
+    "design"
+   ],
+   "split": "test"
+  },
+  "arcticons:acme": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:amazon-live-creator": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:arte-japanese-input": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:cvica": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:dantotsu": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:emoji-hamster": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:extinguish": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:feeder": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:gasflow": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:geminiassist": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:heartbeat": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:kotlin": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:lazada-seller-center": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:librescore": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:nds4droid": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:oxypie-icon-pack": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:quranic": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:routinery": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:sassla": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "arcticons:screencam": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:tortoise": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "arcticons:upfcm-distributor": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "at-icons:arrow-merge": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "basil:bullhorn-outline": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "basil:location-plus-outline": {
+   "ok": [
+    "maps"
+   ],
+   "split": "test"
+  },
+  "basil:palette-solid": {
+   "ok": [
+    "design"
+   ],
+   "split": "tune"
+  },
+  "bi:clouds-fill": {
+   "ok": [
+    "weather"
+   ],
+   "split": "test"
+  },
+  "bi:file-earmark-spreadsheet-fill": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "bi:suitcase-lg-fill": {
+   "ok": [
+    "transport"
+   ],
+   "split": "tune"
+  },
+  "boxicons:apps-filled": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "boxicons:dock-bottom-alt": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "boxicons:rotate-ccw-filled": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "bx:briefcase-alt": {
+   "ok": [
+    "business"
+   ],
+   "split": "tune"
+  },
+  "bx:football": {
+   "ok": [
+    "sports"
+   ],
+   "split": "tune"
+  },
+  "bxl:anthropic": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "bxs:happy-heart-eyes": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "bytesize:sign-out": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "carbon:energy-renewable": {
+   "ok": [
+    "nature"
+   ],
+   "split": "test"
+  },
+  "carbon:port-input": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "carbon:tool-box": {
+   "ok": [
+    "tools"
+   ],
+   "split": "tune"
+  },
+  "cbi:beyond": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "cbi:bulb-refresh": {
+   "ok": [
+    "devices",
+    "home"
+   ],
+   "split": "test"
+  },
+  "ci:calendar-days": {
+   "ok": [
+    "time"
+   ],
+   "split": "test"
+  },
+  "ci:wavy": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "test"
+  },
+  "cib:epic-games": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "cil:boat-alt": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "clarity:envelope-outline-alerted": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "clarity:talk-bubbles-solid-badged": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "codicon:chat-export": {
+   "ok": [
+    "communication"
+   ],
+   "split": "test"
+  },
+  "devicon-original:materializecss": {
+   "ok": [
+    "brands",
+    "development"
+   ],
+   "split": "tune"
+  },
+  "devicon-plain:opentelemetry": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "devicon-plain:vagrant": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "devicon:adonisjs-wordmark": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "test"
+  },
+  "dinkie-icons:pear-logo-small-filled": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "dinkie-icons:windows-alt2": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "duo-icons:clipboard": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "el:arrow-right": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "emojione-monotone:letter-x": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "emojione:purse": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "energy-icons:air-conditioning-48": {
+   "ok": [
+    "devices",
+    "home"
+   ],
+   "split": "test"
+  },
+  "energy-icons:chevron-up-square-48-bold": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "energy-icons:co2-pipeline-20-bold": {
+   "ok": [
+    "nature",
+    "tools",
+    "buildings"
+   ],
+   "split": "tune"
+  },
+  "energy-icons:code-20": {
+   "ok": [
+    "development"
+   ],
+   "split": "tune"
+  },
+  "energy-icons:compass-20": {
+   "ok": [
+    "maps"
+   ],
+   "split": "test"
+  },
+  "energy-icons:glue-gun-48-bold": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "energy-icons:multimeter-20-bold": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "energy-icons:ppa-signed-20-bold": {
+   "ok": [
+    "business",
+    "files"
+   ],
+   "split": "tune"
+  },
+  "energy-icons:smart-plug-20-bold": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "energy-icons:solar-meter-20-bold": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "energy-icons:uranium-20-bold": {
+   "ok": [
+    "other"
+   ],
+   "split": "tune"
+  },
+  "entypo:lab-flask": {
+   "ok": [
+    "education"
+   ],
+   "split": "tune"
+  },
+  "f7:crop": {
+   "ok": [
+    "design"
+   ],
+   "split": "tune"
+  },
+  "f7:square-arrow-up-on-square-fill": {
+   "ok": [
+    "arrows",
+    "actions"
+   ],
+   "split": "tune"
+  },
+  "f7:waveform": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "fa-solid:compress-arrows-alt": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "fa-solid:hand-point-down": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "fa6-brands:itunes": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "fa6-brands:optin-monster": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "fa7-brands:first-order-alt": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "fa7-brands:square-git": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "fa7-brands:stumbleupon-circle": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "fa7-solid:sort-alpha-asc": {
+   "ok": [
+    "actions"
+   ],
+   "split": "tune"
+  },
+  "fa7-solid:toggle-off": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "fa:cutlery": {
+   "ok": [
+    "food"
+   ],
+   "split": "test"
+  },
+  "fa:exclamation-triangle": {
+   "ok": [
+    "status"
+   ],
+   "split": "tune"
+  },
+  "fa:mars-double": {
+   "ok": [
+    "people",
+    "other"
+   ],
+   "split": "test"
+  },
+  "file-icons:imgbot": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "file-icons:openapi": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "file-icons:testcafe": {
+   "ok": [
+    "development",
+    "brands"
+   ],
+   "split": "test"
+  },
+  "flag:sb-1x1": {
+   "ok": [
+    "flags"
+   ],
+   "split": "test"
+  },
+  "flat-ui:imac": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "flowbite:video-camera-outline": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-flat:mouse": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-flat:person-mountain-biking-medium-dark": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-flat:phoenix-bird": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji-flat:place-of-worship": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji-flat:woman-with-veil-dark": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji-high-contrast:crocodile": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji-high-contrast:envelope-with-arrow": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-high-contrast:folding-hand-fan": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-high-contrast:pilot": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji-high-contrast:pinching-hand": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji:beans": {
+   "ok": [
+    "food"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji:high-speed-train": {
+   "ok": [
+    "transport"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji:office-worker-medium": {
+   "ok": [
+    "business"
+   ],
+   "split": "test"
+  },
+  "fluent-emoji:video-camera": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "fluent-emoji:woman-frowning-medium-light": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "fluent-mdl2:c-r-m-processes": {
+   "ok": [
+    "business"
+   ],
+   "split": "tune"
+  },
+  "fluent-mdl2:mini-expand-mirrored": {
+   "ok": [
+    "actions"
+   ],
+   "split": "tune"
+  },
+  "fluent-mdl2:numbered-list-number": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "fluent-mdl2:picture-library": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "fluent:arrow-wrap-up-to-down-32-regular": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "fluent:calendar-empty-32-light": {
+   "ok": [
+    "time"
+   ],
+   "split": "test"
+  },
+  "fluent:calendar-lock-32-regular": {
+   "ok": [
+    "security"
+   ],
+   "split": "test"
+  },
+  "fluent:clipboard-paste-16-filled": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "fluent:code-off-20-filled": {
+   "ok": [
+    "development"
+   ],
+   "split": "test"
+  },
+  "fluent:design-ideas-24-filled": {
+   "ok": [
+    "design"
+   ],
+   "split": "tune"
+  },
+  "fluent:document-mention-20-regular": {
+   "ok": [
+    "files"
+   ],
+   "split": "test"
+  },
+  "fluent:edit-28-regular": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "fluent:equal-circle-24-filled": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "test"
+  },
+  "fluent:hd-20-filled": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "fluent:hourglass-24-filled": {
+   "ok": [
+    "time"
+   ],
+   "split": "test"
+  },
+  "fluent:layout-column-two-16-regular": {
+   "ok": [
+    "design"
+   ],
+   "split": "test"
+  },
+  "fluent:location-add-right-20-filled": {
+   "ok": [
+    "maps"
+   ],
+   "split": "test"
+  },
+  "fluent:microscope-24-regular": {
+   "ok": [
+    "education"
+   ],
+   "split": "tune"
+  },
+  "fluent:more-vertical-32-filled": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "fluent:number-circle-8-28-filled": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "fluent:number-row-24-regular": {
+   "ok": [
+    "data"
+   ],
+   "split": "test"
+  },
+  "fluent:number-symbol-48-filled": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "fluent:people-prohibited-16-filled": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "fluent:pipeline-20-regular": {
+   "ok": [
+    "development"
+   ],
+   "split": "test"
+  },
+  "fluent:symbols-24-regular": {
+   "ok": [
+    "text"
+   ],
+   "split": "test"
+  },
+  "fluent:table-cursor-20-regular": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "fluent:text-add-t-28-regular": {
+   "ok": [
+    "text"
+   ],
+   "split": "test"
+  },
+  "fluent:text-box-settings-24-filled": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "fluent:text-header-6-20-regular": {
+   "ok": [
+    "text"
+   ],
+   "split": "test"
+  },
+  "fluent:video-person-sparkle-20-regular": {
+   "ok": [
+    "ai"
+   ],
+   "split": "test"
+  },
+  "fluent:window-header-horizontal-off-20-filled": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "fluent:xray-20-regular": {
+   "ok": [
+    "health"
+   ],
+   "split": "test"
+  },
+  "formkit:happy": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "game-icons:heart-necklace": {
+   "ok": [
+    "commerce",
+    "other"
+   ],
+   "split": "test"
+  },
+  "game-icons:sharped-teeth-skull": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "game-icons:spiky-eclipse": {
+   "ok": [
+    "weather"
+   ],
+   "split": "test"
+  },
+  "garden:user-follow-stroke-12": {
+   "ok": [
+    "people"
+   ],
+   "split": "test"
+  },
+  "garden:wrap-right-fill-12": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "gcp:filestore": {
+   "ok": [
+    "data",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "glyphs:crosshairs-outline": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "glyphs:laptop-cog": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "glyphs:restroom": {
+   "ok": [
+    "buildings"
+   ],
+   "split": "test"
+  },
+  "gravity-ui:chart-line-points": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "gravity-ui:logo-markdown": {
+   "ok": [
+    "text",
+    "development",
+    "brands"
+   ],
+   "split": "test"
+  },
+  "griddy-icons:paint-brush-alt-filled": {
+   "ok": [
+    "design"
+   ],
+   "split": "tune"
+  },
+  "gridicons:flag": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "healthicons:hot-meal-outline-24px": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "heroicons-solid:cake": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "heroicons-solid:wifi": {
+   "ok": [
+    "network"
+   ],
+   "split": "test"
+  },
+  "heroicons:photo-20-solid": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "hugeicons:bubble-chat-delay": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "hugeicons:check-unread-03": {
+   "ok": [
+    "status"
+   ],
+   "split": "tune"
+  },
+  "hugeicons:headset-connected": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "hugeicons:memory-stick": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "ic:baseline-drag-handle": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "ic:baseline-forward-5": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "ic:baseline-settings-power": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "ic:baseline-sports-hockey": {
+   "ok": [
+    "sports"
+   ],
+   "split": "tune"
+  },
+  "ic:baseline-switch-access-shortcut": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "ic:baseline-switch-video": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "ic:outline-directions-transit": {
+   "ok": [
+    "maps"
+   ],
+   "split": "test"
+  },
+  "ic:outline-filter-hdr": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "ic:outline-format-textdirection-l-to-r": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "ic:outline-mobiledata-off": {
+   "ok": [
+    "network"
+   ],
+   "split": "tune"
+  },
+  "ic:outline-security-update-warning": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "ic:round-pin-off": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "ic:sharp-directions-car-filled": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "ic:twotone-ios-share": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "ic:twotone-panorama-vertical": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "icomoon-free:ligature": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "icon-park-outline:database-position": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "icon-park-outline:font-size-two": {
+   "ok": [
+    "text"
+   ],
+   "split": "test"
+  },
+  "icon-park-outline:holy-sword": {
+   "ok": [
+    "culture"
+   ],
+   "split": "test"
+  },
+  "icon-park-outline:hot-pot": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "icon-park-outline:people-plus-one": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "icon-park-outline:sunrise": {
+   "ok": [
+    "weather"
+   ],
+   "split": "test"
+  },
+  "icon-park-solid:page-template": {
+   "ok": [
+    "design"
+   ],
+   "split": "test"
+  },
+  "icon-park-twotone:expand-right": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "icon-park-twotone:glasses-one": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "icon-park:data-one": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "icon-park:send-backward": {
+   "ok": [
+    "actions"
+   ],
+   "split": "tune"
+  },
+  "iconamoon:arrow-top-left-5-circle-duotone": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "iconamoon:copy-duotone": {
+   "ok": [
+    "files"
+   ],
+   "split": "test"
+  },
+  "iconmind:account-balance-outline-bold": {
+   "ok": [
+    "finance"
+   ],
+   "split": "tune"
+  },
+  "iconmind:align-center-outline-bold": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "iconmind:align-right-outline-thin": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "iconmind:ann-search-duotone-thin": {
+   "ok": [
+    "ai"
+   ],
+   "split": "tune"
+  },
+  "iconmind:audit-log-outline-thin": {
+   "ok": [
+    "security"
+   ],
+   "split": "tune"
+  },
+  "iconmind:batch-job-outline-bold": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "iconmind:corner-left-up-outline-bold": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "iconmind:cpr-outline-thin": {
+   "ok": [
+    "health"
+   ],
+   "split": "tune"
+  },
+  "iconmind:dormant-location-outline-bold": {
+   "ok": [
+    "maps"
+   ],
+   "split": "tune"
+  },
+  "iconmind:event-driven-outline-thin": {
+   "ok": [
+    "development",
+    "data",
+    "time"
+   ],
+   "split": "test"
+  },
+  "iconmind:favorite-alert-duotone-thin": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "iconmind:folder-off-duotone-bold": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "iconmind:funnel-drop-duotone-regular": {
+   "ok": [
+    "data"
+   ],
+   "split": "test"
+  },
+  "iconmind:gas-meter-outline-thin": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "iconmind:hobby-drone-outline-regular": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "iconmind:home-heater-outline-regular": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "iconmind:ingress-free-outline-bold": {
+   "ok": [
+    "network"
+   ],
+   "split": "tune"
+  },
+  "iconmind:latency-trend-outline-bold": {
+   "ok": [
+    "network"
+   ],
+   "split": "test"
+  },
+  "iconmind:layer-down-duotone-bold": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "iconmind:ltr-outline-bold": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "iconmind:monitor-stop-outline-thin": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "iconmind:net-worth-outline-regular": {
+   "ok": [
+    "finance"
+   ],
+   "split": "test"
+  },
+  "iconmind:outbox-outline-regular": {
+   "ok": [
+    "communication",
+    "files"
+   ],
+   "split": "tune"
+  },
+  "iconmind:page-scroll-outline-bold": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "iconmind:pasta-duotone-thin": {
+   "ok": [
+    "food"
+   ],
+   "split": "test"
+  },
+  "iconmind:prescription-outline-thin": {
+   "ok": [
+    "health"
+   ],
+   "split": "test"
+  },
+  "iconmind:read-later-outline-thin": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "iconmind:sandbox-api-outline-thin": {
+   "ok": [
+    "development"
+   ],
+   "split": "test"
+  },
+  "iconmind:school-desk-outline-regular": {
+   "ok": [
+    "education"
+   ],
+   "split": "test"
+  },
+  "iconmind:self-join-outline-thin": {
+   "ok": [
+    "data"
+   ],
+   "split": "test"
+  },
+  "iconmind:sold-out-outline-bold": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "tune"
+  },
+  "iconmind:split-pane-outline-bold": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "iconmind:tax-year-duotone-regular": {
+   "ok": [
+    "finance"
+   ],
+   "split": "tune"
+  },
+  "iconmind:type-infer-duotone-regular": {
+   "ok": [
+    "development"
+   ],
+   "split": "tune"
+  },
+  "iconmind:workout-plan-outline-thin": {
+   "ok": [
+    "health"
+   ],
+   "split": "tune"
+  },
+  "iconoir:arrow-down-right-square-solid": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "iconoven:basket": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "iconoven:boxes-stacked-sharp": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "tune"
+  },
+  "iconoven:camera-dslr-sharp": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "iconoven:cause-ribbon-sharp": {
+   "ok": [
+    "health",
+    "culture"
+   ],
+   "split": "tune"
+  },
+  "iconoven:chaat-plate": {
+   "ok": [
+    "food"
+   ],
+   "split": "test"
+  },
+  "iconoven:file-shield-sharp": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "iconoven:folder-user": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "iconoven:gondola-sharp": {
+   "ok": [
+    "transport"
+   ],
+   "split": "tune"
+  },
+  "iconoven:growth-chart-sharp": {
+   "ok": [
+    "people",
+    "health"
+   ],
+   "split": "test"
+  },
+  "iconoven:keyboard-access": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "iconoven:laptop-alert": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "iconoven:lotus": {
+   "ok": [
+    "nature"
+   ],
+   "split": "test"
+  },
+  "iconoven:network-graph-sharp": {
+   "ok": [
+    "network"
+   ],
+   "split": "tune"
+  },
+  "iconoven:peak-snow": {
+   "ok": [
+    "nature"
+   ],
+   "split": "tune"
+  },
+  "iconoven:replay-10-sharp": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "iconoven:rofl-sharp": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "iconoven:seahorse-marine-sharp": {
+   "ok": [
+    "nature"
+   ],
+   "split": "test"
+  },
+  "iconoven:ticket-edit-sharp": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "iconoven:timer-sharp": {
+   "ok": [
+    "time"
+   ],
+   "split": "tune"
+  },
+  "iconoven:users-alert-sharp": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "iconoven:wrench": {
+   "ok": [
+    "tools"
+   ],
+   "split": "tune"
+  },
+  "ion:logo-vue": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "ix:reference-point-bottom-left": {
+   "ok": [
+    "interface",
+    "design"
+   ],
+   "split": "tune"
+  },
+  "ix:spiderchart": {
+   "ok": [
+    "data"
+   ],
+   "split": "tune"
+  },
+  "jam:padlock-f": {
+   "ok": [
+    "security"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:audio-lines-sparkles-sharp": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "keyline-icons:battery-sharp-fill": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:clipboard-minus-sharp-fill": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:fullscreen-2-sharp-two-tone": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "keyline-icons:fullscreen-sharp": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "keyline-icons:gold-bars": {
+   "ok": [
+    "finance"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:list-filter-two-tone": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:list-x-fill": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:pin-off-two-tone": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "keyline-icons:search-sharp-duotone": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "keyline-icons:store-two-tone": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "tune"
+  },
+  "lets-icons:group-scan": {
+   "ok": [
+    "people"
+   ],
+   "split": "test"
+  },
+  "line-md:list-indented": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "line-md:moon-alt-off-twotone": {
+   "ok": [
+    "weather"
+   ],
+   "split": "tune"
+  },
+  "line-md:rss": {
+   "ok": [
+    "network"
+   ],
+   "split": "tune"
+  },
+  "line-md:switch": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "lineicons:emoji-expressionless": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "lineicons:microscope": {
+   "ok": [
+    "education"
+   ],
+   "split": "test"
+  },
+  "logos:graphql": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "lucide-extended:file-scan-filled": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "lucide-extended:mail-x-duotone": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "lucide-lab:chairs-table-platter": {
+   "ok": [
+    "home"
+   ],
+   "split": "test"
+  },
+  "lucide:door-open": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "majesticons:article": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "majesticons:comments-2": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "majesticons:map-simple-off-line": {
+   "ok": [
+    "maps"
+   ],
+   "split": "tune"
+  },
+  "material-icon-theme:favicon": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "material-symbols-light:alarm-off-outline-rounded": {
+   "ok": [
+    "time"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:battery-android-frame-share": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:cards-outline": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "material-symbols-light:iron-outline": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "material-symbols-light:local-shipping-outline": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:mms-outline-rounded": {
+   "ok": [
+    "communication"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:mobile-arrow-down-sharp": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:prayer-times-outline-rounded": {
+   "ok": [
+    "culture"
+   ],
+   "split": "tune"
+  },
+  "material-symbols-light:recycling": {
+   "ok": [
+    "nature"
+   ],
+   "split": "tune"
+  },
+  "material-symbols-light:shield-question-outline-rounded": {
+   "ok": [
+    "security"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:shopping-cart-outline-rounded": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:surround-sound-outline-sharp": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "material-symbols-light:timer-1-rounded": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "material-symbols:brand-family": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:filter-1-rounded": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "material-symbols:forward-10-rounded": {
+   "ok": [
+    "media"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:frame-reload-rounded": {
+   "ok": [
+    "interface",
+    "actions"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:health-metrics-outline-rounded": {
+   "ok": [
+    "health"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:imagesearch-roller-sharp": {
+   "ok": [
+    "tools"
+   ],
+   "split": "test"
+  },
+  "material-symbols:kayaking-rounded": {
+   "ok": [
+    "sports"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:local-atm-outline-sharp": {
+   "ok": [
+    "finance"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:media-output-off": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:moped-package-sharp": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "material-symbols:mountain-steam-outline-rounded": {
+   "ok": [
+    "maps"
+   ],
+   "split": "test"
+  },
+  "material-symbols:oxygen-saturation-rounded": {
+   "ok": [
+    "health"
+   ],
+   "split": "test"
+  },
+  "material-symbols:sign-language-off-rounded": {
+   "ok": [
+    "communication",
+    "people"
+   ],
+   "split": "tune"
+  },
+  "material-symbols:signal-cellular-2-bar": {
+   "ok": [
+    "network"
+   ],
+   "split": "test"
+  },
+  "material-symbols:washoku-outline": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "mdi-light:unfold-less-vertical": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "mdi:account-minus": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "mdi:format-float-right": {
+   "ok": [
+    "text"
+   ],
+   "split": "tune"
+  },
+  "mdi:human-pregnant": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "mdi:message-processing-outline": {
+   "ok": [
+    "communication"
+   ],
+   "split": "test"
+  },
+  "mdi:music-note": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "mdi:octagram-plus-outline": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "tune"
+  },
+  "mdi:projector-screen-variant": {
+   "ok": [
+    "media",
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "mdi:toaster-oven": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "mdi:vector-polyline-minus": {
+   "ok": [
+    "design"
+   ],
+   "split": "test"
+  },
+  "mdi:view-sequential-outline": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "meteor-icons:paper-plane": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "mingcute:yuanbao-line": {
+   "ok": [
+    "finance"
+   ],
+   "split": "test"
+  },
+  "mynaui:folder-minus": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "mynaui:moon-solid": {
+   "ok": [
+    "weather"
+   ],
+   "split": "tune"
+  },
+  "mynaui:search-square": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "noto-v1:fork-and-knife": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "noto-v1:snail": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "noto:construction-worker-dark-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "noto:pinched-fingers-light-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "noto:up-left-arrow": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "noto:woman-light-skin-tone-beard": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "ooui:calendar": {
+   "ok": [
+    "time"
+   ],
+   "split": "tune"
+  },
+  "ooui:next-ltr": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "openmoji:kiss-person-person-medium-light-skin-tone-dark-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "openmoji:person-juggling": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "openmoji:woman-scientist-medium-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "oui:nav-search-configurationsln": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "pajamas:project": {
+   "ok": [
+    "business"
+   ],
+   "split": "tune"
+  },
+  "pepicons:thumbs-up-print": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "ph:arrow-circle-down-thin": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "tune"
+  },
+  "ph:battery-vertical-high": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "ph:church-fill": {
+   "ok": [
+    "buildings"
+   ],
+   "split": "test"
+  },
+  "ph:dice-one-duotone": {
+   "ok": [
+    "sports"
+   ],
+   "split": "tune"
+  },
+  "ph:file-audio-duotone": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "ph:file-c-sharp-fill": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "ph:folder-simple-bold": {
+   "ok": [
+    "files"
+   ],
+   "split": "test"
+  },
+  "ph:medal-military-bold": {
+   "ok": [
+    "sports"
+   ],
+   "split": "test"
+  },
+  "ph:microscope-thin": {
+   "ok": [
+    "education"
+   ],
+   "split": "test"
+  },
+  "ph:paper-plane-right-bold": {
+   "ok": [
+    "actions",
+    "communication",
+    "files"
+   ],
+   "split": "test"
+  },
+  "ph:shopping-cart-simple-fill": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "ph:toilet-paper-duotone": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "ph:twitch-logo-bold": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "picon:css": {
+   "ok": [
+    "development"
+   ],
+   "split": "tune"
+  },
+  "pinhead:anus": {
+   "ok": [
+    "health",
+    "people"
+   ],
+   "split": "tune"
+  },
+  "pinhead:list-beside-checkmark": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "pinhead:madagascar-with-capital-star": {
+   "ok": [
+    "maps"
+   ],
+   "split": "tune"
+  },
+  "pixelarticons:home-sharp": {
+   "ok": [
+    "home"
+   ],
+   "split": "tune"
+  },
+  "pixelarticons:parking-sharp": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "proicons:call-end": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "radix-icons:panel-bottom-minimized": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "reicon:donut-duotone": {
+   "ok": [
+    "food"
+   ],
+   "split": "test"
+  },
+  "reicon:folder-link-duotone": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "reicon:home-check": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "reicon:meh-square-duotone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "reicon:phone-update-filled": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "reicon:pin-add": {
+   "ok": [
+    "maps"
+   ],
+   "split": "tune"
+  },
+  "reicon:shield-plus-duotone": {
+   "ok": [
+    "security"
+   ],
+   "split": "tune"
+  },
+  "reicon:timer-alt-filled": {
+   "ok": [
+    "time"
+   ],
+   "split": "tune"
+  },
+  "reicon:users3": {
+   "ok": [
+    "people"
+   ],
+   "split": "tune"
+  },
+  "ri:emotion-fill": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "ri:function-add-fill": {
+   "ok": [
+    "interface",
+    "tools"
+   ],
+   "split": "test"
+  },
+  "selfhst:7-zip": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:arr-dashboard-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "selfhst:changedetection-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "selfhst:dovecot": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:freefinance-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:ksuite-contacts-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "selfhst:matter-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:opendns-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:oracle-apex": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:rabbitmq-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:smore-newsletter-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "selfhst:super-productivity-dark": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "selfhst:tor-dark": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "si-glyph:fire": {
+   "ok": [
+    "nature"
+   ],
+   "split": "test"
+  },
+  "simple-icons:academia": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "simple-icons:fortinet": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "simple-icons:kakaotalk": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "simple-icons:milanote": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "simple-icons:playstation4": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "skill-icons:eclipse-light": {
+   "ok": [
+    "brands",
+    "development"
+   ],
+   "split": "tune"
+  },
+  "solar:chat-square-unread-bold-duotone": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "solar:minimalistic-magnifier-zoom-in-outline": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "solar:panel-right-close-bold-duotone": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "solar:send-square-broken": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "solar:stars-minimalistic-bold": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "tune"
+  },
+  "solar:suitcase-lines-line-duotone": {
+   "ok": [
+    "transport",
+    "maps"
+   ],
+   "split": "tune"
+  },
+  "stash:expand-vertical-duotone": {
+   "ok": [
+    "actions"
+   ],
+   "split": "test"
+  },
+  "stash:smartphone-duotone": {
+   "ok": [
+    "devices"
+   ],
+   "split": "tune"
+  },
+  "streamline-color:shopping-basket-2": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "streamline-cyber-color:gorilla": {
+   "ok": [
+    "nature",
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "streamline-cyber:bookmark-favorite-star": {
+   "ok": [
+    "interface"
+   ],
+   "split": "test"
+  },
+  "streamline-flex:bell-remix": {
+   "ok": [
+    "communication"
+   ],
+   "split": "test"
+  },
+  "streamline-flex:watchtower-castle": {
+   "ok": [
+    "buildings"
+   ],
+   "split": "tune"
+  },
+  "streamline-flex:webcam-solid": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "streamline-kameleon-color:chalkboard-duo": {
+   "ok": [
+    "education"
+   ],
+   "split": "test"
+  },
+  "streamline-kameleon-color:perfume": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "streamline-logos:adobe-cloud-logo-block": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "streamline-logos:sketch-logo-solid": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "streamline-pixel:music-headphones-human": {
+   "ok": [
+    "media"
+   ],
+   "split": "test"
+  },
+  "streamline-sharp-color:chat-two-bubbles-oval": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "streamline-ultimate-color:kitchenware-spatula-1": {
+   "ok": [
+    "food"
+   ],
+   "split": "tune"
+  },
+  "streamline-ultimate-color:like": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "streamline-ultimate-color:tags-favorite": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "tune"
+  },
+  "streamline-ultimate-color:video-file-star": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "streamline-ultimate:file-html": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "streamline:hand-held-solid": {
+   "ok": [
+    "devices"
+   ],
+   "split": "test"
+  },
+  "streamline:phone-ringing-2-remix": {
+   "ok": [
+    "communication"
+   ],
+   "split": "tune"
+  },
+  "system-uicons:box-open": {
+   "ok": [
+    "commerce"
+   ],
+   "split": "test"
+  },
+  "tabler:alarm-minus-filled": {
+   "ok": [
+    "time"
+   ],
+   "split": "tune"
+  },
+  "tabler:align-box-left-bottom-filled": {
+   "ok": [
+    "interface",
+    "text"
+   ],
+   "split": "test"
+  },
+  "tabler:arrow-big-up": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "tabler:brand-printables": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "tabler:circle-arrow-up-left-filled": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  },
+  "tabler:coin-off": {
+   "ok": [
+    "finance"
+   ],
+   "split": "test"
+  },
+  "tabler:coin-taka": {
+   "ok": [
+    "finance"
+   ],
+   "split": "test"
+  },
+  "tabler:moped": {
+   "ok": [
+    "transport"
+   ],
+   "split": "test"
+  },
+  "tabler:om": {
+   "ok": [
+    "culture"
+   ],
+   "split": "tune"
+  },
+  "tabler:wifi-2": {
+   "ok": [
+    "network"
+   ],
+   "split": "tune"
+  },
+  "tabler:xxx": {
+   "ok": [
+    "other"
+   ],
+   "split": "tune"
+  },
+  "tdesign:castle-4": {
+   "ok": [
+    "buildings"
+   ],
+   "split": "test"
+  },
+  "thesvg-color:fedex": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "thesvg-color:nuxt-ui-light": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "thesvg-color:shelly": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "thesvg-color:unilever": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "thesvg-color:whole-foods-market": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "thesvg-color:woodpecker": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "thesvg:limesurvey": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "thesvg:prusa-research": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "token-branded:hbot-background": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "token-branded:sbd": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "token-branded:strax-background": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "token-branded:xdefi-background": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "token:algorand": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "token:bcdt": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "token:cph": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "token:grail": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "token:tbtc": {
+   "ok": [
+    "brands"
+   ],
+   "split": "test"
+  },
+  "twemoji:atm-sign": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "twemoji:man-mechanic-dark-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "twemoji:man-raising-hand-dark-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "test"
+  },
+  "twemoji:person-raising-hand-light-skin-tone": {
+   "ok": [
+    "emoji"
+   ],
+   "split": "tune"
+  },
+  "uim:window-section": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "vs:y-square": {
+   "ok": [
+    "text",
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "vscode-icons:folder-type-audio": {
+   "ok": [
+    "files"
+   ],
+   "split": "tune"
+  },
+  "weui:search-outlined": {
+   "ok": [
+    "interface"
+   ],
+   "split": "tune"
+  },
+  "whh:fengoffice": {
+   "ok": [
+    "brands"
+   ],
+   "split": "tune"
+  },
+  "wordpress:format-ltr": {
+   "ok": [
+    "text"
+   ],
+   "split": "test"
+  },
+  "wordpress:star-filled": {
+   "ok": [
+    "shapes"
+   ],
+   "split": "tune"
+  },
+  "zmdi:arrows": {
+   "ok": [
+    "arrows"
+   ],
+   "split": "test"
+  }
+ }
+}

@@ -1,0 +1,82 @@
+name: Vision categories
+
+# An open image-text model (CLIP, no API key) looks at every icon and votes on
+# its content category. Step 1 measures on reviewer-graded icons whether
+# those votes help, and sets their weight (0 = not used). Step 2 looks at all
+# icons; long first runs continue the next day. Then the index is rebuilt.
+on:
+  schedule:
+    - cron: "7 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: vision
+  cancel-in-progress: false
+
+jobs:
+  vision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    env:
+      PYTHONPATH: scripts
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install (CPU-only PyTorch + open_clip)
+        run: |
+          pip install -r requirements.txt
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install open_clip_torch
+
+      - name: Restore vision results
+        uses: actions/cache/restore@v4
+        with:
+          path: data/vision
+          key: vision-${{ github.run_id }}
+          restore-keys: vision-
+
+      - name: Cache model weights
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: clip-vit-b-32-laion2b
+
+      - name: Get icon sources
+        run: python -c "from pathlib import Path; import sys; sys.path.insert(0,'scripts'); import update; print(update.fetch_iconify(Path('.work/iconify')))"
+
+      - name: Measure whether vision helps (reviewer-graded icons)
+        run: |
+          python tests/eval_vision.py --src .work/iconify --apply
+          cat VISION_EVAL.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Look at every icon
+        run: python -m atlas.vision build --src .work/iconify --out data/vision --hours 4.3
+
+      - name: Save vision results
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/vision
+          key: vision-${{ github.run_id }}
+
+      - name: Commit evaluation
+        run: |
+          git config user.name  "icon-atlas-bot"
+          git config user.email "icon-atlas-bot@users.noreply.github.com"
+          git add VISION_EVAL.md config.json
+          git commit -m "vision: $(tail -n 1 VISION_EVAL.md | cut -c1-120)" || echo "nothing to commit"
+          git push
+
+      - name: Rebuild the index with the new votes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run daily-update.yml

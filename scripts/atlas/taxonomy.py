@@ -1,0 +1,50 @@
+"""Content categories (المضمون). Keys are stable; labels are for display."""
+
+CATEGORIES = {
+    "arrows":        ("Arrows & directions", "أسهم واتجاهات"),
+    "interface":     ("Interface & controls", "واجهة وأدوات تحكم"),
+    "actions":       ("Actions (add, delete, edit…)", "إجراءات"),
+    "status":        ("Status, alerts & feedback", "حالات وتنبيهات"),
+    "communication": ("Communication & messaging", "تواصل ورسائل"),
+    "commerce":      ("Shopping & commerce", "تسوق وتجارة"),
+    "finance":       ("Money, banking & payments", "مال ودفع وبنوك"),
+    "business":      ("Business & office", "أعمال ومكتب"),
+    "media":         ("Audio, video & photo", "صوت وفيديو وصور"),
+    "files":         ("Files & documents", "ملفات ومستندات"),
+    "text":          ("Text & typography", "نصوص وتنسيق"),
+    "design":        ("Design & drawing tools", "تصميم ورسم"),
+    "devices":       ("Devices & hardware", "أجهزة وعتاد"),
+    "development":   ("Code & development", "برمجة وتطوير"),
+    "data":          ("Data, charts & analytics", "بيانات ورسوم بيانية"),
+    "network":       ("Cloud, network & connectivity", "سحابة وشبكات واتصال"),
+    "ai":            ("AI & automation", "ذكاء اصطناعي وأتمتة"),
+    "security":      ("Security & privacy", "أمان وخصوصية"),
+    "people":        ("People, users & body", "أشخاص ومستخدمون وجسم"),
+    "health":        ("Health & medical", "صحة وطب"),
+    "transport":     ("Transport & vehicles", "نقل ومركبات"),
+    "maps":          ("Maps, location & travel", "خرائط ومواقع وسفر"),
+    "weather":       ("Weather & sky", "طقس وسماء"),
+    "nature":        ("Nature, plants & animals", "طبيعة ونبات وحيوان"),
+    "food":          ("Food & drink", "طعام وشراب"),
+    "buildings":     ("Buildings & places", "مبانٍ وأماكن"),
+    "home":          ("Home & household", "منزل وأدوات منزلية"),
+    "time":          ("Time & calendar", "وقت وتقويم"),
+    "education":     ("Education & science", "تعليم وعلوم"),
+    "sports":        ("Sports, games & leisure", "رياضة وألعاب وترفيه"),
+    "culture":       ("Religion, culture & celebration", "دين وثقافة ومناسبات"),
+    "tools":         ("Tools & settings", "أدوات وإعدادات"),
+    "shapes":        ("Shapes & symbols", "أشكال ورموز"),
+    "emoji":         ("Emoji & faces", "إيموجي ووجوه"),
+    "brands":        ("Brands & logos", "علامات تجارية وشعارات"),
+    "flags":         ("Flags & countries", "أعلام ودول"),
+    "other":         ("Other", "أخرى"),
+}
+
+# Words that describe the drawing style, not the meaning. Stripped from names
+# to find the underlying concept ("home-outline-rounded" -> "home").
+STYLE_TOKENS = {
+    "outline", "outlined", "outlines", "line", "lines", "linear", "stroke", "stroked",
+    "fill", "filled", "solid", "glyph", "bold", "light", "thin", "regular", "medium",
+    "duotone", "twotone", "duo", "broken", "bulk", "sharp", "rounded", "round",
+    "mini", "micro", "alt", "sm", "md", "lg", "xs", "xl", "o",
+}

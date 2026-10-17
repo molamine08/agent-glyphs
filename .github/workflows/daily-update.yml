@@ -1,0 +1,88 @@
+name: Daily index update
+
+# Every day: pull the newest Iconify release + approved external libraries,
+# measure only what changed, rebuild atlas.db and publish it as a release.
+on:
+  schedule:
+    - cron: "23 3 * * *"   # 03:23 UTC daily
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild even if nothing changed"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: index-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # Raw measurements are cached between runs so only changed sets are re-measured.
+      - name: Restore measurements
+        uses: actions/cache/restore@v4
+        with:
+          path: data/metrics
+          key: metrics-${{ github.run_id }}
+          restore-keys: metrics-
+
+      # What the vision model saw (written by vision.yml); used as category votes.
+      - name: Restore vision results
+        uses: actions/cache/restore@v4
+        with:
+          path: data/vision
+          key: vision-none
+          restore-keys: vision-
+
+      - name: Update index
+        id: update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/update.py ${{ inputs.force && '--force' || '' }}
+
+      - name: Save measurements
+        if: steps.update.outputs.changed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/metrics
+          key: metrics-${{ github.run_id }}
+
+      - name: Test the new index
+        if: steps.update.outputs.changed == 'true'
+        run: python -m unittest discover -s tests -v
+
+      - name: Commit changelog & state
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          git config user.name  "icon-atlas-bot"
+          git config user.email "icon-atlas-bot@users.noreply.github.com"
+          git add CHANGELOG.md state.json
+          git commit -m "data: ${{ steps.update.outputs.tag }}" || echo "nothing to commit"
+          git push
+
+      - name: Publish release
+        if: steps.update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.update.outputs.tag }}" data/atlas.db.gz \
+            --title "Index ${{ steps.update.outputs.tag }}" \
+            --notes-file .work/release-notes.md --latest
+          # keep the last 14 data releases
+          gh release list --limit 100 --json tagName --jq '.[].tagName' | grep '^data-' | tail -n +15 \
+            | xargs -r -I{} gh release delete {} --yes --cleanup-tag

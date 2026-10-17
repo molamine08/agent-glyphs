@@ -1,0 +1,9 @@
+.work/
+data/atlas.db
+data/atlas.db.gz
+data/metrics/
+__pycache__/
+*.pyc
+icons/
+preview.png
+data/vision/
