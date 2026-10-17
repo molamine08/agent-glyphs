@@ -40,10 +40,11 @@ jobs:
         run: |
           mkdir -p data
           gh release download --pattern atlas.db.gz --dir data
+          gh release download --pattern external-sets.json.gz --dir data || true
           gunzip -f data/atlas.db.gz
 
       - name: Build page data
-        run: python scripts/build_web.py --db data/atlas.db --out web/data
+        run: python scripts/build_web.py --db data/atlas.db --external data/external-sets.json.gz --out web/data
 
       - uses: actions/configure-pages@v5
 

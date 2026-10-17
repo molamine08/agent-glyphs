@@ -17,7 +17,7 @@ import urllib.request
 from collections import Counter
 from pathlib import PurePosixPath
 
-UA = {"User-Agent": "icon-atlas-bot", "Accept": "application/vnd.github+json"}
+UA = {"User-Agent": "agent-glyphs-bot", "Accept": "application/vnd.github+json"}
 SKIP_DIRS = re.compile(r"(^|/)(node_modules|docs?|site|website|examples?|test[s]?|\.github|public/og|fonts?)(/|$)", re.I)
 
 _BAD = [

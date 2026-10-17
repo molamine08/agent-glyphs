@@ -62,6 +62,16 @@ def vision_signature() -> str:
     return h.hexdigest()[:12]
 
 
+def bundle_external(src: Path, prefixes: list[str]) -> Path:
+    """Libraries outside Iconify have no npm package or public API, so their
+    (sanitised) SVG data ships next to the index as one release asset."""
+    out = DATA / "external-sets.json.gz"
+    sets = {p: json.loads((src / f"{p}.json").read_text()) for p in prefixes if (src / f"{p}.json").exists()}
+    with gzip.open(out, "wt", compresslevel=9) as g:
+        json.dump(sets, g, separators=(",", ":"))
+    return out
+
+
 def snapshot(db_path: Path) -> dict:
     if not db_path.exists():
         return {}
@@ -106,6 +116,7 @@ def main(argv=None):
     after = snapshot(db_path)
     with open(db_path, "rb") as f, gzip.open(DATA / "atlas.db.gz", "wb", compresslevel=9) as g:
         shutil.copyfileobj(f, g)
+    bundle_external(src, ext)
 
     today = dt.date.today().isoformat()
     added = sorted(set(after) - set(before))

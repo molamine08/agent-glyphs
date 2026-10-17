@@ -20,10 +20,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = json.loads((ROOT / "config.json").read_text()) if (ROOT / "config.json").exists() else {}
-DATA = Path(os.environ.get("ICON_ATLAS_DATA", ROOT / "data"))
-CACHE = Path(os.environ.get("ICON_ATLAS_CACHE", Path.home() / ".cache" / "icon-atlas"))
+DATA = Path(os.environ.get("AGENT_GLYPHS_DATA") or os.environ.get("ICON_ATLAS_DATA") or ROOT / "data")
+CACHE = Path(os.environ.get("AGENT_GLYPHS_CACHE") or Path.home() / ".cache" / "agent-glyphs")
 DB_PATH = DATA / "atlas.db"
-UA = {"User-Agent": "icon-atlas"}
+UA = {"User-Agent": "agent-glyphs"}
 
 
 def _get(url: str, timeout: int = 60) -> bytes:
@@ -80,6 +80,20 @@ def _npm_set(prefix: str) -> dict:
     return data
 
 
+def _release_external(prefix: str) -> dict:
+    """Libraries from outside Iconify (prefix "x-…") ship as one release asset."""
+    url = CONFIG.get("index_url", "").rsplit("/", 1)[0] + "/external-sets.json.gz"
+    local = DATA / "external-sets.json.gz"
+    blob = local.read_bytes() if local.exists() else _get(url, timeout=300)
+    sets = json.loads(gzip.decompress(blob))
+    (CACHE / "sets").mkdir(parents=True, exist_ok=True)
+    for p, data in sets.items():
+        (CACHE / "sets" / f"{p}.json").write_text(json.dumps(data))
+    if prefix not in sets:
+        raise KeyError(f"{prefix} is not in external-sets.json.gz")
+    return sets[prefix]
+
+
 def _api_icons(prefix: str, names: list[str]) -> dict:
     url = f"https://api.iconify.design/{prefix}.json?icons={','.join(names)}"
     return json.loads(_get(url))
@@ -90,7 +104,9 @@ def icon_data(prefix: str, names: list[str]) -> dict:
     data = _local_set(prefix)
     if data is None:
         errors = []
-        for loader in (lambda: _npm_set(prefix), lambda: _api_icons(prefix, names)):
+        loaders = [lambda: _release_external(prefix)] if prefix.startswith("x-") else \
+            [lambda: _npm_set(prefix), lambda: _api_icons(prefix, names)]
+        for loader in loaders:
             try:
                 data = loader()
                 break

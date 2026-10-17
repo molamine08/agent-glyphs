@@ -71,8 +71,8 @@ jobs:
       - name: Commit changelog & state
         if: steps.update.outputs.changed == 'true'
         run: |
-          git config user.name  "icon-atlas-bot"
-          git config user.email "icon-atlas-bot@users.noreply.github.com"
+          git config user.name  "agent-glyphs-bot"
+          git config user.email "agent-glyphs-bot@users.noreply.github.com"
           git add CHANGELOG.md state.json
           git commit -m "data: ${{ steps.update.outputs.tag }}" || { echo "nothing to commit"; exit 0; }
           # the branch may have moved while this job ran: replay our commit on top
@@ -87,7 +87,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ steps.update.outputs.tag }}" data/atlas.db.gz \
+          gh release create "${{ steps.update.outputs.tag }}" data/atlas.db.gz data/external-sets.json.gz \
             --title "Index ${{ steps.update.outputs.tag }}" \
             --notes-file .work/release-notes.md --latest
           # keep the last 14 data releases

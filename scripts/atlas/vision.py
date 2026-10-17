@@ -25,7 +25,7 @@ from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-VISION_DIR = Path(os.environ.get("ICON_ATLAS_VISION", ROOT / "data" / "vision"))
+VISION_DIR = Path(os.environ.get("AGENT_GLYPHS_VISION") or os.environ.get("ICON_ATLAS_VISION") or ROOT / "data" / "vision")
 MODEL = ("ViT-B-32", "laion2b_s34b_b79k")
 VISION_VERSION = 1
 SKIP_SET_CATEGORIES = {"Emoji", "Logos"}  # category is decided by the set itself

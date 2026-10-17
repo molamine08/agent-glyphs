@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Find open icon libraries that are not in the index yet, and propose them
-for review. Never adds anything by itself: it writes candidates into
-sources/external.json with "approved": false plus a preview image, and the
-workflow opens a pull request. Merging after flipping "approved" to true is
-the approval.
+"""Find open icon libraries that are not in the index yet and add them.
+
+With "discover_auto_add": true in config.json (the default), a library whose
+licence allows commercial use (permissive or attribution) and that passes the
+quality checks is written to sources/external.json with "approved": true; the
+workflow commits it, opens an issue with the report and previews, and starts
+the index update. Set "approved": false (or delete the entry) to remove one.
+
+With "discover_auto_add": false, candidates are written with "approved": false
+and the workflow opens a pull request instead: merging after flipping
+"approved" to true is the approval.
 
     GITHUB_TOKEN=... python scripts/discover.py --days 30
 """
@@ -57,13 +63,26 @@ def known_repos(db_path: Path) -> set[str]:
     return out
 
 
+def auto_add() -> bool:
+    cfg = json.loads((ROOT / "config.json").read_text()) if (ROOT / "config.json").exists() else {}
+    return bool(cfg.get("discover_auto_add", True))
+
+
+def looks_like_icon_library(r: dict) -> bool:
+    """Repos tagged "icons" are sometimes apps that merely contain icons."""
+    text = f"{r.get('name', '')} {r.get('description') or ''} {' '.join(r.get('topics') or [])}".lower()
+    return any(w in text for w in ("icon", "glyph", "pictogram", "emoji", "symbol"))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=30, help="look at repos pushed within N days")
     ap.add_argument("--min-stars", type=int, default=60)
     ap.add_argument("--min-svgs", type=int, default=40)
     ap.add_argument("--max", type=int, default=5, help="max new candidates per run")
+    ap.add_argument("--review", action="store_true", help="propose only, even if auto-add is on")
     a = ap.parse_args(argv)
+    auto = auto_add() and not a.review
     token = os.environ.get("GITHUB_TOKEN")
     since = (dt.date.today() - dt.timedelta(days=a.days)).isoformat()
 
@@ -95,23 +114,32 @@ def main(argv=None):
         if tier not in ("permissive", "attribution"):
             skipped.append(f"{r['full_name']} — licence {spdx or 'none'} ({tier})")
             continue
+        if not looks_like_icon_library(r):
+            skipped.append(f"{r['full_name']} — does not describe itself as an icon library")
+            continue
         try:
             tar = external.repo_tarball(r["full_name"], None, token)
             members = external.svg_members(tar)
             folder = external.guess_icon_dir(members)
-            n = sum(1 for m in members if str(Path(*Path(m.name).parts[1:]).parent) == folder)
+            in_folder = [m for m in members if str(Path(*Path(m.name).parts[1:]).parent) == folder]
+            n = len(in_folder)
+            ok = sum(1 for m in in_folder[:200]
+                     if external.parse_svg_file(tar.extractfile(m).read().decode("utf-8", "replace")))
         except Exception as e:
             skipped.append(f"{r['full_name']} — could not read ({e})")
             continue
         if n < a.min_svgs:
             skipped.append(f"{r['full_name']} — only {n} SVGs")
             continue
+        if ok < 0.9 * min(n, 200):
+            skipped.append(f"{r['full_name']} — {min(n, 200) - ok} of {min(n, 200)} sampled SVGs are unreadable")
+            continue
         prefix = "x-" + re.sub(r"[^a-z0-9]+", "-", r["name"].lower()).strip("-")
         entry = {
             "prefix": prefix, "name": r["name"], "repo": r["full_name"], "folder": folder,
             "license": spdx, "license_url": r["html_url"] + "/blob/HEAD/LICENSE",
             "stars": r["stargazers_count"], "svgs": n, "description": (r.get("description") or "")[:200],
-            "approved": False, "found": dt.date.today().isoformat(),
+            "approved": auto, "auto": auto, "found": dt.date.today().isoformat(),
         }
         _preview(tar, members, folder, prefix)
         sources.append(entry)
@@ -121,13 +149,20 @@ def main(argv=None):
     SOURCES.write_text(json.dumps(sources, indent=1, ensure_ascii=False) + "\n")
     SEEN.write_text(json.dumps(sorted(seen), indent=0) + "\n")
 
-    body = ["Libraries found outside the index. **Nothing is added until you approve it**: "
-            "set `\"approved\": true` for the ones you want in `sources/external.json`, delete the others, then merge.", ""]
+    if auto:
+        body = ["These libraries were **added automatically**: their licence allows commercial use and they "
+                "passed the checks (stars, SVG count, readable files, describes itself as an icon library). "
+                "They are indexed by the next index update.", "",
+                "To remove one: set `\"approved\": false` for it in `sources/external.json` (or delete the entry). "
+                "To go back to reviewing every library first: set `\"discover_auto_add\": false` in `config.json`.", ""]
+    else:
+        body = ["Libraries found outside the index. **Nothing is added until you approve it**: "
+                "set `\"approved\": true` for the ones you want in `sources/external.json`, delete the others, then merge.", ""]
     for e in proposed:
         body += [f"### {e['name']}  ·  [{e['repo']}](https://github.com/{e['repo']})",
                  f"{e['description']}", "",
                  f"- ⭐ {e['stars']} · {e['svgs']} SVGs in `{e['folder']}` · licence **{e['license']}** ({license_tier(e['license'])})",
-                 f"- preview: `sources/previews/{e['prefix']}.png`", ""]
+                 f"- preview: ![{e['name']}](https://raw.githubusercontent.com/{_repo()}/main/sources/previews/{e['prefix']}.png)", ""]
     if skipped:
         body += ["<details><summary>Skipped</summary>", ""] + [f"- {s}" for s in skipped] + ["", "</details>"]
     (ROOT / ".work").mkdir(exist_ok=True)
@@ -136,7 +171,12 @@ def main(argv=None):
     path = os.environ.get("GITHUB_OUTPUT")
     if path:
         with open(path, "a") as f:
-            f.write(f"found={len(proposed)}\n")
+            f.write(f"found={len(proposed)}\nauto={'true' if auto else 'false'}\n")
+
+
+def _repo() -> str:
+    cfg = ROOT / "config.json"
+    return os.environ.get("GITHUB_REPOSITORY") or (json.loads(cfg.read_text()).get("repo", "") if cfg.exists() else "")
 
 
 def _preview(tar, members, folder, prefix):

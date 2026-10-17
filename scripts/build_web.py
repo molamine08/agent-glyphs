@@ -32,6 +32,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", default="data/atlas.db")
     ap.add_argument("--out", default="web/data")
+    ap.add_argument("--external", help="external-sets.json.gz from the release (libraries outside Iconify)")
     a = ap.parse_args(argv)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -83,6 +84,16 @@ def main(argv=None):
     (out / "meta.json").write_text(json.dumps({**meta, "setsInfo": sets}, ensure_ascii=False, separators=(",", ":")))
     (out / "icons.json").write_text(json.dumps(icons, separators=(",", ":")))
     (out / "ar.json").write_text(json.dumps({"rev": ar, "terms": terms_out}, ensure_ascii=False, separators=(",", ":")))
+    if a.external and Path(a.external).exists():
+        # icons outside Iconify cannot come from its API: serve them from the page itself
+        import gzip
+        ext_dir = out / "ext"
+        ext_dir.mkdir(exist_ok=True)
+        for p, data in json.loads(gzip.decompress(Path(a.external).read_bytes())).items():
+            (ext_dir / f"{p}.json").write_text(json.dumps(
+                {"prefix": p, "icons": data["icons"], "width": data.get("width", 24), "height": data.get("height", 24)},
+                separators=(",", ":")))
+        print(f"ext/: {len(list(ext_dir.glob('*.json')))} libraries outside Iconify")
     for f in ("meta.json", "icons.json", "ar.json"):
         print(f"{f}: {(out / f).stat().st_size / 1e6:.1f} MB")
 
