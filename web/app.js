@@ -1,5 +1,6 @@
-// Agent Glyphs page. The hero shows what an agent does with the skill, using
-// real search results from the index; below, people can browse the same index.
+// Agent Glyphs page. The hero walks through what an agent does with the skill,
+// using real results from the index; below, people browse the same index with
+// filters that read as the exact command an agent would run.
 // Icons come from the public Iconify API (or, for libraries outside Iconify,
 // from data/ext/) as they scroll into view; nothing else is downloaded.
 import { ui } from "./ui-icons.js";
@@ -7,110 +8,123 @@ import { ui } from "./ui-icons.js";
 const API = "https://api.iconify.design";
 const REPO = "molamine08/agent-glyphs";
 const PAGE = 72;
+const STEP_MS = 5600;
 const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const T = {
-  ar: {
-    lang: "English", navInstall: "التثبيت", navBrowse: "تصفّح الأيقونات",
-    title: "أيقونات يفهمها وكيلك",
-    lede: (n, s) => `<b>${n}</b> أيقونة مفتوحة المصدر من <b>${s}</b> مكتبة، كل واحدة مقيسة من رسمها ومصنّفة بالمعنى وسُمك الخط والزوايا والرخصة. يبحث وكيلك فيها بالعربية أو بالإنجليزية، ويختار ما يشبه أيقوناتك، ويضيفها لمشروعك.`,
-    install: ["npx", "Claude Code", "تطبيق Claude"],
-    installNote: [
-      "يعمل مع Claude Code وCursor وCodex وغيرها من الوكلاء التي تدعم المهارات.",
-      "ينسخ المهارة في مجلد المهارات، ويقرأ وكيلك ملف SKILL.md تلقائياً.",
-      'نزّل <a href="https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip">الملف المضغوط</a>، ثم ارفعه من الإعدادات ← القدرات ← المهارات.',
-    ],
-    copy: "انسخ", copied: "نُسخ", downloaded: "نُزّل الملف",
-    sessionTitle: "Claude Code · متجري",
-    sUser: "أضف أيقونة محفظة لزر الدفع. لازم تشبه أيقوناتي: خط 1.5 وزوايا دائرية.",
-    sSearch: "أبحث في Agent Glyphs بالمعنى وبالشكل.",
-    sFound: (n, s) => `${n} نتيجة من ${s} مكتبة بنفس السُّمك والزوايا. أختار الأولى.`,
-    sGet: "أضيفها كمكوّن React وأسجّل رخصتها.",
-    sDone: (f, l) => `أضفت ${f} · الرخصة ${l} مسجّلة في ATTRIBUTION.md`,
-    browseTitle: "ابحث كما يبحث وكيلك",
-    searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، سلة تسوق، wallet…",
-    weight: "سُمك الخط", commercial: "للاستخدام التجاري", more: "اعرض المزيد",
-    any: "الكل", allCats: "كل التصنيفات",
-    styles: { outline: "خطي", filled: "مصمت", duotone: "ثنائي", multicolor: "ملوّن" },
-    cornersL: { rounded: "دائرية", mixed: "مختلطة", sharp: "حادة" },
-    stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
-    loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
-    count: (n) => `${n} نتيجة`, none: "لا نتائج. جرّب كلمة مرادفة أو خفّف الفلاتر.",
-    browse: (n) => `${n} أيقونة`,
-    tabDesign: "للتصميم", tabAgent: "لوكيلك",
-    color: "اللون", size: "الحجم", stroke: "السُّمك", mirror: "عكس للواجهات العربية",
-    copySvg: "انسخ SVG", copyJsx: "React", download: "نزّل الملف",
-    askAgent: "اطلبها من وكيلك", command: "الأمر الذي سينفّذه", metadata: "بيانات الأيقونة",
-    prompt: (id, set, lic, opts) => `استخدم مهارة Agent Glyphs وأضف الأيقونة \u2066${id}\u2069 من \u2068${set}\u2069 (رخصة \u2066${lic}\u2069)${opts}.`,
-    optStroke: (w) => ` بسُمك خط ${w}`, optSize: (s) => ` بحجم ${s}px`, optMirror: " معكوسة للواجهة العربية", optColor: (c) => ` باللون ${c}`,
-    report: "التصنيف غير دقيق؟ أخبرنا", alts: "نفس الأيقونة في مكتبات أخرى",
-    fStyle: "النمط", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة",
-    lic: (l) => `الرخصة: ${l}.`, credit: "يجب ذكر صاحبها عند الاستخدام.",
-    noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
-    by: (a) => `من ${a}`, terms: (t) => `يُعثر عليها أيضاً بـ: ${t}`,
-    foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
-  },
-  en: {
-    lang: "العربية", navInstall: "Install", navBrowse: "Browse icons",
-    title: "Icons your agent understands",
-    lede: (n, s) => `<b>${n}</b> open-source icons from <b>${s}</b> libraries, each measured from its drawing and labelled by meaning, stroke weight, corners and licence. Your agent searches them in English or Arabic, picks the ones that match your icons, and adds them to your project.`,
-    install: ["npx", "Claude Code", "Claude app"],
-    installNote: [
-      "Works with Claude Code, Cursor, Codex and other agents that support skills.",
-      "Copies the skill into your skills folder; your agent reads SKILL.md on its own.",
-      'Download the <a href="https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip">zip</a>, then upload it in Settings → Capabilities → Skills.',
-    ],
-    copy: "Copy", copied: "Copied", downloaded: "Downloaded",
-    sessionTitle: "Claude Code · my-shop",
-    sUser: "Add a wallet icon to the checkout button. It has to match my other icons: 1.5 stroke, rounded corners.",
-    sSearch: "Searching Agent Glyphs by meaning and by shape.",
-    sFound: (n, s) => `${n} matches from ${s} libraries with the same weight and corners. Taking the first.`,
-    sGet: "Adding it as a React component and recording its licence.",
-    sDone: (f, l) => `Added ${f} · ${l} licence recorded in ATTRIBUTION.md`,
-    browseTitle: "Search the way your agent does",
-    searchLabel: "Search icons", placeholder: "wallet, shopping cart, محفظة…",
-    weight: "Stroke weight", commercial: "Commercial use", more: "Show more",
-    any: "Any", allCats: "All categories",
-    styles: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour" },
-    cornersL: { rounded: "Rounded", mixed: "Mixed", sharp: "Sharp" },
-    stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
-    loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
-    count: (n) => `${n} results`, none: "No results. Try a synonym or loosen the filters.",
-    browse: (n) => `${n} icons`,
-    tabDesign: "Design", tabAgent: "For your agent",
-    color: "Colour", size: "Size", stroke: "Stroke", mirror: "Mirror for right-to-left",
-    copySvg: "Copy SVG", copyJsx: "React", download: "Download",
-    askAgent: "Ask your agent", command: "What it will run", metadata: "Icon metadata",
-    prompt: (id, set, lic, opts) => `Use the Agent Glyphs skill to add the icon ${id} from ${set} (${lic} licence)${opts}.`,
-    optStroke: (w) => `, stroke ${w}`, optSize: (s) => `, ${s}px`, optMirror: ", mirrored for right-to-left", optColor: (c) => `, colour ${c}`,
-    report: "Wrong label? Tell us", alts: "The same icon in other libraries",
-    fStyle: "Style", fWeight: "Stroke weight", fCorners: "Corners", fCat: "Category", fGrid: "Grid",
-    lic: (l) => `Licence: ${l}.`, credit: "Credit the author when you use it.",
-    noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
-    by: (a) => `by ${a}`, terms: (t) => `Also found as: ${t}`,
-    foot: (v) => `Code under MIT. Every icon keeps its library's licence and comes from Iconify or the library's own repository. The index updates daily (Iconify ${v}).`,
-  },
-};
 const INSTALL = [
   "npx skills add molamine08/agent-glyphs",
   "git clone https://github.com/molamine08/agent-glyphs ~/.claude/skills/agent-glyphs",
   "https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip",
 ];
-const SWATCHES = [null, "#0D70FF", "#16A34A", "#E11D48", "#F59E0B", "#7C3AED"];
+
+const T = {
+  ar: {
+    lang: "English", skip: "انتقل إلى البحث", navBrowse: "تصفّح", navAgents: "للوكلاء",
+    title: "أيقونات يفهمها وكيلك",
+    tag: (n, s) => `${n} أيقونة، ${s} مكتبة`,
+    lede: "<b>كل أيقونة مفتوحة المصدر، مصنّفة بمعناها ومقيسة بشكلها.</b> يجد وكيلك الأيقونة التي تشبه أيقوناتك، بالعربية أو بالإنجليزية، ويسجّل رخصتها.",
+    installCopy: "انسخ أمر التثبيت", browseCta: "تصفّح الأيقونات",
+    steps: ["ثبّت المهارة", "اطلب بكلماتك", "يبحث ويضيف"],
+    installTabs: ["npx", "Claude Code", "تطبيق Claude"],
+    installNote: [
+      "يعمل مع Claude Code وCursor وCodex وكل وكيل يدعم المهارات.",
+      "ينسخ المهارة إلى مجلد المهارات، ويقرأ وكيلك ملف SKILL.md وحده.",
+      'نزّل <a href="https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip">الملف المضغوط</a> ثم ارفعه من الإعدادات، القدرات، المهارات.',
+    ],
+    ask: "أضف أيقونة محفظة لزر الدفع، لازم تشبه أيقوناتي: خط 1.5 وزوايا دائرية.",
+    query: "محفظة",
+    done: (f, l) => `أُضيفت ${f}، ورخصة ${l} مسجّلة في ATTRIBUTION.md`,
+    prompts: ["ready to execute", "waiting for your request", "done"],
+    next: "الخطوة التالية",
+    browseLabel: "(تصفّح)", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…",
+    style: "النمط", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
+    any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
+    strokeTitle: "سُمك الخط على شبكة 24px",
+    styles: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن" },
+    cornersL: { rounded: "دائرية", mixed: "مختلطة", sharp: "حادة" },
+    lic: { commercial: "للاستخدام التجاري", any: "كل الرخص" },
+    clear: "امسح الفلاتر", copyCmd: "انسخ الأمر", more: "اعرض المزيد",
+    stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
+    loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
+    count: (n, s) => `${n} أيقونة من ${s} مكتبة`, none: "لا نتائج. جرّب كلمة قريبة في المعنى أو خفّف الفلاتر.",
+    tabs: { same: "نفس المعنى", agent: "لوكيلك", details: "التفاصيل" },
+    noAlts: "لا توجد نسخة لهذه الأيقونة في مكتبات أخرى.",
+    color: "اللون", size: "الحجم", mirror: "عكس للواجهات العربية",
+    copySvg: "انسخ SVG", copyJsx: "React", download: "نزّل الملف", close: "أغلق",
+    askAgent: "اطلبها من وكيلك", command: "الأمر الذي سينفّذه", metadata: "بيانات الأيقونة",
+    prompt: (id, set, lic, opts) => `استخدم مهارة Agent Glyphs وأضف الأيقونة ⁦${id}⁩ من ⁨${set}⁩ (رخصة ⁦${lic}⁩)${opts}.`,
+    optStroke: (w) => ` بسُمك خط ${w}`, optSize: (s) => ` بحجم ${s}px`, optMirror: " معكوسة للواجهة العربية", optColor: (c) => ` باللون ${c}`,
+    report: "التصنيف غير دقيق؟ أخبرنا",
+    fStyle: "النمط", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة", fLicence: "الرخصة",
+    licLine: (l) => `الرخصة: ${l}.`, credit: "اذكر صاحبها عند الاستخدام.",
+    noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
+    setBy: (s, l) => `${s}، رخصة ${l}`, terms: (t) => `يُعثر عليها أيضاً بـ: ${t}`,
+    copy: "انسخ", copied: "نُسخ", downloaded: "نُزّل الملف",
+    foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
+  },
+  en: {
+    lang: "العربية", skip: "Skip to search", navBrowse: "Browse", navAgents: "For agents",
+    title: "icons your agent understands",
+    tag: (n, s) => `${n} icons, ${s} libraries`,
+    lede: "<b>Every open-source icon, labelled by meaning and measured by shape.</b> Your agent finds the one that matches the icons you already use, in English or Arabic, and records its licence.",
+    installCopy: "Copy install command", browseCta: "Browse icons",
+    steps: ["Install the skill", "Ask in your words", "It searches and adds"],
+    installTabs: ["npx", "Claude Code", "Claude app"],
+    installNote: [
+      "Works with Claude Code, Cursor, Codex and any agent that supports skills.",
+      "Copies the skill into your skills folder. Your agent reads SKILL.md on its own.",
+      'Download the <a href="https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip">zip</a>, then upload it in Settings, Capabilities, Skills.',
+    ],
+    ask: "Add a wallet icon to the checkout button. It has to match my icons: 1.5 stroke, rounded corners.",
+    query: "wallet",
+    done: (f, l) => `Added ${f}. ${l} licence recorded in ATTRIBUTION.md`,
+    prompts: ["ready to execute", "waiting for your request", "done"],
+    next: "Next step",
+    browseLabel: "(browse)", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…",
+    style: "Style", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
+    any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
+    strokeTitle: "Stroke weight on a 24 px grid",
+    styles: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour" },
+    cornersL: { rounded: "Rounded", mixed: "Mixed", sharp: "Sharp" },
+    lic: { commercial: "Commercial use", any: "Any licence" },
+    clear: "Clear filters", copyCmd: "Copy command", more: "Show more",
+    stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
+    loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
+    count: (n, s) => `${n} icons from ${s} libraries`, none: "No results. Try a word with a similar meaning or loosen the filters.",
+    tabs: { same: "Same meaning", agent: "For your agent", details: "Details" },
+    noAlts: "No other library draws this icon.",
+    color: "Colour", size: "Size", mirror: "Mirror for right-to-left",
+    copySvg: "Copy SVG", copyJsx: "React", download: "Download", close: "Close",
+    askAgent: "Ask your agent", command: "What it will run", metadata: "Icon metadata",
+    prompt: (id, set, lic, opts) => `Use the Agent Glyphs skill to add the icon ${id} from ${set} (${lic} licence)${opts}.`,
+    optStroke: (w) => `, stroke ${w}`, optSize: (s) => `, ${s}px`, optMirror: ", mirrored for right-to-left", optColor: (c) => `, colour ${c}`,
+    report: "Wrong label? Tell us",
+    fStyle: "Style", fWeight: "Stroke", fCorners: "Corners", fCat: "Category", fGrid: "Grid", fLicence: "Licence",
+    licLine: (l) => `Licence: ${l}.`, credit: "Credit the author when you use it.",
+    noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
+    setBy: (s, l) => `${s}, ${l} licence`, terms: (t) => `Also found as: ${t}`,
+    copy: "Copy", copied: "Copied", downloaded: "Downloaded",
+    foot: (v) => `Code under MIT. Every icon keeps its library's licence and comes from Iconify or the library's own repository. The index updates daily (Iconify ${v}).`,
+  },
+};
+const SWATCHES = [null, "#0E0E10", "#2563EB", "#16A34A", "#DC2626", "#D97706"];
 const SIZES = [16, 20, 24, 32, 48];
+const WEIGHTS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
 let lang = (() => { try { return localStorage.getItem("lang") || "ar"; } catch { return "ar"; } })();
-let meta = null, terms = {}, seq = 0, limit = PAGE, current = null, lastRes = null, installTab = 0, tab = "design";
+let meta = null, terms = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
 const state = { style: null, corners: null, cat: null, weight: null, commercial: true };
 const view = { color: null, size: 24, stroke: null, mirror: false };
-const cache = new Map();          // "prefix:name" -> icon data
-const extSets = new Map();        // prefix -> promise of set JSON (libraries outside Iconify)
+const cache = new Map();
+const extSets = new Map();
 const worker = new Worker("worker.js");
 const t = () => T[lang];
-const fmt = (n) => n.toLocaleString("en-US");
+const fmt = (n) => Number(n).toLocaleString("en-US");
 const setOf = (p) => meta.setsInfo.find((s) => s.p === p);
 const desktop = () => matchMedia("(min-width: 1181px)").matches;
-const pending = new Map();        // worker request seq -> resolve
+const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pending = new Map();
 let rseq = 1e6;
 const ask = (msg) => new Promise((res) => { const s = ++rseq; pending.set(s, res); worker.postMessage({ ...msg, seq: s }); });
 
@@ -191,137 +205,174 @@ function paint(p, n) {
   document.querySelectorAll(`[data-p="${p}"][data-n="${CSS.escape(n)}"] .ic`).forEach((el) => { el.innerHTML = toSvg(ic); });
 }
 
-// ---------------------------------------------------------------- hero: install + agent session
-function renderInstall() {
-  const L = t();
-  const seg = $("installSeg");
-  seg.innerHTML = "";
-  L.install.forEach((label, i) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.setAttribute("role", "tab");
-    b.setAttribute("aria-checked", String(i === installTab));
-    b.textContent = label;
-    b.addEventListener("click", () => { installTab = i; renderInstall(); });
-    seg.append(b);
-  });
-  const cmd = INSTALL[installTab];
-  $("installCmd").innerHTML = `<span class="prompt-sign">${installTab === 2 ? "↓" : "$"}</span>`;
-  $("installCmd").append(document.createTextNode(cmd));
-  $("installCopy").innerHTML = `${ui("copy")}<span>${L.copy}</span>`;
-  $("installNote").innerHTML = L.installNote[installTab];
-}
-$("installCopy").addEventListener("click", () => copy(INSTALL[installTab]));
+// ---------------------------------------------------------------- hero: three stacked steps
+let step = 0, installTab = 0, stepTimer = null, paused = false, demo = null;
 
-let sessionRun = 0;
-async function playSession() {
-  const run = ++sessionRun;
+async function loadDemo() {
+  // what the agent finds for the request in the second step, one icon per well-known library
   const L = t();
-  const ol = $("turns");
-  ol.innerHTML = "";
-  $("sessionTitle").textContent = L.sessionTitle;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
-  const add = (who, html) => {
-    if (run !== sessionRun) return null;
-    const li = document.createElement("li");
-    li.className = `turn ${who}`;
-    li.innerHTML = `<span class="who">${ui(who === "user" ? "user" : "sparkle")}</span><div class="body">${html}</div>`;
-    ol.append(li);
-    requestAnimationFrame(() => requestAnimationFrame(() => li.classList.add("in")));
-    return li;
-  };
-  // the agent searches in the person's language; show one icon per library, best-known first
-  const query = lang === "ar" ? "محفظة" : "wallet";
-  const filters = { style: 0, corners: 0, weight: 1.5, cat: null, commercial: true };
-  const res = await ask({ type: "search", query, filters, limit: 60 });
-  const known = ["tabler", "lucide", "ph", "hugeicons", "iconoir", "solar", "mynaui", "mingcute", "ri"];
+  const filters = { style: meta.styles.indexOf("outline"), corners: meta.corners.indexOf("rounded"), weight: 1.5, cat: null, commercial: true };
+  const res = await ask({ type: "search", query: L.query, filters, limit: 60 });
+  const known = ["tabler", "lucide", "ph", "hugeicons", "iconoir", "solar", "mynaui", "mingcute", "ri", "fluent"];
   const rank = (it) => (known.includes(it.p) ? known.indexOf(it.p) : 99);
   const seen = new Set();
-  const items = res.items.filter((it) => !seen.has(it.p) && seen.add(it.p))
-    .sort((a, b) => rank(a) - rank(b)).slice(0, 6);
+  const items = res.items.filter((it) => !seen.has(it.p) && seen.add(it.p)).sort((a, b) => rank(a) - rank(b)).slice(0, 6);
   await Promise.all([...new Set(items.map((i) => i.p))].map((p) => fetchIcons(p, items.filter((i) => i.p === p).map((i) => i.n))));
-  const first = items[0];
-  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-
-  add("user", esc(L.sUser));
-  await wait(900);
-  add("agent", `${esc(L.sSearch)}<code class="tool"><span class="k">search.py</span> "${query}" --style outline --weight 1.5 --corners rounded</code>`);
-  await wait(1100);
-  if (!first) return;
-  const picks = items.map((it, i) => {
-    const ic = cache.get(`${it.p}:${it.n}`);
-    return `<span class="pick${i === 0 ? " chosen" : ""}" title="${it.p}:${it.n}">${ic ? toSvg(ic) : ""}</span>`;
-  }).join("");
-  const set = setOf(first.p);
-  add("agent", `${esc(L.sFound(fmt(res.total), fmt(res.sets)))}<div class="picks">${picks}</div>`
-    + `<div class="pick-meta">${first.p}:${first.n} · outline · ${(first.w / 10).toFixed(1)} · rounded · ${esc(set.l || "")}</div>`);
-  await wait(1300);
-  const file = `src/icons/${compName(first.n)}.tsx`;
-  add("agent", `${esc(L.sGet)}<code class="tool"><span class="k">get.py</span> ${first.p}:${first.n} --format tsx --out src/icons</code>`);
-  await wait(900);
-  add("agent", `<span class="done">${ui("check")}${esc(L.sDone(file, set.l || ""))}</span>`);
+  demo = { items, query: L.query, lang };
+  if (step === 2) renderStep(false);
 }
 
-// ---------------------------------------------------------------- browse: filters
-function seg(el, options, key, onPick) {
-  el.innerHTML = "";
-  for (const [val, label] of options) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.setAttribute("role", "radio");
-    b.textContent = label;
-    b.setAttribute("aria-checked", String(state[key] === val));
-    b.addEventListener("click", () => {
-      state[key] = val;
-      el.querySelectorAll("button").forEach((c) => c.setAttribute("aria-checked", "false"));
-      b.setAttribute("aria-checked", "true");
-      (onPick || newSearch)();
-    });
-    el.append(b);
-  }
-}
-
-function setupFilters() {
+function renderStep(animate = true) {
   const L = t();
-  seg($("styleSeg"), [[null, L.any], ...["outline", "filled", "duotone", "multicolor"].map((s) => [meta.styles.indexOf(s), L.styles[s]])], "style");
-  seg($("cornerSeg"), [[null, L.any], ...["rounded", "mixed", "sharp"].map((c) => [meta.corners.indexOf(c), L.cornersL[c]])], "corners");
-  renderCats();
+  const card = $("stepCard");
+  const draw = () => {
+    $("stepN").textContent = `${step + 1} / 3`;
+    $("stepTitle").textContent = L.steps[step];
+    $("stepPrompt").textContent = L.prompts[step];
+    const body = $("stepBody");
+    if (step === 0) {
+      const cmd = INSTALL[installTab];
+      const shown = installTab === 0 ? "npx skills add<br>molamine08/agent-glyphs"
+        : installTab === 1 ? "git clone …/agent-glyphs<br>~/.claude/skills/agent-glyphs" : "agent-glyphs-main.zip";
+      body.innerHTML = `<p class="term" dir="ltr">${shown}</p>
+        <div class="step-tabs" role="group">${L.installTabs.map((x, i) => `<button type="button" data-tab="${i}" aria-pressed="${i === installTab}">${esc(x)}</button>`).join("")}</div>
+        <p class="step-note">${L.installNote[installTab]}</p>`;
+      body.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { installTab = +b.dataset.tab; pause(); renderStep(false); }));
+      body.dataset.cmd = cmd;
+    } else if (step === 1) {
+      body.innerHTML = `<p class="ask-bubble">${esc(L.ask)}</p>`;
+    } else {
+      const items = demo && demo.lang === lang ? demo.items : [];
+      const first = items[0];
+      const picks = items.map((it, i) => {
+        const ic = cache.get(`${it.p}:${it.n}`);
+        return `<span class="${i === 0 ? "chosen" : ""}" title="${esc(it.p + ":" + it.n)}">${ic ? toSvg(ic) : ""}</span>`;
+      }).join("");
+      const set = first && setOf(first.p);
+      body.innerHTML = `<p class="term small" dir="ltr">search.py "${esc(L.query)}" <span class="say">--weight</span> 1.5 <span class="say">--corners</span> rounded</p>
+        <div class="picks">${picks}</div>
+        ${first ? `<p class="done">${ui("check")}<span>${esc(L.done(`src/icons/${compName(first.n)}.tsx`, set?.l || ""))}</span></p>` : ""}`;
+    }
+  };
+  if (animate && !reduced()) {
+    card.classList.add("leaving");
+    setTimeout(() => { draw(); card.classList.remove("leaving"); }, 260);
+  } else draw();
+  restartRing();
 }
 
-function renderCats(counts = null, all = null) {
+function restartRing() {
+  const ring = $("ring");
+  ring.classList.remove("run");
+  clearTimeout(stepTimer);
+  if (paused || reduced()) return;
+  void ring.offsetWidth;
+  ring.style.setProperty("--step-ms", `${STEP_MS}ms`);
+  ring.classList.add("run");
+  stepTimer = setTimeout(() => { step = (step + 1) % 3; renderStep(); }, STEP_MS);
+}
+function pause() { paused = true; clearTimeout(stepTimer); $("ring").classList.remove("run"); }
+$("next").addEventListener("click", () => { step = (step + 1) % 3; renderStep(); });
+$("stack").addEventListener("mouseenter", () => { paused = true; clearTimeout(stepTimer); $("ring").classList.remove("run"); });
+$("stack").addEventListener("mouseleave", () => { paused = false; restartRing(); });
+$("stack").addEventListener("focusin", pause);
+$("installCopy").addEventListener("click", () => copy(INSTALL[0]));
+
+// ---------------------------------------------------------------- browse: filters as chips
+let openPop = null, lastCounts = null, lastAll = null;
+
+function chipLabel(key) {
   const L = t();
-  const ul = $("cats");
-  ul.innerHTML = "";
-  const rows = [[null, "all", L.allCats, all], ...meta.categories.map(([k, en, ar], i) => [i, k, lang === "ar" ? ar : en, counts ? counts[i] : null])];
-  for (const [i, k, label, n] of rows) {
-    if (counts && i !== null && !n && state.cat !== i) continue;
-    const li = document.createElement("li");
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "cat";
-    b.setAttribute("aria-pressed", String(state.cat === i));
-    b.innerHTML = `${ui("c_" + k)}<span class="name"></span><span class="n">${n === null || n === undefined ? "" : fmt(n)}</span>`;
-    b.querySelector(".name").textContent = label;
-    b.addEventListener("click", () => { state.cat = i; newSearch(); });
-    li.append(b);
-    ul.append(li);
-  }
+  if (key === "style") return state.style === null ? L.any : L.styles[meta.styles[state.style]];
+  if (key === "corners") return state.corners === null ? L.any : L.cornersL[meta.corners[state.corners]];
+  if (key === "weight") return state.weight === null ? L.any : String(state.weight);
+  if (key === "cat") return state.cat === null ? L.any : (lang === "ar" ? meta.categories[state.cat][2] : meta.categories[state.cat][1]).replace(/\s*\(.*\)$/, "");
+  return state.commercial ? L.lic.commercial : L.lic.any;
 }
+const isSet = (key) => (key === "commercial" ? state.commercial : state[key] !== null);
 
-function setWeightUI() {
-  const on = $("weightOn").checked;
-  const v = parseFloat($("weight").value);
-  $("weight").disabled = !on;
-  $("weightOut").textContent = on ? v.toFixed(2) : "";
-  $("weightBox").classList.toggle("off", !on);
-  // the headline is drawn at the chosen stroke weight
-  document.documentElement.style.setProperty("--title-weight", on ? String(Math.round((400 + ((v - 0.5) / 2.5) * 500) / 100) * 100) : "");
-  state.weight = on ? v : null;
+function renderFilters() {
+  const L = t();
+  const el = $("filters");
+  const keys = [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]];
+  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
+    + `<span class="sp"></span><button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
+  el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
+    e.stopPropagation();
+    openPop = openPop === w.dataset.key ? null : w.dataset.key;
+    renderFilters();
+  }));
+  el.querySelector(".clear").addEventListener("click", () => {
+    Object.assign(state, { style: null, corners: null, cat: null, weight: null, commercial: true });
+    openPop = null; newSearch();
+  });
+  if (openPop) renderPop(el.querySelector(`.fwrap[data-key="${openPop}"]`));
+  renderAgentLine();
 }
+const anyFilter = () => state.style !== null || state.corners !== null || state.cat !== null || state.weight !== null || !state.commercial;
+
+function renderPop(wrap) {
+  const L = t();
+  const key = wrap.dataset.key;
+  const pop = document.createElement("div");
+  pop.className = "pop" + (key === "cat" ? " cats" : "");
+  pop.setAttribute("role", "dialog");
+  pop.addEventListener("click", (e) => e.stopPropagation());
+  const opt = (val, label, checked, extra = "", lead = "") => `<button class="opt" type="button" role="menuitemradio" data-v="${val}" aria-checked="${checked}">${ui("check", "tick")}${lead}<span>${esc(label)}</span>${extra}</button>`;
+  if (key === "weight") {
+    pop.innerHTML = `<h3>${esc(L.strokeTitle)}</h3><div class="sws">${WEIGHTS.map((w) => `<button class="sw" type="button" data-v="${w}" aria-checked="${state.weight === w}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="${w}"/></svg><span>${w}</span></button>`).join("")}</div>
+      <div class="foot-row"><button type="button" data-v="null">${esc(L.anyWeight)}</button><span>${esc(L.within)}</span></div>`;
+  } else if (key === "style") {
+    pop.innerHTML = opt("null", L.any, state.style === null) + ["outline", "filled", "duotone", "multicolor"].map((s) => opt(meta.styles.indexOf(s), L.styles[s], state.style === meta.styles.indexOf(s))).join("");
+  } else if (key === "corners") {
+    const glyph = (r) => `<svg class="ui" viewBox="0 0 24 24"><path d="M5 19V${5 + r}a${r} ${r} 0 0 1 ${r}-${r}H19" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
+    pop.innerHTML = opt("null", L.any, state.corners === null) + [["rounded", 7], ["mixed", 3], ["sharp", 0.01]].map(([c, r]) => opt(meta.corners.indexOf(c), L.cornersL[c], state.corners === meta.corners.indexOf(c), "", glyph(r))).join("");
+  } else if (key === "cat") {
+    const rows = meta.categories.map(([k, en, ar], i) => [i, lang === "ar" ? ar : en, lastCounts ? lastCounts[i] : null])
+      .filter(([i, , n]) => n === null || n > 0 || state.cat === i);
+    pop.innerHTML = opt("null", L.any, state.cat === null, lastAll !== null ? `<span class="n">${fmt(lastAll)}</span>` : "")
+      + rows.map(([i, label, n]) => opt(i, label, state.cat === i, n !== null ? `<span class="n">${fmt(n)}</span>` : "")).join("");
+  } else {
+    pop.innerHTML = opt("true", L.lic.commercial, state.commercial) + opt("false", L.lic.any, !state.commercial);
+  }
+  pop.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => {
+    const v = b.dataset.v;
+    if (key === "commercial") state.commercial = v === "true";
+    else state[key] = v === "null" ? null : Number(v);
+    openPop = null;
+    newSearch();
+  }));
+  wrap.append(pop);
+  // keep the menu on screen
+  requestAnimationFrame(() => {
+    const r = pop.getBoundingClientRect();
+    if (desktop() || innerWidth > 760) {
+      if (r.right > innerWidth - 12) pop.style.insetInlineStart = "auto", pop.style.insetInlineEnd = "0";
+      if (r.left < 12) pop.style.insetInlineStart = "auto", pop.style.insetInlineEnd = "auto", pop.style.left = "0";
+    }
+  });
+}
+document.addEventListener("click", () => { if (openPop) { openPop = null; renderFilters(); } });
+
+function agentCommand() {
+  const q = $("q").value.trim();
+  const parts = [["search.py", ""], [q ? `"${q}"` : "", ""]];
+  if (state.style !== null) parts.push(["--style", meta.styles[state.style]]);
+  if (state.weight !== null) parts.push(["--weight", String(state.weight)]);
+  if (state.corners !== null) parts.push(["--corners", meta.corners[state.corners]]);
+  if (state.cat !== null) parts.push(["--cat", meta.categories[state.cat][0]]);
+  if (!state.commercial) parts.push(["--license", "any"]);
+  return parts.filter(([a]) => a);
+}
+function renderAgentLine() {
+  if (!meta) return;
+  const parts = agentCommand();
+  $("agentLine").innerHTML = parts.map(([a, b]) => (b ? `<s>${esc(a)}</s> ${esc(b)}` : esc(a))).join(" ");
+}
+$("copyCmd").addEventListener("click", () => copy("python scripts/" + agentCommand().map(([a, b]) => (b ? `${a} ${b}` : a)).join(" ")));
 
 // ---------------------------------------------------------------- browse: results
-function newSearch() { limit = PAGE; run(); }
+function newSearch() { limit = PAGE; renderFilters(); run(); }
 function run() {
   if (!meta) return;
   worker.postMessage({ type: "search", seq: ++seq, query: $("q").value, filters: state, limit });
@@ -329,12 +380,12 @@ function run() {
 
 function render(res) {
   lastRes = res;
+  lastCounts = res.counts; lastAll = res.all;
   const grid = $("grid");
   grid.innerHTML = "";
   const L = t();
-  const q = $("q").value.trim();
-  $("status").textContent = res.total === 0 ? "" : (q ? L.count(fmt(res.total)) : L.browse(fmt(res.total)));
-  renderCats(res.counts, res.all);
+  $("status").textContent = res.total ? L.count(fmt(res.total), fmt(res.sets)) : "";
+  if (openPop === "cat") renderFilters();
   if (!res.items.length) {
     const li = document.createElement("li");
     li.className = "empty";
@@ -351,10 +402,10 @@ function render(res) {
     b.dataset.p = it.p;
     b.dataset.n = it.n;
     b.title = `${it.p}:${it.n}`;
+    b.setAttribute("aria-label", `${it.n} (${it.p})`);
     if (current && current.p === it.p && current.n === it.n) b.setAttribute("aria-current", "true");
     const ic = cache.get(`${it.p}:${it.n}`);
-    b.innerHTML = `<span class="ic">${ic ? toSvg(ic) : '<span class="ph"></span>'}</span><span class="nm"></span>`;
-    b.querySelector(".nm").textContent = it.n;
+    b.innerHTML = `<span class="ic">${ic ? toSvg(ic) : '<span class="ph"></span>'}</span>`;
     b.addEventListener("click", () => open(it, true));
     li.append(b);
     grid.append(li);
@@ -369,32 +420,26 @@ worker.onmessage = (e) => {
   if (m.type === "ready") {
     meta = m.meta;
     terms = m.terms;
-    setupFilters();
     applyLang();
-  } else if (m.type === "results" && pending.has(m.seq)) {
+  } else if ((m.type === "results" || m.type === "alts") && pending.has(m.seq)) {
     pending.get(m.seq)(m); pending.delete(m.seq);
   } else if (m.type === "results" && m.seq === seq) {
     render(m);
-  } else if (m.type === "alts" && pending.has(m.seq)) {
-    pending.get(m.seq)(m); pending.delete(m.seq);
   } else if (m.type === "error") {
     $("status").textContent = t().loadErr;
   }
 };
 
 let debounce;
-$("q").addEventListener("input", () => { clearTimeout(debounce); debounce = setTimeout(newSearch, 120); });
-$("weightOn").addEventListener("change", () => { setWeightUI(); newSearch(); });
-$("weight").addEventListener("input", () => { setWeightUI(); clearTimeout(debounce); debounce = setTimeout(newSearch, 150); });
-$("commercial").addEventListener("change", (e) => { state.commercial = e.target.checked; newSearch(); });
+$("q").addEventListener("input", () => { renderAgentLine(); clearTimeout(debounce); debounce = setTimeout(newSearch, 120); });
 $("more").addEventListener("click", () => { limit += PAGE * 2; run(); });
 document.addEventListener("keydown", (e) => {
   if (e.key === "/" && document.activeElement !== $("q") && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
     e.preventDefault();
     $("q").focus();
-    $("browse").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("browse").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
   }
-  if (e.key === "Escape") close();
+  if (e.key === "Escape") { if (openPop) { openPop = null; renderFilters(); } else close(); }
 });
 
 // ---------------------------------------------------------------- inspector
@@ -407,7 +452,7 @@ function viewSvg(sized = false) {
 
 function refreshPreview() {
   const svg = viewSvg();
-  $("dIcon").innerHTML = svg ? svg.replace("<svg ", '<svg width="100%" height="100%" ') : "";
+  $("dIcon").innerHTML = svg;
   $("dStrokeOut").textContent = view.stroke !== null ? view.stroke.toFixed(2) : (current && current.w >= 0 ? (current.w / 10).toFixed(1) : "");
   refreshAgent();
 }
@@ -420,7 +465,7 @@ function refreshAgent() {
   const opts = (view.stroke !== null ? L.optStroke(view.stroke) : "") + (view.size !== 24 ? L.optSize(view.size) : "")
     + (view.color ? L.optColor(view.color) : "") + (view.mirror ? L.optMirror : "");
   $("agentPrompt").textContent = L.prompt(id, set.n, set.l || "?", opts);
-  const flags = [`--format tsx`, `--out src/icons`];
+  const flags = ["--format tsx", "--out src/icons"];
   if (view.stroke !== null) flags.push(`--stroke ${view.stroke}`);
   if (view.size !== 24) flags.push(`--size ${view.size}`);
   if (view.color) flags.push(`--color "${view.color}"`);
@@ -436,56 +481,28 @@ function refreshAgent() {
 
 function renderTabs() {
   const L = t();
-  const el = $("tabSeg");
-  el.innerHTML = "";
-  for (const [key, label, icon] of [["design", L.tabDesign, "palette"], ["agent", L.tabAgent, "robot"]]) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.setAttribute("role", "tab");
-    b.setAttribute("aria-checked", String(tab === key));
-    b.innerHTML = `${ui(icon)}<span></span>`;
-    b.querySelector("span").textContent = label;
-    b.addEventListener("click", () => { tab = key; renderTabs(); });
-    el.append(b);
-  }
-  $("paneDesign").hidden = tab !== "design";
+  $("tabs").innerHTML = Object.entries(L.tabs).map(([k, label]) => `<button type="button" role="tab" data-k="${k}" aria-selected="${tab === k}">${esc(label)}</button>`).join("");
+  $("tabs").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { tab = b.dataset.k; renderTabs(); }));
+  $("paneSame").hidden = tab !== "same";
   $("paneAgent").hidden = tab !== "agent";
+  $("paneDetails").hidden = tab !== "details";
 }
 
 function renderControls() {
   const L = t();
-  const sw = $("swatches");
-  sw.innerHTML = "";
-  for (const c of SWATCHES) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "swatch";
-    b.style.setProperty("--sw", c || "var(--ink)");
-    b.setAttribute("aria-label", c || "currentColor");
-    b.setAttribute("aria-pressed", String(view.color === c));
-    b.addEventListener("click", () => { view.color = c; renderControls(); refreshPreview(); });
-    sw.append(b);
-  }
-  const custom = document.createElement("label");
-  custom.className = "swatch custom";
-  custom.innerHTML = '+<input type="color" aria-label="Custom colour">';
-  custom.querySelector("input").addEventListener("input", (e) => { view.color = e.target.value; refreshPreview(); });
-  sw.append(custom);
-  const ss = $("sizeSeg");
-  ss.innerHTML = "";
-  for (const s of SIZES) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.textContent = s;
-    b.setAttribute("aria-checked", String(view.size === s));
-    b.addEventListener("click", () => { view.size = s; renderControls(); refreshAgent(); });
-    ss.append(b);
-  }
-  $("copySvg").innerHTML = `${ui("copy")}<span>${L.copySvg}</span>`;
-  $("copyJsx").innerHTML = `${ui("react")}<span>${L.copyJsx}</span>`;
+  $("swatches").innerHTML = SWATCHES.map((c) => `<button class="swatch" type="button" data-c="${c || ""}" style="--sw:${c || "var(--ink)"}" aria-label="${c || "currentColor"}" aria-pressed="${view.color === c}"></button>`).join("")
+    + `<label class="swatch custom">+<input type="color" aria-label="Custom colour"></label>`;
+  $("swatches").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { view.color = b.dataset.c || null; renderControls(); refreshPreview(); }));
+  $("swatches").querySelector("input").addEventListener("input", (e) => { view.color = e.target.value; refreshPreview(); });
+  $("sizeOpts").innerHTML = SIZES.map((s) => `<button type="button" data-s="${s}" aria-checked="${view.size === s}">${s}</button>`).join("");
+  $("sizeOpts").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { view.size = +b.dataset.s; renderControls(); refreshAgent(); }));
+  $("copySvg").innerHTML = `${ui("copy")}<span>${esc(L.copySvg)}</span>`;
+  $("copyJsx").innerHTML = `${ui("react")}<span>${esc(L.copyJsx)}</span>`;
   $("download").innerHTML = ui("download");
   $("download").setAttribute("aria-label", L.download);
-  document.querySelectorAll("[data-copy]").forEach((b) => { b.innerHTML = `${ui("copy")}<span>${L.copy}</span>`; });
+  $("close").innerHTML = ui("close");
+  $("close").setAttribute("aria-label", L.close);
+  document.querySelectorAll("[data-copy]").forEach((b) => { b.innerHTML = `${ui("copy")}<span>${esc(L.copy)}</span>`; });
 }
 
 async function open(it, user) {
@@ -500,25 +517,20 @@ async function open(it, user) {
   if (current.p !== it.p || current.n !== it.n) return;
   const ic = cache.get(`${it.p}:${it.n}`);
   $("dName").textContent = it.n;
-  $("dSet").textContent = `${set.n}${lang === "ar" ? "، " : ", "}${L.by(set.a || "")}`;
+  $("dSet").textContent = L.setBy(set.n, set.l || "?");
+  const catName = (k) => (lang === "ar" ? meta.categories[k][2] : meta.categories[k][1]);
   const facts = [
-    [L.fStyle, L.stylesFull[meta.styles[it.st]] || "—"],
-    [L.fWeight, it.w >= 0 ? (it.w / 10).toFixed(1) : "—"],
-    [L.fCorners, it.c >= 0 ? L.cornersL[meta.corners[it.c]] : "—"],
-    [L.fCat, [it.k, it.k2].filter((k) => k >= 0).map((k) => (lang === "ar" ? meta.categories[k][2] : meta.categories[k][1])).join(lang === "ar" ? "، " : ", ")],
-    [L.fGrid, set.g ? `${set.g}px` : "—"],
+    [L.fStyle, L.stylesFull[meta.styles[it.st]] || "-"],
+    [L.fWeight, it.w >= 0 ? (it.w / 10).toFixed(1) : "-"],
+    [L.fCorners, it.c >= 0 ? L.cornersL[meta.corners[it.c]] : "-"],
+    [L.fGrid, set.g ? `${set.g}px` : "-"],
+    [L.fCat, [it.k, it.k2].filter((k) => k >= 0).map(catName).join(lang === "ar" ? "، " : ", ")],
+    [L.fLicence, set.l || "?"],
   ];
-  $("dFacts").innerHTML = "";
-  for (const [k, v] of facts) {
-    const dt = document.createElement("dt"); dt.textContent = k;
-    const dd = document.createElement("dd"); dd.textContent = v;
-    $("dFacts").append(dt, dd);
-  }
+  $("dFacts").innerHTML = facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
   const tier = meta.tiers[set.t];
   const extra = tier === "attribution" ? L.credit : tier === "non-commercial" ? L.noncom : tier === "share-alike" ? L.share : "";
-  $("dLicense").innerHTML = "";
-  $("dLicense").append(document.createTextNode(L.lic(set.l || "?") + " "));
-  if (extra) { const s = document.createElement("strong"); s.textContent = extra; $("dLicense").append(s); }
+  $("dLicense").innerHTML = `${esc(L.licLine(set.l || "?"))} ${extra ? `<strong>${esc(extra)}</strong>` : ""}`;
   const words = it.n.split(/[-_]/).flatMap((w) => terms[w] || []);
   $("dTerms").textContent = words.length ? L.terms([...new Set(words)].slice(0, 6).join(lang === "ar" ? "، " : ", ")) : "";
   const strokeIcon = !!ic && ic.body.includes("stroke-width");
@@ -532,10 +544,8 @@ async function open(it, user) {
   renderControls();
   refreshPreview();
   loadAlts(it);
-  if (desktop()) {
-    $("inspector").setAttribute("aria-hidden", "false");
-  } else if (user) {
-    $("inspector").setAttribute("aria-hidden", "false");
+  $("inspector").setAttribute("aria-hidden", "false");
+  if (!desktop() && user) {
     $("scrim").hidden = false;
     $("close").focus({ preventScroll: true });
   }
@@ -546,22 +556,12 @@ async function loadAlts(it) {
   ul.innerHTML = "";
   const res = await ask({ type: "alts", p: it.p, concept: it.concept, commercial: state.commercial });
   if (!current || current.n !== it.n || current.p !== it.p) return;
-  ul.parentElement.hidden = !res.items.length;
-  for (const a of res.items) {
-    const li = document.createElement("li");
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "alt";
-    b.dataset.p = a.p;
-    b.dataset.n = a.n;
-    b.title = `${a.p}:${a.n}`;
-    b.innerHTML = '<span class="ic"></span>';
-    b.addEventListener("click", () => open(a, true));
-    li.append(b);
-    ul.append(li);
-  }
-  for (const p of new Set(res.items.map((a) => a.p))) {
-    const names = res.items.filter((a) => a.p === p).map((a) => a.n);
+  const items = [it, ...res.items].slice(0, 12);
+  $("noAlts").hidden = res.items.length > 0;
+  ul.innerHTML = items.map((a, i) => `<li><button class="alt" type="button" data-p="${esc(a.p)}" data-n="${esc(a.n)}" title="${esc(a.p + ":" + a.n)}" ${i === 0 ? 'aria-current="true" style="border:2px solid var(--ink)"' : ""}><span class="ic"></span></button></li>`).join("");
+  ul.querySelectorAll(".alt").forEach((b, i) => b.addEventListener("click", () => i && open(items[i], true)));
+  for (const p of new Set(items.map((a) => a.p))) {
+    const names = items.filter((a) => a.p === p).map((a) => a.n);
     fetchIcons(p, names).then(() => names.forEach((n) => paint(p, n)));
   }
 }
@@ -613,14 +613,19 @@ function applyLang() {
     const v = L[el.dataset.i18n];
     if (typeof v === "string") el.textContent = v;
   });
-  $("lang").innerHTML = `${ui("lang")}<span>${L.lang}</span>`;
+  $("lang").textContent = L.lang;
   $("q").placeholder = L.placeholder;
-  $("lede").innerHTML = meta ? L.lede(fmt(meta.icons), fmt(meta.sets)) : L.loading;
+  $("lede").innerHTML = L.lede;
+  $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
+  $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;
+  $("copyCmd").innerHTML = `${ui("copy")}<span>${esc(L.copyCmd)}</span>`;
+  $("next").innerHTML = ui("next");
+  $("next").setAttribute("aria-label", L.next);
   $("footText").textContent = meta ? L.foot(meta.version) : "";
-  renderInstall();
   renderTabs();
   renderControls();
-  if (meta) { setupFilters(); run(); playSession(); }
+  renderStep(false);
+  if (meta) { renderFilters(); run(); loadDemo(); }
   if (current) open(current, current.pinned);
 }
 $("lang").addEventListener("click", () => {
@@ -631,8 +636,6 @@ $("lang").addEventListener("click", () => {
 
 $("searchIcon").innerHTML = ui("search");
 $("gh").innerHTML = ui("github");
-$("close").innerHTML = ui("close");
 applyLang();
-setWeightUI();
 $("status").textContent = t().loading;
 worker.postMessage({ type: "load", base: new URL("data/", location.href).href });
