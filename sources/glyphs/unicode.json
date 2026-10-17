@@ -1,0 +1,853 @@
+[
+ {
+  "name": "salla-stop-sign",
+  "char": "ﷰ",
+  "cp": "U+FDF0",
+  "unicode_name": "ARABIC LIGATURE SALLA USED AS KORANIC STOP SIGN ISOLATED FORM",
+  "en": [
+   "salla",
+   "waqf"
+  ],
+  "ar": [
+   "صلي",
+   "علامة وقف"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "qala-stop-sign",
+  "char": "ﷱ",
+  "cp": "U+FDF1",
+  "unicode_name": "ARABIC LIGATURE QALA USED AS KORANIC STOP SIGN ISOLATED FORM",
+  "en": [
+   "qala",
+   "waqf"
+  ],
+  "ar": [
+   "قلي",
+   "علامة وقف"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "allah",
+  "char": "ﷲ",
+  "cp": "U+FDF2",
+  "unicode_name": "ARABIC LIGATURE ALLAH ISOLATED FORM",
+  "en": [
+   "allah",
+   "god",
+   "jalala"
+  ],
+  "ar": [
+   "الله",
+   "لفظ الجلالة",
+   "اسم الجلالة"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "akbar",
+  "char": "ﷳ",
+  "cp": "U+FDF3",
+  "unicode_name": "ARABIC LIGATURE AKBAR ISOLATED FORM",
+  "en": [
+   "akbar",
+   "takbir"
+  ],
+  "ar": [
+   "أكبر",
+   "الله أكبر",
+   "تكبير"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "muhammad",
+  "char": "ﷴ",
+  "cp": "U+FDF4",
+  "unicode_name": "ARABIC LIGATURE MOHAMMAD ISOLATED FORM",
+  "en": [
+   "muhammad",
+   "mohammad",
+   "prophet"
+  ],
+  "ar": [
+   "محمد",
+   "النبي محمد"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "salam",
+  "char": "ﷵ",
+  "cp": "U+FDF5",
+  "unicode_name": "ARABIC LIGATURE SALAM ISOLATED FORM",
+  "en": [
+   "salam",
+   "peace"
+  ],
+  "ar": [
+   "صلعم",
+   "سلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "rasul",
+  "char": "ﷶ",
+  "cp": "U+FDF6",
+  "unicode_name": "ARABIC LIGATURE RASOUL ISOLATED FORM",
+  "en": [
+   "rasul",
+   "messenger",
+   "prophet"
+  ],
+  "ar": [
+   "رسول",
+   "الرسول"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayhi",
+  "char": "ﷷ",
+  "cp": "U+FDF7",
+  "unicode_name": "ARABIC LIGATURE ALAYHE ISOLATED FORM",
+  "en": [
+   "alayhi"
+  ],
+  "ar": [
+   "عليه"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "wasallam",
+  "char": "ﷸ",
+  "cp": "U+FDF8",
+  "unicode_name": "ARABIC LIGATURE WASALLAM ISOLATED FORM",
+  "en": [
+   "wasallam",
+   "sallam"
+  ],
+  "ar": [
+   "وسلم"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "salla",
+  "char": "ﷹ",
+  "cp": "U+FDF9",
+  "unicode_name": "ARABIC LIGATURE SALLA ISOLATED FORM",
+  "en": [
+   "salla"
+  ],
+  "ar": [
+   "صلى"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "sallallahu-alayhi-wasallam",
+  "char": "ﷺ",
+  "cp": "U+FDFA",
+  "unicode_name": "ARABIC LIGATURE SALLALLAHOU ALAYHE WASALLAM",
+  "en": [
+   "sallallahu",
+   "pbuh",
+   "saw",
+   "salawat",
+   "honorific"
+  ],
+  "ar": [
+   "صلى الله عليه وسلم",
+   "الصلاة على النبي",
+   "صلعم",
+   "عليه الصلاة والسلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "jalla-jalaluhu",
+  "char": "ﷻ",
+  "cp": "U+FDFB",
+  "unicode_name": "ARABIC LIGATURE JALLAJALALOUHOU",
+  "en": [
+   "jalla",
+   "jalaluhu",
+   "honorific"
+  ],
+  "ar": [
+   "جل جلاله",
+   "جل وعلا"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "rial-sign",
+  "char": "﷼",
+  "cp": "U+FDFC",
+  "unicode_name": "RIAL SIGN",
+  "en": [
+   "rial",
+   "riyal",
+   "currency"
+  ],
+  "ar": [
+   "ريال",
+   "علامة الريال"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "bismillah",
+  "char": "﷽",
+  "cp": "U+FDFD",
+  "unicode_name": "ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM",
+  "en": [
+   "bismillah",
+   "basmala",
+   "basmalah"
+  ],
+  "ar": [
+   "بسم الله الرحمن الرحيم",
+   "بسملة",
+   "بسم الله"
+  ],
+  "cat": "culture",
+  "kind": "text",
+  "wide": true
+ },
+ {
+  "name": "salamuhu-alayna",
+  "char": "﷏",
+  "cp": "U+FDCF",
+  "unicode_name": "ARABIC LIGATURE SALAAMUHU ALAYNAA",
+  "en": [
+   "salamuhu",
+   "honorific"
+  ],
+  "ar": [
+   "سلامه علينا"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "subhanahu-wa-taala",
+  "char": "﷾",
+  "cp": "U+FDFE",
+  "unicode_name": "ARABIC LIGATURE SUBHAANAHU WA TAAALAA",
+  "en": [
+   "subhanahu",
+   "taala",
+   "swt",
+   "honorific"
+  ],
+  "ar": [
+   "سبحانه وتعالى",
+   "سبحانه"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "azza-wa-jall",
+  "char": "﷿",
+  "cp": "U+FDFF",
+  "unicode_name": "ARABIC LIGATURE AZZA WA JALL",
+  "en": [
+   "azza",
+   "jall",
+   "honorific"
+  ],
+  "ar": [
+   "عز وجل"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "rahimahullah",
+  "char": "﵀",
+  "cp": "U+FD40",
+  "unicode_name": "ARABIC LIGATURE RAHIMAHU ALLAAH",
+  "en": [
+   "rahimahu",
+   "rahimahullah",
+   "honorific"
+  ],
+  "ar": [
+   "رحمه الله",
+   "رحمة الله عليه"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "radiallahu-anhu",
+  "char": "﵁",
+  "cp": "U+FD41",
+  "unicode_name": "ARABIC LIGATURE RADI ALLAAHU ANH",
+  "en": [
+   "radi",
+   "radiallahu",
+   "anhu",
+   "honorific"
+  ],
+  "ar": [
+   "رضي الله عنه"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "radiallahu-anha",
+  "char": "﵂",
+  "cp": "U+FD42",
+  "unicode_name": "ARABIC LIGATURE RADI ALLAAHU ANHAA",
+  "en": [
+   "radi",
+   "radiallahu",
+   "anha",
+   "honorific"
+  ],
+  "ar": [
+   "رضي الله عنها"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "radiallahu-anhum",
+  "char": "﵃",
+  "cp": "U+FD43",
+  "unicode_name": "ARABIC LIGATURE RADI ALLAAHU ANHUM",
+  "en": [
+   "radi",
+   "radiallahu",
+   "anhum",
+   "honorific"
+  ],
+  "ar": [
+   "رضي الله عنهم"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "radiallahu-anhuma",
+  "char": "﵄",
+  "cp": "U+FD44",
+  "unicode_name": "ARABIC LIGATURE RADI ALLAAHU ANHUMAA",
+  "en": [
+   "radi",
+   "radiallahu",
+   "anhuma",
+   "honorific"
+  ],
+  "ar": [
+   "رضي الله عنهما"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "radiallahu-anhunna",
+  "char": "﵅",
+  "cp": "U+FD45",
+  "unicode_name": "ARABIC LIGATURE RADI ALLAAHU ANHUNNA",
+  "en": [
+   "radi",
+   "radiallahu",
+   "anhunna",
+   "honorific"
+  ],
+  "ar": [
+   "رضي الله عنهن"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "sallallahu-alayhi-wa-alih",
+  "char": "﵆",
+  "cp": "U+FD46",
+  "unicode_name": "ARABIC LIGATURE SALLALLAAHU ALAYHI WA-AALIH",
+  "en": [
+   "sallallahu",
+   "alih",
+   "honorific"
+  ],
+  "ar": [
+   "صلى الله عليه وآله"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayhi-as-salam",
+  "char": "﵇",
+  "cp": "U+FD47",
+  "unicode_name": "ARABIC LIGATURE ALAYHI AS-SALAAM",
+  "en": [
+   "alayhi",
+   "salam",
+   "honorific"
+  ],
+  "ar": [
+   "عليه السلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayhim-as-salam",
+  "char": "﵈",
+  "cp": "U+FD48",
+  "unicode_name": "ARABIC LIGATURE ALAYHIM AS-SALAAM",
+  "en": [
+   "alayhim",
+   "salam",
+   "honorific"
+  ],
+  "ar": [
+   "عليهم السلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayhima-as-salam",
+  "char": "﵉",
+  "cp": "U+FD49",
+  "unicode_name": "ARABIC LIGATURE ALAYHIMAA AS-SALAAM",
+  "en": [
+   "alayhimaa",
+   "salam",
+   "honorific"
+  ],
+  "ar": [
+   "عليهما السلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayhi-as-salatu-was-salam",
+  "char": "﵊",
+  "cp": "U+FD4A",
+  "unicode_name": "ARABIC LIGATURE ALAYHI AS-SALAATU WAS-SALAAM",
+  "en": [
+   "alayhi",
+   "salatu",
+   "salam",
+   "honorific"
+  ],
+  "ar": [
+   "عليه الصلاة والسلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "quddisa-sirruh",
+  "char": "﵋",
+  "cp": "U+FD4B",
+  "unicode_name": "ARABIC LIGATURE QUDDISA SIRRAH",
+  "en": [
+   "quddisa",
+   "honorific"
+  ],
+  "ar": [
+   "قدس سره"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "sallallahu-alayhi-wa-alihi-wa-sallam",
+  "char": "﵌",
+  "cp": "U+FD4C",
+  "unicode_name": "ARABIC LIGATURE SALLALLAHU ALAYHI WAAALIHEE WA-SALLAM",
+  "en": [
+   "sallallahu",
+   "alih",
+   "honorific"
+  ],
+  "ar": [
+   "صلى الله عليه وآله وسلم"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "alayha-as-salam",
+  "char": "﵍",
+  "cp": "U+FD4D",
+  "unicode_name": "ARABIC LIGATURE ALAYHAA AS-SALAAM",
+  "en": [
+   "alayhaa",
+   "salam",
+   "honorific"
+  ],
+  "ar": [
+   "عليها السلام"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "tabaraka-wa-taala",
+  "char": "﵎",
+  "cp": "U+FD4E",
+  "unicode_name": "ARABIC LIGATURE TABAARAKA WA-TAAALAA",
+  "en": [
+   "tabaaraka",
+   "taala",
+   "honorific"
+  ],
+  "ar": [
+   "تبارك وتعالى"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "rahimahumullah",
+  "char": "﵏",
+  "cp": "U+FD4F",
+  "unicode_name": "ARABIC LIGATURE RAHIMAHUM ALLAAH",
+  "en": [
+   "rahimahum",
+   "honorific"
+  ],
+  "ar": [
+   "رحمهم الله"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "end-of-ayah",
+  "char": "۝",
+  "cp": "U+06DD",
+  "unicode_name": "ARABIC END OF AYAH",
+  "en": [
+   "ayah",
+   "verse"
+  ],
+  "ar": [
+   "نهاية الآية",
+   "رقم الآية",
+   "آية"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "rub-el-hizb",
+  "char": "۞",
+  "cp": "U+06DE",
+  "unicode_name": "ARABIC START OF RUB EL HIZB",
+  "en": [
+   "hizb",
+   "octagram"
+  ],
+  "ar": [
+   "ربع الحزب",
+   "حزب",
+   "نجمة ثمانية"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "sajdah",
+  "char": "۩",
+  "cp": "U+06E9",
+  "unicode_name": "ARABIC PLACE OF SAJDAH",
+  "en": [
+   "sajdah",
+   "sujood",
+   "prostration"
+  ],
+  "ar": [
+   "سجدة",
+   "سجود",
+   "موضع السجدة"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "ornate-parenthesis-left",
+  "char": "﴾",
+  "cp": "U+FD3E",
+  "unicode_name": "ORNATE LEFT PARENTHESIS",
+  "en": [
+   "ornate",
+   "parenthesis",
+   "bracket"
+  ],
+  "ar": [
+   "قوس مزخرف",
+   "أقواس قرآنية"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "ornate-parenthesis-right",
+  "char": "﴿",
+  "cp": "U+FD3F",
+  "unicode_name": "ORNATE RIGHT PARENTHESIS",
+  "en": [
+   "ornate",
+   "parenthesis",
+   "bracket"
+  ],
+  "ar": [
+   "قوس مزخرف",
+   "أقواس قرآنية"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "poetic-verse-sign",
+  "char": "؎",
+  "cp": "U+060E",
+  "unicode_name": "ARABIC POETIC VERSE SIGN",
+  "en": [
+   "poetry",
+   "verse",
+   "poem"
+  ],
+  "ar": [
+   "بيت شعر",
+   "شعر",
+   "قصيدة"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "misra-sign",
+  "char": "؏",
+  "cp": "U+060F",
+  "unicode_name": "ARABIC SIGN MISRA",
+  "en": [
+   "misra",
+   "poetry",
+   "verse"
+  ],
+  "ar": [
+   "مصراع",
+   "شطر"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "arabic-five-pointed-star",
+  "char": "٭",
+  "cp": "U+066D",
+  "unicode_name": "ARABIC FIVE POINTED STAR",
+  "en": [
+   "star",
+   "asterisk"
+  ],
+  "ar": [
+   "نجمة",
+   "نجمة خماسية"
+  ],
+  "cat": "culture",
+  "kind": "text"
+ },
+ {
+  "name": "mosque",
+  "char": "🕌",
+  "cp": "U+1F54C",
+  "unicode_name": "MOSQUE",
+  "en": [
+   "mosque",
+   "masjid",
+   "islam",
+   "muslim"
+  ],
+  "ar": [
+   "مسجد",
+   "جامع",
+   "مساجد"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "kaaba",
+  "char": "🕋",
+  "cp": "U+1F54B",
+  "unicode_name": "KAABA",
+  "en": [
+   "kaaba",
+   "mecca",
+   "makkah",
+   "hajj",
+   "umrah"
+  ],
+  "ar": [
+   "الكعبة",
+   "مكة",
+   "حج",
+   "عمرة"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "place-of-worship",
+  "char": "🛐",
+  "cp": "U+1F6D0",
+  "unicode_name": "PLACE OF WORSHIP",
+  "en": [
+   "worship",
+   "prayer",
+   "pray"
+  ],
+  "ar": [
+   "مكان عبادة",
+   "عبادة",
+   "مصلى"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "prayer-beads",
+  "char": "📿",
+  "cp": "U+1F4FF",
+  "unicode_name": "PRAYER BEADS",
+  "en": [
+   "prayer",
+   "beads",
+   "tasbih",
+   "misbaha",
+   "rosary"
+  ],
+  "ar": [
+   "سبحة",
+   "مسبحة",
+   "تسبيح"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "crescent-moon",
+  "char": "🌙",
+  "cp": "U+1F319",
+  "unicode_name": "CRESCENT MOON",
+  "en": [
+   "crescent",
+   "moon",
+   "ramadan",
+   "hilal",
+   "night"
+  ],
+  "ar": [
+   "هلال",
+   "رمضان",
+   "قمر"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "star-and-crescent",
+  "char": "☪",
+  "cp": "U+262A",
+  "unicode_name": "STAR AND CRESCENT",
+  "en": [
+   "crescent",
+   "star",
+   "islam",
+   "muslim"
+  ],
+  "ar": [
+   "هلال ونجمة",
+   "إسلام",
+   "مسلم"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "farsi-symbol",
+  "char": "☫",
+  "cp": "U+262B",
+  "unicode_name": "FARSI SYMBOL",
+  "en": [
+   "farsi",
+   "iran"
+  ],
+  "ar": [
+   "شعار إيران"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "palms-up-dua",
+  "char": "🤲",
+  "cp": "U+1F932",
+  "unicode_name": "PALMS UP TOGETHER",
+  "en": [
+   "dua",
+   "supplication",
+   "palms",
+   "pray"
+  ],
+  "ar": [
+   "دعاء",
+   "رفع اليدين",
+   "يدعو"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ },
+ {
+  "name": "woman-hijab",
+  "char": "🧕",
+  "cp": "U+1F9D5",
+  "unicode_name": "PERSON WITH HEADSCARF",
+  "en": [
+   "hijab",
+   "headscarf",
+   "woman",
+   "muslim"
+  ],
+  "ar": [
+   "حجاب",
+   "محجبة",
+   "امرأة محجبة"
+  ],
+  "cat": "culture",
+  "kind": "emoji"
+ }
+]

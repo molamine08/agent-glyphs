@@ -66,7 +66,8 @@ def en_forms(word: str) -> list[str]:
     w = word.lower()
     out = [w]
     for suf, rep in EN_SUFFIXES:
-        if w.endswith(suf) and len(w) - len(suf) >= 3:
+        # "-ing"/"-ed" need a longer stem: "rating" is not "rat", "coding" not "cod"
+        if w.endswith(suf) and len(w) - len(suf) >= (4 if suf in ("ing", "ed") else 3):
             out.append(w[: -len(suf)] + rep)
     return list(dict.fromkeys(out))
 

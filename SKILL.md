@@ -94,9 +94,13 @@ Full list: `python scripts/sets.py` (filter with `--search`).
 - Right-to-left (Arabic) interfaces: directional icons (arrows, chevrons, back/next,
   send, undo/redo) must point the other way — export them with `get.py --mirror`.
   Do not mirror icons that show real-world objects or clocks/checkmarks.
-- Islamic and Arabic glyphs that no icon library draws (﷽ ﷺ ﷻ ۞ ۩, honorifics such as رضي الله عنه,
-  ornate Quranic brackets, mosque, kaaba, prayer beads) are in the library `x-islamic-glyphs`, drawn from
-  open fonts in three calligraphic styles (`-amiri`, `-naskh`, `-scheherazade`). Licence OFL-1.1.
+- Glyphs are Unicode characters, not drawings: Islamic and Arabic characters that no icon library
+  draws (﷽ ﷺ ﷻ ۞ ۩ ﴾ ﴿, honorifics such as ﵁ رضي الله عنه) and related emoji (🕌 🕋 📿 ☪).
+  `search.py` returns them with the icons (prefix `unicode`, `"kind": "glyph"`, the `char` and its
+  `codepoint`); `--kind glyph` returns glyphs only, `--kind icon` icons only. Put a glyph in the text
+  as the character itself (or its HTML entity `&#xFDFA;` / CSS `content: "\FDFA"`), never as an image
+  or SVG. `get.py unicode:<name>` prints the character. The character needs no licence; the font that
+  draws it does (Noto Naskh Arabic, Amiri and Scheherazade New are OFL).
 - Search by meaning, not exact names. Arabic and English words are expanded through ~3,900 concept
   groups: synonyms, plurals and dialect or loanwords (سيتنج → settings, داشبورد → dashboard,
   مسلمين → islam), and closely related things ("مسلم" also finds mosque, crescent, quran). Each JSON

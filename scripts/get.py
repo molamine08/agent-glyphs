@@ -7,6 +7,7 @@ Examples
   python scripts/get.py lucide:search --format tsx --out src/components/icons
   python scripts/get.py lucide:arrow-right --mirror        # RTL: points left
   python scripts/get.py mdi:home --stdout
+  python scripts/get.py unicode:sallallahu-alayhi-wasallam   # a glyph: prints the character ﷺ
 """
 
 from __future__ import annotations
@@ -19,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from atlas import store  # noqa: E402
+from atlas import glyphs, store  # noqa: E402
 from atlas.svg import to_svg  # noqa: E402
 
 
@@ -56,10 +57,21 @@ def main(argv=None):
     by_set = defaultdict(list)
     for ref in a.refs:
         prefix, _, name = ref.partition(":")
+        if prefix == glyphs.PREFIX:
+            # a glyph is a character, never a drawing: give the text to paste
+            g = glyphs.by_name(name)
+            if not g:
+                print(f"! {ref} not found", file=sys.stderr)
+                continue
+            p = glyphs.public(g)
+            print(f"{p['char']}\t{p['codepoint']}\tHTML {p['html']}\tCSS content: \"{p['css']}\"\t{ref}")
+            continue
         if not name:
             raise SystemExit(f"'{ref}': use prefix:name, e.g. lucide:house")
         by_set[prefix].append(name)
 
+    if not by_set:
+        return
     db = store.connect()
     size = None if a.size == "none" else a.size
     out = Path(a.out)

@@ -47,5 +47,4 @@ STYLE_TOKENS = {
     "fill", "filled", "solid", "glyph", "bold", "light", "thin", "regular", "medium",
     "duotone", "twotone", "duo", "broken", "bulk", "sharp", "rounded", "round",
     "mini", "micro", "alt", "sm", "md", "lg", "xs", "xl", "o",
-    "amiri", "naskh", "scheherazade",  # calligraphic styles of the Islamic glyphs
 }

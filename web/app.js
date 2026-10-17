@@ -61,6 +61,16 @@ const T = {
     prompt: (id, set, lic, opts) => `استخدم مهارة Agent Glyphs وأضف الأيقونة ⁦${id}⁩ من ⁨${set}⁩ (رخصة ⁦${lic}⁩)${opts}.`,
     optStroke: (w) => ` بسُمك خط ${w}`, optSize: (s) => ` بحجم ${s}px`, optMirror: " معكوسة للواجهة العربية", optColor: (c) => ` باللون ${c}`,
     report: "التصنيف غير دقيق؟ أخبرنا",
+    kind: "النوع", kinds: { icon: "أيقونات", glyph: "جليفات" },
+    kindNote: "الجليف حرف يونيكود يُنسخ نصاً مثل الإيموجي، وليس رسمة.",
+    glyphBy: "حرف يونيكود، يُنسخ نصاً", copyChar: "انسخ الحرف", copyHtml: "انسخ HTML",
+    gCode: "الرمز", gName: "اسمه في يونيكود", gHtml: "HTML", gCss: "CSS", gType: "النوع", gTypeV: "جليف، حرف يونيكود",
+    gFont: "يرسمه الخط المستخدم في النص. للحروف العربية: Noto Naskh Arabic أو Amiri أو Scheherazade New (رخصة OFL).",
+    gLicence: "الحرف نفسه لا يحتاج رخصة. الخط الذي يرسمه له رخصته.",
+    noGlyphAlts: "لا توجد أيقونة بنفس المعنى، استخدم الحرف نفسه.",
+    glyphPrompt: (ch, cp, name) => `استخدم مهارة Agent Glyphs وأدرج الجليف ${ch} (⁦${cp}⁩، ⁦${name}⁩) في النص كحرف، لا كصورة.`,
+    glyphMeta: "بيانات الجليف",
+    countG: (g) => `${g} جليف`,
     fStyle: "النمط", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة", fLicence: "الرخصة",
     licLine: (l) => `الرخصة: ${l}.`, credit: "اذكر صاحبها عند الاستخدام.",
     noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
@@ -106,6 +116,16 @@ const T = {
     prompt: (id, set, lic, opts) => `Use the Agent Glyphs skill to add the icon ${id} from ${set} (${lic} licence)${opts}.`,
     optStroke: (w) => `, stroke ${w}`, optSize: (s) => `, ${s}px`, optMirror: ", mirrored for right-to-left", optColor: (c) => `, colour ${c}`,
     report: "Wrong label? Tell us",
+    kind: "Type", kinds: { icon: "Icons", glyph: "Glyphs" },
+    kindNote: "A glyph is a Unicode character you paste as text, like an emoji. It is not a drawing.",
+    glyphBy: "Unicode character, pasted as text", copyChar: "Copy character", copyHtml: "Copy HTML",
+    gCode: "Code point", gName: "Unicode name", gHtml: "HTML", gCss: "CSS", gType: "Type", gTypeV: "Glyph, a Unicode character",
+    gFont: "The font of your text draws it. For Arabic characters: Noto Naskh Arabic, Amiri or Scheherazade New (OFL licence).",
+    gLicence: "The character itself needs no licence. The font that draws it has its own.",
+    noGlyphAlts: "No icon has this meaning: use the character itself.",
+    glyphPrompt: (ch, cp, name) => `Use the Agent Glyphs skill to put the glyph ${ch} (${cp}, ${name}) in the text as a character, not an image.`,
+    glyphMeta: "Glyph metadata",
+    countG: (g) => `${g} glyphs`,
     fStyle: "Style", fWeight: "Stroke", fCorners: "Corners", fCat: "Category", fGrid: "Grid", fLicence: "Licence",
     licLine: (l) => `Licence: ${l}.`, credit: "Credit the author when you use it.",
     noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
@@ -167,7 +187,8 @@ let lang = (() => {
   return COUNTRY || speaksArabic ? "ar" : "en";
 })();
 let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
-const state = { style: null, corners: null, cat: null, weight: null, commercial: true };
+const state = { kind: null, style: null, corners: null, cat: null, weight: null, commercial: true };
+const glyphMode = () => state.kind === "glyph";
 const view = { color: null, size: 24, stroke: null, mirror: false };
 const cache = new Map();
 const extSets = new Map();
@@ -340,6 +361,7 @@ function chipLabel(key) {
   if (key === "corners") return state.corners === null ? L.any : L.cornersL[meta.corners[state.corners]];
   if (key === "weight") return state.weight === null ? L.any : String(state.weight);
   if (key === "cat") return state.cat === null ? L.any : (lang === "ar" ? meta.categories[state.cat][2] : meta.categories[state.cat][1]).replace(/\s*\(.*\)$/, "");
+  if (key === "kind") return state.kind === null ? L.any : L.kinds[state.kind];
   return state.commercial ? L.lic.commercial : L.lic.any;
 }
 const isSet = (key) => (key === "commercial" ? state.commercial : state[key] !== null);
@@ -347,7 +369,8 @@ const isSet = (key) => (key === "commercial" ? state.commercial : state[key] !==
 function renderFilters() {
   const L = t();
   const el = $("filters");
-  const keys = [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]];
+  // glyphs are characters: no style, corners, stroke or licence to pick
+  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]])];
   el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
     + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
@@ -356,13 +379,13 @@ function renderFilters() {
     renderFilters();
   }));
   el.querySelector(".clear").addEventListener("click", () => {
-    Object.assign(state, { style: null, corners: null, cat: null, weight: null, commercial: true });
+    Object.assign(state, { kind: null, style: null, corners: null, cat: null, weight: null, commercial: true });
     openPop = null; newSearch();
   });
   if (openPop) renderPop(el.querySelector(`.fwrap[data-key="${openPop}"]`));
   renderAgentLine();
 }
-const anyFilter = () => state.style !== null || state.corners !== null || state.cat !== null || state.weight !== null || !state.commercial;
+const anyFilter = () => state.kind !== null || state.style !== null || state.corners !== null || state.cat !== null || state.weight !== null || !state.commercial;
 
 function renderPop(wrap) {
   const L = t();
@@ -385,12 +408,17 @@ function renderPop(wrap) {
       .filter(([i, , n]) => n === null || n > 0 || state.cat === i);
     pop.innerHTML = opt("null", L.any, state.cat === null, lastAll !== null ? `<span class="n">${fmt(lastAll)}</span>` : "")
       + rows.map(([i, label, n]) => opt(i, label, state.cat === i, n !== null ? `<span class="n">${fmt(n)}</span>` : "")).join("");
+  } else if (key === "kind") {
+    const g = meta.glyphs ? `<span class="n">${fmt(meta.glyphs)}</span>` : "";
+    pop.innerHTML = opt("null", L.any, state.kind === null) + opt("icon", L.kinds.icon, state.kind === "icon", `<span class="n">${fmt(meta.icons)}</span>`)
+      + opt("glyph", L.kinds.glyph, state.kind === "glyph", g, '<span class="glyph-mark" aria-hidden="true">ﷺ</span>') + `<p class="pop-note">${esc(L.kindNote)}</p>`;
   } else {
     pop.innerHTML = opt("true", L.lic.commercial, state.commercial) + opt("false", L.lic.any, !state.commercial);
   }
   pop.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => {
     const v = b.dataset.v;
     if (key === "commercial") state.commercial = v === "true";
+    else if (key === "kind") state.kind = v === "null" ? null : v;
     else state[key] = v === "null" ? null : Number(v);
     openPop = null;
     newSearch();
@@ -410,11 +438,12 @@ document.addEventListener("click", () => { if (openPop) { openPop = null; render
 function agentCommand() {
   const q = $("q").value.trim();
   const parts = [["search.py", ""], [q ? `"${q}"` : "", ""]];
+  if (state.kind !== null) parts.push(["--kind", state.kind]);
   if (state.style !== null) parts.push(["--style", meta.styles[state.style]]);
   if (state.weight !== null) parts.push(["--weight", String(state.weight)]);
   if (state.corners !== null) parts.push(["--corners", meta.corners[state.corners]]);
   if (state.cat !== null) parts.push(["--cat", meta.categories[state.cat][0]]);
-  if (!state.commercial) parts.push(["--license", "any"]);
+  if (!state.commercial && !glyphMode()) parts.push(["--license", "any"]);
   return parts.filter(([a]) => a);
 }
 function renderAgentLine() {
@@ -437,7 +466,8 @@ function render(res) {
   const grid = $("grid");
   grid.innerHTML = "";
   const L = t();
-  $("status").textContent = res.total ? L.count(fmt(res.total), fmt(res.sets)) : "";
+  const counts = [res.total - (glyphMode() ? res.total : 0) > 0 ? L.count(fmt(res.total), fmt(res.sets)) : "", res.glyphs ? L.countG(fmt(res.glyphs)) : ""].filter(Boolean);
+  $("status").textContent = counts.join(lang === "ar" ? " و" : " + ");
   if (openPop === "cat") renderFilters();
   if (!res.items.length) {
     const li = document.createElement("li");
@@ -450,6 +480,21 @@ function render(res) {
   for (const it of res.items) {
     const li = document.createElement("li");
     const b = document.createElement("button");
+    if (it.g) {
+      // a glyph is shown as the character itself, in text, never as a drawing
+      b.className = "tile glyph" + (it.e ? " emoji" : "") + (it.w ? " wide" : "");
+      b.type = "button";
+      b.dataset.p = it.p;
+      b.dataset.n = it.n;
+      b.title = `${it.ch}  ${it.cp}  ${it.n}`;
+      b.setAttribute("aria-label", `${it.n} (${it.cp})`);
+      if (current && current.p === it.p && current.n === it.n) b.setAttribute("aria-current", "true");
+      b.innerHTML = `<span class="ch" lang="ar" dir="rtl">${esc(it.ch)}</span><span class="cp" dir="ltr">${esc(it.cp)}</span>`;
+      b.addEventListener("click", () => open(it, true));
+      li.append(b);
+      grid.append(li);
+      continue;
+    }
     b.className = "tile";
     b.type = "button";
     b.dataset.p = it.p;
@@ -464,7 +509,7 @@ function render(res) {
     grid.append(li);
     if (!ic) io.observe(b);
   }
-  $("more").hidden = res.items.length >= res.total || res.items.length < limit;
+  $("more").hidden = res.items.length >= res.total + (res.glyphs || 0) || res.items.length < limit;
   if (desktop() && (!current || !res.items.some((i) => i.p === current.p && i.n === current.n)) && !current?.pinned) open(res.items[0], false);
 }
 
@@ -475,6 +520,7 @@ worker.onmessage = (e) => {
     meta = m.meta;
     terms = m.terms;
     labels = m.labels || {};
+    loadGlyphFont(m.glyphChars);
     applyLang();
   } else if ((m.type === "results" || m.type === "alts") && pending.has(m.seq)) {
     pending.get(m.seq)(m); pending.delete(m.seq);
@@ -497,6 +543,16 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") { if (openPop) { openPop = null; renderFilters(); } else close(); }
 });
 
+// Arabic glyphs are drawn with Noto Naskh Arabic (OFL), the one free font that has
+// every one of them; only those characters are downloaded
+function loadGlyphFont(chars) {
+  if (!chars) return;
+  const l = document.createElement("link");
+  l.rel = "stylesheet";
+  l.href = `https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap&text=${encodeURIComponent(chars)}`;
+  document.head.append(l);
+}
+
 // ---------------------------------------------------------------- inspector
 function viewSvg(sized = false) {
   const ic = current && cache.get(`${current.p}:${current.n}`);
@@ -506,6 +562,7 @@ function viewSvg(sized = false) {
 }
 
 function refreshPreview() {
+  if (current?.g) { refreshAgent(); return; }
   const svg = viewSvg();
   $("dIcon").innerHTML = svg;
   $("dStrokeOut").textContent = view.stroke !== null ? view.stroke.toFixed(2) : (current && current.w >= 0 ? (current.w / 10).toFixed(1) : "");
@@ -515,6 +572,16 @@ function refreshPreview() {
 function refreshAgent() {
   if (!current) return;
   const L = t();
+  if (current.g) {
+    const id = `unicode:${current.n}`;
+    $("agentPrompt").textContent = L.glyphPrompt(current.ch, current.cp, current.n);
+    $("agentCmd").textContent = `python scripts/get.py ${id}`;
+    $("agentJson").textContent = JSON.stringify({
+      id, kind: "glyph", char: current.ch, codepoint: current.cp, unicode_name: current.un,
+      html: htmlEntity(current.ch), css: cssEscape(current.ch), license: "Unicode character",
+    }, null, 2);
+    return;
+  }
   const set = setOf(current.p);
   const id = `${current.p}:${current.n}`;
   const opts = (view.stroke !== null ? L.optStroke(view.stroke) : "") + (view.size !== 24 ? L.optSize(view.size) : "")
@@ -551,8 +618,9 @@ function renderControls() {
   $("swatches").querySelector("input").addEventListener("input", (e) => { view.color = e.target.value; refreshPreview(); });
   $("sizeOpts").innerHTML = SIZES.map((s) => `<button type="button" data-s="${s}" aria-checked="${view.size === s}">${s}</button>`).join("");
   $("sizeOpts").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { view.size = +b.dataset.s; renderControls(); refreshAgent(); }));
-  $("copySvg").innerHTML = `${ui("copy")}<span>${esc(L.copySvg)}</span>`;
-  $("copyJsx").innerHTML = `${ui("react")}<span>${esc(L.copyJsx)}</span>`;
+  const g = current?.g;
+  $("copySvg").innerHTML = `${ui("copy")}<span>${esc(g ? L.copyChar : L.copySvg)}</span>`;
+  $("copyJsx").innerHTML = g ? `<span>${esc(L.copyHtml)}</span>` : `${ui("react")}<span>${esc(L.copyJsx)}</span>`;
   $("download").innerHTML = ui("download");
   $("download").setAttribute("aria-label", L.download);
   $("close").innerHTML = ui("close");
@@ -560,9 +628,60 @@ function renderControls() {
   document.querySelectorAll("[data-copy]").forEach((b) => { b.innerHTML = `${ui("copy")}<span>${esc(L.copy)}</span>`; });
 }
 
+const htmlEntity = (ch) => [...ch].map((c) => `&#x${c.codePointAt(0).toString(16).toUpperCase()};`).join("");
+const cssEscape = (ch) => [...ch].map((c) => `\\${c.codePointAt(0).toString(16).toUpperCase()}`).join("");
+
+function openGlyph(it, user) {
+  const L = t();
+  $("inspector").classList.add("is-glyph");
+  $("dIcon").innerHTML = `<span class="big-ch${it.e ? " emoji" : ""}${it.w ? " wide" : ""}" lang="ar" dir="rtl">${esc(it.ch)}</span>`;
+  $("dName").textContent = it.n;
+  $("dSet").textContent = L.glyphBy;
+  const facts = [[L.gType, L.gTypeV], [L.gCode, it.cp], [L.gName, it.un], [L.gHtml, htmlEntity(it.ch)], [L.gCss, `content: "${cssEscape(it.ch)}"`]];
+  $("dFacts").innerHTML = facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd dir="ltr">${esc(v)}</dd></div>`).join("");
+  $("dLicense").textContent = L.gLicence;
+  document.querySelector('[data-i18n="metadata"]').textContent = L.glyphMeta;
+  $("dTerms").textContent = it.e ? "" : L.gFont;
+  const issue = new URLSearchParams({ title: `Glyph: ${it.n}`, body: `Glyph: ${it.ch} ${it.cp} unicode:${it.n}\n\nWhat is wrong:\n` });
+  $("report").href = `https://github.com/${REPO}/issues/new?${issue}`;
+  renderControls();
+  refreshAgent();
+  loadGlyphAlts(it);
+  $("inspector").setAttribute("aria-hidden", "false");
+  if (!desktop() && user) {
+    $("scrim").hidden = false;
+    $("close").focus({ preventScroll: true });
+  }
+}
+
+// icons that mean the same thing as a glyph
+async function loadGlyphAlts(it) {
+  const ul = $("alts");
+  ul.innerHTML = "";
+  // the glyph's own name ("star-and-crescent", "prayer-beads") as a search: every word must match
+  const word = it.n.split("-").filter((w) => !["and", "of", "as", "wa", "al", "up"].includes(w)).join(" ");
+  const res = await ask({ type: "search", query: word, filters: { ...state, kind: "icon", style: null, corners: null, weight: null, cat: null }, limit: 11 });
+  if (!current || current.n !== it.n) return;
+  $("noAlts").hidden = res.items.length > 0;
+  $("noAlts").textContent = t().noGlyphAlts;
+  ul.innerHTML = `<li><button class="alt glyph${it.w ? " wide" : ""}" type="button" aria-current="true" style="border:2px solid var(--ink)"><span class="ch" lang="ar">${esc(it.ch)}</span></button></li>`
+    + res.items.map((a) => `<li><button class="alt" type="button" data-p="${esc(a.p)}" data-n="${esc(a.n)}" title="${esc(a.p + ":" + a.n)}"><span class="ic"></span></button></li>`).join("");
+  ul.querySelectorAll(".alt[data-p]").forEach((b, i) => b.addEventListener("click", () => open(res.items[i], true)));
+  for (const p of new Set(res.items.map((a) => a.p))) {
+    const names = res.items.filter((a) => a.p === p).map((a) => a.n);
+    fetchIcons(p, names).then(() => names.forEach((n) => paint(p, n)));
+  }
+}
+
 async function open(it, user) {
   current = { ...it, pinned: user };
   const L = t();
+  document.querySelectorAll(".tile[aria-current]").forEach((b) => b.removeAttribute("aria-current"));
+  document.querySelector(`.tile[data-p="${it.p}"][data-n="${CSS.escape(it.n)}"]`)?.setAttribute("aria-current", "true");
+  if (it.g) return openGlyph(it, user);
+  $("inspector").classList.remove("is-glyph");
+  $("noAlts").textContent = L.noAlts;
+  document.querySelector('[data-i18n="metadata"]').textContent = L.metadata;
   const set = setOf(it.p);
   view.stroke = null; view.mirror = false;
   $("dMirror").checked = false;
@@ -646,10 +765,10 @@ async function copy(text) {
   }
   toast(t().copied);
 }
-$("copySvg").addEventListener("click", () => current && copy(viewSvg(true)));
-$("copyJsx").addEventListener("click", () => current && copy(toJsx(viewSvg(), current.n)));
+$("copySvg").addEventListener("click", () => current && copy(current.g ? current.ch : viewSvg(true)));
+$("copyJsx").addEventListener("click", () => current && copy(current.g ? htmlEntity(current.ch) : toJsx(viewSvg(), current.n)));
 $("download").addEventListener("click", () => {
-  if (!current) return;
+  if (!current || current.g) return;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([viewSvg(true)], { type: "image/svg+xml" }));
   a.download = `${current.p}-${current.n}.svg`;

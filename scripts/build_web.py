@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from atlas import glyphs as glyph_catalog  # noqa: E402
 from atlas.query import set_prior  # noqa: E402
 from atlas.concepts import groups as concept_groups, tables as concept_tables  # noqa: E402
 from atlas.semantics import norm_ar, terms  # noqa: E402
@@ -67,10 +68,16 @@ def main(argv=None):
         ])
 
     icons = [{"p": p, "i": rows} for p, rows in rows_by_set.items()]
+    # glyphs: Unicode characters, searched by their own words (scripts/atlas/glyphs.py)
+    glyphs_out = []
+    for g in glyph_catalog.catalog():
+        glyphs_out.append({"n": g["name"], "ch": g["char"], "cp": g["cp"], "un": g["unicode_name"],
+                           "t": sorted(g["_tags"]), "a": g["_ar"], "f": sorted(g["_forms"]),
+                           **({"e": 1} if g.get("kind") == "emoji" else {}), **({"w": 1} if g.get("wide") else {})})
     stats = json.loads(db.execute("SELECT value FROM meta WHERE key='stats'").fetchone()[0])
     version = db.execute("SELECT value FROM meta WHERE key='iconify_version'").fetchone()[0]
     meta = {
-        "version": version, "icons": stats["icons"], "sets": len(sets),
+        "version": version, "icons": stats["icons"], "sets": len(sets), "glyphs": len(glyphs_out),
         "styles": STYLES, "corners": CORNERS, "tiers": TIERS,
         "categories": [[k, en, ar] for k, (en, ar) in CATEGORIES.items()],
         "styleTokens": sorted(STYLE_TOKENS),
@@ -81,6 +88,8 @@ def main(argv=None):
     vocab = set()
     for (c,) in db.execute("SELECT DISTINCT concept FROM icons"):
         vocab.update(c.split("-"))
+    for g in glyph_catalog.catalog():
+        vocab.update(g["_tags"])  # so the meaning groups keep the words only glyphs use
     ar_exact, ar_stem, en_words = concept_tables()
     known = lambda t: all(x in vocab for x in t.split("-"))  # noqa: E731
     groups_out = [[[t for t in g["en"] if known(t)], [t for t in g["rel"] if known(t)]] for g in concept_groups()]
@@ -94,6 +103,7 @@ def main(argv=None):
 
     (out / "meta.json").write_text(json.dumps({**meta, "setsInfo": sets}, ensure_ascii=False, separators=(",", ":")))
     (out / "icons.json").write_text(json.dumps(icons, separators=(",", ":")))
+    (out / "glyphs.json").write_text(json.dumps(glyphs_out, ensure_ascii=False, separators=(",", ":")))
     (out / "ar.json").write_text(json.dumps({**ar, "terms": terms_out}, ensure_ascii=False, separators=(",", ":")))
     if a.external and Path(a.external).exists():
         # icons outside Iconify cannot come from its API: serve them from the page itself
@@ -105,7 +115,7 @@ def main(argv=None):
                 {"prefix": p, "icons": data["icons"], "width": data.get("width", 24), "height": data.get("height", 24)},
                 separators=(",", ":")))
         print(f"ext/: {len(list(ext_dir.glob('*.json')))} libraries outside Iconify")
-    for f in ("meta.json", "icons.json", "ar.json"):
+    for f in ("meta.json", "icons.json", "ar.json", "glyphs.json"):
         print(f"{f}: {(out / f).stat().st_size / 1e6:.1f} MB")
 
 
