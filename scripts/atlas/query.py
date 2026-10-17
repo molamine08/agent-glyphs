@@ -7,6 +7,7 @@ import re
 import sqlite3
 from dataclasses import dataclass
 
+from . import glyphs as glyph_catalog
 from .concepts import expand, level
 from .semantics import has_arabic, norm_ar
 
@@ -79,6 +80,13 @@ class Filters:
     sets: list[str] | None = None
     license: str = "commercial"  # commercial | permissive | any
     min_conf: str | None = None  # high | medium
+    kind: str | None = None  # icon | glyph (None: both)
+
+    def shape_filtered(self) -> bool:
+        """Filters about how an icon is drawn, which a character does not have."""
+        return any(v is not None for v in (self.style, self.weight, self.weight_class, self.corners, self.curves,
+                                            self.contrast, self.container, self.complexity, self.min_conf)) \
+            or bool(self.sets and glyph_catalog.PREFIX not in self.sets)
 
 
 def _fts_query(parts) -> str:
@@ -89,10 +97,10 @@ def _fts_query(parts) -> str:
     for p in parts:
         alts = []
         if has_arabic(p.text):
-            for w in p.text.split():
-                w = norm_ar(w)
-                if w:
-                    alts.append(f'ar:"{w}"*')
+            words = [w for w in (norm_ar(x) for x in p.text.split()) if w]
+            if words:  # a phrase ("رضي الله عنه") needs all its words, not any one of them
+                alts.append("(" + " AND ".join(f'ar:"{w}"*' for w in words) + ")" if len(words) > 1
+                            else f'ar:"{words[0]}"*')
         else:
             alts.append(f'{{en extra}}:"{p.text}"*')
         for tok in sorted(p.strong | p.related):
@@ -105,6 +113,26 @@ def _fts_query(parts) -> str:
 
 def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20,
            per_set: int = 2, like: dict | None = None) -> list[dict]:
+    """Icons and glyphs (Unicode characters) for a query. Glyphs that are exactly
+    what was asked for (by name or by their Arabic words) come first; other
+    matching glyphs follow the first icons."""
+    parts = expand(text) if text else []
+    glyphs = []
+    if f.kind != "icon" and not f.shape_filtered() and not like and f.cat in (None, "culture"):
+        glyphs = glyph_catalog.search(text or "", parts, limit=limit if f.kind == "glyph" else 6)
+        if not text and f.kind == "glyph":
+            glyphs = [glyph_catalog.public(g) for g in glyph_catalog.catalog()][:limit]
+    if f.kind == "glyph":
+        return glyphs
+    icons = _search_icons(db, text, parts, f, limit, per_set, like)
+    for d in icons:
+        d.setdefault("kind", "icon")
+    first = [g for g in glyphs if g["level"] >= 4][:3]
+    later = [g for g in glyphs if g not in first]
+    return (first + icons[:4] + later + icons[4:])[:limit] if glyphs else icons
+
+
+def _search_icons(db, text, parts, f: Filters, limit, per_set, like) -> list[dict]:
     where, args = [], []
     if f.style:
         where.append("i.style = ?"); args.append(f.style)
@@ -117,8 +145,11 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
             where.append(f"i.{col} = ?"); args.append(val)
     if f.cat:
         where.append("(i.cat = ? OR i.cat2 = ?)"); args += [f.cat, f.cat]
-    if f.sets:
-        where.append(f"i.prefix IN ({','.join('?' * len(f.sets))})"); args += f.sets
+    sets = [x for x in (f.sets or []) if x != glyph_catalog.PREFIX]
+    if f.sets and not sets:
+        return []
+    if sets:
+        where.append(f"i.prefix IN ({','.join('?' * len(sets))})"); args += sets
     if f.license == "commercial":
         where.append("i.license_tier IN ('permissive','attribution')")
     elif f.license == "permissive":
@@ -132,7 +163,6 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
             "s.total AS set_total, fam.label AS family, COALESCE(c.sets, 1) AS concept_sets")
     joins = ("JOIN sets s ON s.prefix = i.prefix JOIN families fam ON fam.id = i.family_id "
              "LEFT JOIN concepts c ON c.concept = i.concept")
-    parts = expand(text) if text else []
     q = _fts_query(parts) if parts else ""
     pool = max(limit * 300, 6000)
     if q:

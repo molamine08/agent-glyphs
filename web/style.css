@@ -248,9 +248,31 @@ html[dir="rtl"] .agent-line { margin-left: 0; margin-right: auto; }
 .tile:hover { border-color: var(--ink-3); }
 .tile[aria-current="true"] { border: 2px solid var(--ink); background: var(--wash); }
 .tile .ic svg { width: 30px; height: 30px; }
+/* glyphs: Unicode characters shown as text, with their code point */
+:root { --font-glyph: "Noto Naskh Arabic", "Amiri", "Scheherazade New", "Geeza Pro", "Segoe UI", serif; }
+.tile.glyph { position: relative; grid-template-rows: 1fr auto; padding: 8px 4px 9px; overflow: hidden; container-type: inline-size; }
+.tile.glyph .ch { font: 400 34px/1 var(--font-glyph); align-self: center; padding-top: 6px; }
+.tile.glyph.wide .ch { font-size: 7cqw; }  /* the basmala ligature is about twelve times wider than tall */
+.tile.glyph.emoji .ch { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: 30px; }
+.tile.glyph .cp { font: 500 10.5px/1 var(--mono); color: var(--ink-3); letter-spacing: .02em; }
+.big-ch { font: 400 112px/1.1 var(--font-glyph); color: var(--ink); white-space: nowrap; }
+.canvas { container-type: inline-size; }
+.big-ch.wide { font-size: 7cqw; }
+.big-ch.emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: 96px; }
+.alt.glyph { overflow: hidden; container-type: inline-size; min-width: 0; }
+.alt.glyph .ch { font: 400 22px/1 var(--font-glyph); white-space: nowrap; }
+.alt.glyph.wide .ch { font-size: 7cqw; }
+.inspector.is-glyph .preview { width: 86%; }
+.inspector.is-glyph #download, .inspector.is-glyph .control, .inspector.is-glyph .check { display: none; }
+.inspector.is-glyph .facts { grid-template-columns: 1fr; }
+.inspector.is-glyph .facts dd { font: 600 14px var(--mono); overflow-wrap: anywhere; text-align: start; }
+html[dir="rtl"] .inspector.is-glyph .facts dd { text-align: right; }
+.glyph-mark { font: 400 20px/1 var(--font-glyph); width: 22px; text-align: center; }
+.pop-note { max-width: 260px; margin: var(--s2) 12px 4px; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
 .ph { display: block; width: 26px; height: 26px; border-radius: 8px; background: var(--wash); }
 .empty { grid-column: 1 / -1; padding: var(--s7) 0; color: var(--ink-2); font-size: 17px; }
 .more { margin: var(--s6) auto 0; display: flex; }
+.more[hidden] { display: none; }
 
 /* inspector: one outlined card */
 .inspector { border: var(--line-soft); border-radius: 26px; padding: var(--s4); position: sticky; top: var(--s4); max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }

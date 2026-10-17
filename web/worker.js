@@ -1,7 +1,7 @@
 // Agent Glyphs search engine for the page. Runs in a Web Worker so typing stays smooth
 // while 400k icon names are scanned. Mirrors scripts/atlas/query.py.
 
-let meta, rows, vocab, vocabKeys, styleTokens, C, termsAr;
+let meta, rows, vocab, vocabKeys, styleTokens, C, termsAr, glyphs = [];
 
 const AR = /[؀-ۿ]/;
 function normAr(text) {
@@ -18,12 +18,14 @@ function normAr(text) {
 
 async function load(base, v = "") {
   const q = v ? `?v=${v}` : "";
-  const [m, icons, ar] = await Promise.all([
+  const [m, icons, ar, gl] = await Promise.all([
     fetch(base + "meta.json" + q).then((r) => r.json()),
     fetch(base + "icons.json" + q).then((r) => r.json()),
     fetch(base + "ar.json" + q).then((r) => r.json()),
+    fetch(base + "glyphs.json" + q).then((r) => r.json()).catch(() => []),
   ]);
   meta = m;
+  glyphs = gl.map((g) => ({ ...g, t: new Set(g.t), f: new Set(g.f) }));
   C = { g: ar.g, ax: ar.ax, as: ar.as, en: ar.en };
   termsAr = ar.terms;
   styleTokens = new Set(meta.styleTokens);
@@ -48,7 +50,8 @@ async function load(base, v = "") {
     }
   }
   vocabKeys = [...vocab.keys()];
-  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms, labels: ar.lab || {} });
+  postMessage({ type: "ready", meta: { ...meta, setsInfo: meta.setsInfo }, terms: ar.terms, labels: ar.lab || {},
+    glyphChars: gl.filter((g) => !g.e).map((g) => g.ch).join("") });
 }
 
 function rowsForTokens(tokens) {
@@ -86,7 +89,8 @@ function arForms(word) {
 }
 function enForms(word) {
   const w = word.toLowerCase(), out = [w];
-  for (const [suf, rep] of EN_SUFFIXES) if (w.endsWith(suf) && w.length - suf.length >= 3) out.push(w.slice(0, -suf.length) + rep);
+  // "-ing"/"-ed" need a longer stem: "rating" is not "rat"
+  for (const [suf, rep] of EN_SUFFIXES) if (w.endsWith(suf) && w.length - suf.length >= (suf === "ing" || suf === "ed" ? 4 : 3)) out.push(w.slice(0, -suf.length) + rep);
   return [...new Set(out)];
 }
 function lookupAr(phrase) {
@@ -130,6 +134,35 @@ function level(ctoks, concept, part) {
   return 0;
 }
 
+// ---- glyphs (Unicode characters), mirrors scripts/atlas/glyphs.py
+function glyphLevel(g, part) {
+  if (part.ar && g.a.includes(normAr(part.text))) return 5;
+  if (part.strong.has(g.n) || (!part.ar && g.t.has(part.text))) return 4;
+  for (const x of part.strong) if (g.t.has(x)) return 3;
+  if (part.ar) {
+    const words = normAr(part.text).split(" ").filter(Boolean);
+    if (words.length && words.every((w) => arForms(w).some((f) => g.f.has(f)))) return 2;
+  } else if (part.text.length >= 3 && [...g.t].some((x) => x.startsWith(part.text))) return 2;
+  for (const x of part.related) if (g.t.has(x)) return 1;
+  return 0;
+}
+function searchGlyphs(query, p, limit) {
+  let out = [];
+  for (const g of glyphs) {
+    let lv = 0;
+    if (query && query.includes(g.ch)) lv = 6;
+    else if (p) lv = Math.min(...p.parts.map((pt) => glyphLevel(g, pt)));
+    if (!lv) continue;
+    let overlap = 0;
+    for (const pt of p ? p.parts : []) for (const x of pt.strong) if (g.t.has(x)) overlap++;
+    out.push([lv, overlap, -g.n.length, g]);
+  }
+  out.sort((a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2]);
+  if (out.length && out[0][0] >= 2) out = out.filter((x) => x[0] >= 2);  // related glyphs only when nothing closer
+  return out.slice(0, limit).map(([lv, , , g]) => glyphItem(g, lv));
+}
+const glyphItem = (g, lv = 4) => ({ g: 1, p: "unicode", n: g.n, ch: g.ch, cp: g.cp, un: g.un, e: g.e || 0, w: g.w || 0, lv, t: [...g.t] });
+
 function parse(query) {
   const q = query.trim().toLowerCase();
   if (!q) return null;
@@ -149,9 +182,25 @@ function parse(query) {
 function search(opts) {
   const f = opts.filters;
   const p = parse(opts.query || "");
+  // glyphs have no style, stroke or corners: any of those filters means icons only
+  const culture = meta.categories.findIndex(([k]) => k === "culture");
+  const glyphsOk = f.kind !== "icon" && f.style === null && f.corners === null && f.weight === null && (f.cat === null || f.cat === culture);
+  let gl = [];
+  if (glyphsOk) gl = p ? searchGlyphs(opts.query.trim(), p, f.kind === "glyph" ? opts.limit : 6) : f.kind === "glyph" ? glyphs.map((g) => glyphItem(g)) : [];
+  if (f.kind === "glyph") return { total: gl.length, sets: 0, glyphs: gl.length, counts: null, all: null, rel: p ? p.rel : [], items: gl.slice(0, opts.limit) };
+  const res = searchIcons(opts, f, p);
+  if (gl.length) {
+    const first = gl.filter((g) => g.lv >= 4).slice(0, 3), later = gl.filter((g) => !first.includes(g));
+    res.items = [...first, ...res.items.slice(0, 4), ...later, ...res.items.slice(4)].slice(0, opts.limit);
+  }
+  res.glyphs = gl.length;
+  return res;
+}
+
+function searchIcons(opts, f, p) {
   let candidates;
   if (p) {
-    if (!p.groups.length || p.groups.some((g) => !g.size)) return { total: 0, items: [] };
+    if (!p.groups.length || p.groups.some((g) => !g.size)) return { total: 0, sets: 0, items: [], counts: null, all: 0, rel: p.rel };
     const sets = p.groups.map(rowsForTokens).sort((a, b) => a.size - b.size);
     candidates = [...sets[0]].filter((id) => sets.every((s) => s.has(id)));
   } else {
