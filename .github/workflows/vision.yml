@@ -36,8 +36,11 @@ jobs:
       - name: Install (CPU-only PyTorch + open_clip)
         run: |
           pip install -r requirements.txt
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          # torch and torchvision must come from the same (CPU) build, or
+          # torchvision's compiled operators fail to load at import time
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install open_clip_torch
+          python -c "import torch, torchvision, open_clip; print('torch', torch.__version__, '| torchvision', torchvision.__version__, '| open_clip', open_clip.__version__)"
 
       - name: Restore vision results
         uses: actions/cache/restore@v4
@@ -57,7 +60,12 @@ jobs:
 
       - name: Measure whether vision helps (reviewer-graded icons)
         run: |
-          python tests/eval_vision.py --src .work/iconify --apply
+          set -o pipefail
+          mkdir -p .work
+          if ! python tests/eval_vision.py --src .work/iconify --apply 2>&1 | tee .work/eval.log; then
+            { echo "### Vision evaluation failed"; echo '```'; tail -n 40 .work/eval.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           cat VISION_EVAL.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Look at every icon
