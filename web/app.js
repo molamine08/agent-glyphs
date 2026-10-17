@@ -24,6 +24,7 @@ const INSTALL = [
 
 const T = {
   ar: {
+    themeLight: "الوضع الفاتح", themeDark: "الوضع الداكن",
     lang: "English", skip: "انتقل إلى البحث", navBrowse: "تصفّح", navAgents: "للوكلاء",
     title: "أيقونات يفهمها وكيلك",
     tag: (n, s) => `${n} أيقونة، ${s} مكتبة`,
@@ -51,7 +52,6 @@ const T = {
     clear: "امسح الفلاتر", copyCmd: "انسخ الأمر", more: "اعرض المزيد",
     stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
     loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
-    alsoIncludes: "يشمل أيضاً:",
     count: (n, s) => `${n} أيقونة من ${s} مكتبة`, none: "لا نتائج. جرّب كلمة قريبة في المعنى أو خفّف الفلاتر.",
     tabs: { same: "نفس المعنى", agent: "لوكيلك", details: "التفاصيل" },
     noAlts: "لا توجد نسخة لهذه الأيقونة في مكتبات أخرى.",
@@ -69,6 +69,7 @@ const T = {
     foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
   },
   en: {
+    themeLight: "Light mode", themeDark: "Dark mode",
     lang: "العربية", skip: "Skip to search", navBrowse: "Browse", navAgents: "For agents",
     title: "icons your agent understands",
     tag: (n, s) => `${n} icons, ${s} libraries`,
@@ -96,7 +97,6 @@ const T = {
     clear: "Clear filters", copyCmd: "Copy command", more: "Show more",
     stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
     loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
-    alsoIncludes: "Also includes:",
     count: (n, s) => `${n} icons from ${s} libraries`, none: "No results. Try a word with a similar meaning or loosen the filters.",
     tabs: { same: "Same meaning", agent: "For your agent", details: "Details" },
     noAlts: "No other library draws this icon.",
@@ -349,7 +349,7 @@ function renderFilters() {
   const el = $("filters");
   const keys = [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]];
   el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
-    + `<span class="sp"></span><button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
+    + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
     e.stopPropagation();
     openPop = openPop === w.dataset.key ? null : w.dataset.key;
@@ -438,7 +438,6 @@ function render(res) {
   grid.innerHTML = "";
   const L = t();
   $("status").textContent = res.total ? L.count(fmt(res.total), fmt(res.sets)) : "";
-  renderRel(res.rel || []);
   if (openPop === "cat") renderFilters();
   if (!res.items.length) {
     const li = document.createElement("li");
@@ -469,18 +468,6 @@ function render(res) {
   if (desktop() && (!current || !res.items.some((i) => i.p === current.p && i.n === current.n)) && !current?.pinned) open(res.items[0], false);
 }
 
-// related meanings the search also covers ("مسلم" also finds mosque, crescent…); one click searches just that
-function renderRel(rel) {
-  const el = $("relLine");
-  el.hidden = !rel.length;
-  if (!rel.length) { el.innerHTML = ""; return; }
-  const label = (tok) => (lang === "ar" && (labels[tok] || (terms[tok] && terms[tok][0]))) || tok;
-  el.innerHTML = `<span>${esc(t().alsoIncludes)}</span>` + rel.slice(0, 6).map((tok) => `<button type="button" data-tok="${esc(tok)}">${esc(label(tok))}</button>`).join("");
-  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
-    $("q").value = lang === "ar" ? label(b.dataset.tok) : b.dataset.tok;
-    newSearch();
-  }));
-}
 
 worker.onmessage = (e) => {
   const m = e.data;
@@ -718,12 +705,15 @@ function applyLang() {
     if (typeof v === "string") el.textContent = v;
   });
   $("lang").textContent = L.lang;
+  renderTheme();
   $("q").placeholder = "";
   renderHint();
   $("lede").innerHTML = L.lede;
   $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
   $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;
-  $("copyCmd").innerHTML = `${ui("copy")}<span>${esc(L.copyCmd)}</span>`;
+  $("copyCmd").innerHTML = ui("copy");
+  $("copyCmd").setAttribute("aria-label", L.copyCmd);
+  $("copyCmd").title = L.copyCmd;
   $("next").innerHTML = ui("next");
   $("next").setAttribute("aria-label", L.next);
   $("footText").textContent = meta ? L.foot(meta.version) : "";
@@ -733,6 +723,24 @@ function applyLang() {
   if (meta) { renderFilters(); run(); loadDemo(); }
   if (current) open(current, current.pinned);
 }
+// light / dark: follows the device until the visitor picks one, then remembers it
+const isDark = () => (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+function renderTheme() {
+  const dark = isDark();
+  $("theme").innerHTML = ui(dark ? "sun" : "moon");
+  const label = dark ? t().themeLight : t().themeDark;
+  $("theme").setAttribute("aria-label", label);
+  $("theme").title = label;
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", dark ? "#0E0E10" : "#FFFFFF"));
+}
+$("theme").addEventListener("click", () => {
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("theme", next); } catch { /* private mode */ }
+  renderTheme();
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderTheme);
+
 $("lang").addEventListener("click", () => {
   lang = lang === "ar" ? "en" : "ar";
   try { localStorage.setItem("lang", lang); } catch { /* private mode */ }
