@@ -370,6 +370,11 @@ def analyze(body: str, left: float, top: float, w: float, h: float) -> dict:
     # coverage, so it is sub-pixel accurate for line icons.
     if out.get("outline_len"):
         out["weight"] = 2 * (ink / px_per_unit**2) / out["outline_len"]
+    if src["translucent"]:
+        # duotone: the stroke is the opaque layer; the light tone must not thicken it
+        opaque = contour_metrics(alpha, px_per_unit, level=0.5)
+        if opaque.get("outline_len"):
+            out["weight"] = 2 * (float(alpha[mask].sum()) / px_per_unit**2) / opaque["outline_len"]
     out["tint"] = tint_share(alpha) if src["translucent"] else 0.0
     # Corners are read at double resolution (10 px per unit), four times for
     # hairline strokes, where a round join is only a few pixels wide.

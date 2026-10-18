@@ -43,7 +43,7 @@ const T = {
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "الخطوة التالية",
     browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…", hint: "ابحث عن أيقونات",
-    shape: "الشكل", color: "الألوان", density: "الكثافة", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
+    shape: "الشكل", colors_: "الألوان", density: "الكثافة", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
     any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
     strokeTitle: "سُمك الخط على شبكة 24px",
     shapes: { outline: "خطية", filled: "مملوءة", mixed: "مختلطة" },
@@ -100,7 +100,7 @@ const T = {
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "Next step",
     browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…", hint: "Search icons for",
-    shape: "Shape", color: "Colour", density: "Density", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
+    shape: "Shape", colors_: "Colours", density: "Density", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
     any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
     strokeTitle: "Stroke weight on a 24 px grid",
     shapes: { outline: "Outline", filled: "Filled", mixed: "Mixed" },
@@ -379,9 +379,9 @@ function renderFilters() {
   const el = $("filters");
   // glyphs are characters: no style, corners, stroke or licence to pick
   // filled icons have no stroke: the stroke filter goes away while "filled" is picked
-  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.color], ["corners", L.corners],
+  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.colors_], ["corners", L.corners],
     ...(filledOnly() ? [] : [["weight", L.stroke]]), ["density", L.density], ["cat", L.category], ["commercial", L.licence]])];
-  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
+  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small>${isSet(k) ? `<span>${esc(chipLabel(k))}</span>` : ""}${ui("down")}</button></div>`).join("")
     + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
     e.stopPropagation();
