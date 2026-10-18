@@ -31,7 +31,7 @@
       </a>
       <nav class="nav">
         <a href="#browse" data-i18n="navBrowse">تصفّح</a>
-        <a href="#agents" data-i18n="navAgents">للوكلاء</a>
+        <a href="#agent" id="navAgent" data-i18n="navAgents">للوكلاء</a>
         <a href="llms.txt" dir="ltr">llms.txt</a>
       </nav>
       <div class="bar-end">
@@ -82,7 +82,7 @@
 
       <div class="filter-row">
         <div class="filters" id="filters" role="group" aria-label="Filters"></div>
-        <div class="agent-line" dir="ltr">
+        <div class="agent-line" id="agent" dir="ltr">
           <code dir="ltr"><span class="gt">&gt;</span> <span id="agentLine"></span><i class="cursor"></i></code>
           <button class="copy-cmd" id="copyCmd" type="button"></button>
         </div>

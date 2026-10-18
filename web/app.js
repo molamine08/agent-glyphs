@@ -887,6 +887,20 @@ $("lang").addEventListener("click", () => {
   applyLang();
 });
 
+// "For agents" leads to the command an agent would run, and points at it
+$("navAgent").addEventListener("click", (e) => {
+  e.preventDefault();
+  const el = $("agent");
+  el.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" });
+  el.classList.remove("flash");
+  clearTimeout(el._flash);
+  el._flash = setTimeout(() => {
+    void el.offsetWidth;  // restart the animation on every click
+    el.classList.add("flash");
+    el._flash = setTimeout(() => el.classList.remove("flash"), 2800);
+  }, reduced() ? 0 : 450);
+});
+
 $("searchIcon").innerHTML = ui("search");
 $("gh").innerHTML = ui("github");
 applyLang();

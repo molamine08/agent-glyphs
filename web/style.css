@@ -404,3 +404,20 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .ui.spin { animation: spin 1.1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .ui.spin { animation: none; } }
+
+/* "For agents" in the header leads to the command line and draws a light
+   travelling around its border twice, then fades away */
+@property --orbit { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.agent-line { position: relative; scroll-margin: 30vh; }
+.agent-line.flash::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 999px; padding: 2px; pointer-events: none;
+  background: conic-gradient(from var(--orbit), transparent 0deg, transparent 200deg, var(--ink) 330deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: orbit 1.1s cubic-bezier(.45, .05, .35, 1) 2, orbit-out .5s ease 2.1s forwards;
+}
+@keyframes orbit { to { --orbit: 360deg; } }
+@keyframes orbit-out { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .agent-line.flash::after { background: var(--ink); animation: orbit-out .6s ease 1.2s forwards; }
+}
