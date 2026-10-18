@@ -3,7 +3,8 @@
 
 Examples
   python scripts/search.py "shopping cart"
-  python scripts/search.py "سلة تسوق" --style outline --weight 1.5 --corners rounded
+  python scripts/search.py "سلة تسوق" --shape outline --weight 1.5 --corners rounded
+  python scripts/search.py "home" --shape outline --color duotone --density balanced
   python scripts/search.py "bell" --like lucide          # rank by visual match to Lucide
   python scripts/search.py "wallet" --like ./my-icon.svg  # rank by match to your own icon
   python scripts/search.py --cat finance --style filled --limit 40
@@ -23,14 +24,19 @@ from atlas import store  # noqa: E402
 from atlas.query import Filters, search  # noqa: E402
 from atlas.profile import resolve_like  # noqa: E402
 
-SHOW = ["prefix", "name", "family", "style", "weight", "weight_class", "corners", "curves",
+SHOW = ["prefix", "name", "family", "shape", "color", "style", "weight", "weight_class", "corners", "curves",
         "contrast_class", "density_class", "container", "cat", "license", "license_tier"]
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("query", nargs="?", help="what the icon means, English or Arabic")
-    ap.add_argument("--style", choices=["outline", "filled", "duotone", "multicolor", "mixed"])
+    ap.add_argument("--shape", choices=["outline", "filled", "mixed"],
+                    help="what the eye sees: lines only, filled, or lines with filled parts")
+    ap.add_argument("--color", choices=["mono", "duotone", "multicolor"], help="one colour, two tones, or full colour")
+    ap.add_argument("--density", choices=["airy", "balanced", "heavy"], help="how much ink: airy, balanced or heavy")
+    ap.add_argument("--style", choices=["outline", "filled", "duotone", "multicolor", "mixed"],
+                    help="older single label (outline/filled/mixed = --shape, duotone/multicolor = --color)")
     ap.add_argument("--weight", type=float, help="stroke width on a 24px grid, e.g. 1.5 or 2")
     ap.add_argument("--weight-tol", type=float, default=0.3)
     ap.add_argument("--weight-class", choices=["hairline", "thin", "light", "regular", "medium", "bold", "heavy", "solid"])
@@ -52,7 +58,7 @@ def main(argv=None):
 
     db = store.connect()
     like = resolve_like(db, a.like) if a.like else None
-    f = Filters(style=a.style, weight=a.weight, weight_tol=a.weight_tol, weight_class=a.weight_class,
+    f = Filters(style=a.style, shape=a.shape, color=a.color, density=a.density, weight=a.weight, weight_tol=a.weight_tol, weight_class=a.weight_class,
                 corners=a.corners, curves=a.curves, contrast=a.contrast, container=a.container,
                 complexity=a.complexity, cat=a.cat, sets=a.sets, license=a.license, min_conf=a.min_conf, kind=a.kind)
     rows = search(db, a.query, f, limit=a.limit, per_set=a.per_set, like=like)
@@ -69,7 +75,10 @@ def main(argv=None):
             continue
         w = f"{r['weight']:.2f}" if r.get("weight") is not None else "-"
         dist = f"  match={r['style_distance']}" if "style_distance" in r else ""
-        print(f"{r['prefix']}:{r['name']:<34} {r['style'] or '-':<10} w={w:<5} {r['corners'] or '-':<8} "
+        look = r.get("shape") or r.get("style") or "-"
+        if r.get("color") not in (None, "mono"):
+            look += "+" + r["color"]
+        print(f"{r['prefix']}:{r['name']:<34} {look:<16} w={w:<5} {r['corners'] or '-':<8} {r.get('density_class') or '-':<8} "
               f"{r['cat']:<13} {r['license']} ({r['license_tier']}){dist}")
 
 

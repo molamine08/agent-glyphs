@@ -19,7 +19,7 @@ from pathlib import Path
 
 from .analyze import analyze, analyze_light
 
-ANALYZER_VERSION = 4
+ANALYZER_VERSION = 5  # 5: corner events, tint share
 
 
 def icon_box(data: dict, icon: dict):

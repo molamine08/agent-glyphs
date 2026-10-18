@@ -38,7 +38,7 @@ CREATE TABLE icons(
   weight_conf TEXT, corners TEXT, corners_conf TEXT, roundness REAL,
   curviness REAL, curves TEXT, contrast REAL, contrast_class TEXT,
   density REAL, density_class TEXT, padding REAL, container TEXT,
-  complexity TEXT, w REAL, h REAL, license_tier TEXT
+  complexity TEXT, w REAL, h REAL, license_tier TEXT, shape TEXT, color TEXT
 );
 CREATE TABLE concepts(concept TEXT PRIMARY KEY, sets INT);
 CREATE VIRTUAL TABLE icons_fts USING fts5(
@@ -119,28 +119,37 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
                 extra += f" {c} {c_en} {norm_ar(c_ar)}"
             rows.append((name, var, concept, cats, lab, m, en, " ".join(norm_ar(w) for w in ar), extra))
             stats["icons"] += 1
-            stats[f"style:{lab.get('style')}"] += 1
+            stats[f"shape:{lab.get('shape')}"] += 1
+            stats[f"color:{lab.get('color')}"] += 1
             if ar:
                 stats["with_ar"] += 1
             if cats[0] != "other":
                 stats["with_cat"] += 1
 
-        # Family consistency: a glyph drawn only with lines inside a filled
-        # family (Material's default style, "-baseline" sets) is that family's
-        # filled icon; a borderline "mixed" icon follows its family too.
-        fam_major = {}
+        # Family consistency, only where the drawing itself is undecided:
+        # a borderline "mixed" icon follows a clearly outline or filled family,
+        # and an icon without corners (a circle, a wave) takes its family's
+        # corners. An icon drawn with lines stays "outline" even inside a
+        # filled family: filters show what the eye sees.
+        fam_major, fam_corners = {}, {}
         for var, labs in fams.items():
-            styles = [l.get("style") for l in labs]
-            top = max(set(styles), key=styles.count)
-            fam_major[var] = (top, styles.count(top) / len(styles))
+            shapes = [l.get("shape") for l in labs]
+            top = max(set(shapes), key=shapes.count)
+            fam_major[var] = (top, shapes.count(top) / len(shapes))
+            cs = [l.get("corners") for l in labs if l.get("corners")]
+            if cs:
+                c = max(set(cs), key=cs.count)
+                if cs.count(c) / len(cs) >= 0.6:
+                    fam_corners[var] = c
         for row in rows:
             lab = row[4]
             top, share = fam_major[row[1]]
-            if top == "filled" and share >= 0.6 and lab.get("style") in ("outline", "mixed") \
-                    and lab.get("style_conf") != "high":
-                lab["style"], lab["style_conf"] = "filled", "medium"
-            elif top == "outline" and share >= 0.7 and lab.get("style") == "mixed":
-                lab["style"], lab["style_conf"] = "outline", "medium"
+            if lab.get("shape") == "mixed" and top in ("outline", "filled") and share >= 0.7:
+                lab["shape"], lab["style_conf"] = top, "medium"
+                if lab.get("color", "mono") == "mono":
+                    lab["style"] = top
+            if not lab.get("corners") and row[1] in fam_corners and lab.get("shape") not in (None, "unknown"):
+                lab["corners"], lab["corners_conf"] = fam_corners[row[1]], "low"
 
         fam_ids = {}
         for var, labs in fams.items():
@@ -163,19 +172,21 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
         for name, var, concept, cats, lab, m, en, ar, extra in rows:
             icon_id += 1
             db.execute(
-                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (icon_id, prefix, name, fam_ids[var], concept, cats[0], cats[1] if len(cats) > 1 else None,
                  lab.get("style"), lab.get("style_conf"),
                  lab.get("weight"), lab.get("weight_class"), lab.get("weight_conf"), lab.get("corners"),
                  lab.get("corners_conf"), lab.get("roundness"), lab.get("curviness"), lab.get("curves"),
                  lab.get("contrast"), lab.get("contrast_class"), lab.get("density"), lab.get("density_class"),
-                 lab.get("padding"), lab.get("container"), lab.get("complexity"), m.get("w"), m.get("h"), tier),
+                 lab.get("padding"), lab.get("container"), lab.get("complexity"), m.get("w"), m.get("h"), tier,
+                 lab.get("shape"), lab.get("color")),
             )
             db.execute("INSERT INTO icons_fts(rowid,en,ar,extra) VALUES(?,?,?,?)", (icon_id, en, ar, extra))
         stats["sets"] += 1
     # how many libraries draw a concept: a strong hint of the canonical name
     db.execute("INSERT INTO concepts SELECT concept, COUNT(DISTINCT prefix) FROM icons GROUP BY concept")
-    for col in ("prefix", "concept", "cat", "cat2", "style", "weight_class", "corners", "family_id", "license_tier"):
+    for col in ("prefix", "concept", "cat", "cat2", "style", "shape", "color", "weight_class", "corners", "density_class",
+                "family_id", "license_tier"):
         db.execute(f"CREATE INDEX ix_{col} ON icons({col})")
     db.execute("INSERT INTO meta VALUES('iconify_version', ?)", (version,))
     db.execute("INSERT INTO meta VALUES('stats', ?)", (json.dumps(stats),))

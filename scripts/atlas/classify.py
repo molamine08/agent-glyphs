@@ -11,6 +11,9 @@ import re
 
 from .taxonomy import STYLE_TOKENS
 
+# bump when the labels change, so the daily update rebuilds the index
+LABELS_VERSION = 2  # 2: shape and colour apart, corners from real corners, filters follow the drawing
+
 FILLED_HINTS = {"fill", "filled", "solid", "glyph"}
 OUTLINE_HINTS = {"outline", "outlined", "outlines", "line", "lines", "linear", "stroke", "stroked"}
 DUO_HINTS = {"duotone", "twotone", "duo", "bulk", "two-tone"}
@@ -57,7 +60,7 @@ def _hint(tokens: set[str]) -> str | None:
 def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
     out: dict = {}
     if m.get("error") or m.get("empty"):
-        out["style"], out["style_conf"] = "unknown", "low"
+        out["style"], out["style_conf"], out["shape"], out["color"] = "unknown", "low", "unknown", "mono"
         return out
     ntoks = name_tokens(name)
     toks = set(ntoks) | set(name_tokens(prefix))
@@ -65,16 +68,23 @@ def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
     if hint is None and ntoks and ntoks[-1] == "f":  # e.g. jam:padlock-f
         hint = "filled"
 
-    # ---- style -----------------------------------------------------------
+    # ---- shape and colour --------------------------------------------------
+    # Two separate questions, both answered by what the eye sees:
+    #   shape: outline (lines only), filled, or mixed (lines with filled parts)
+    #   color: mono, duotone (a second, lighter tone) or multicolor
+    # The name only breaks a tie ("mixed" or unmeasured drawings): an icon called
+    # "link-filled" that is drawn with lines is an outline icon.
     solidity = m.get("solidity")
     if m.get("multicolor"):
-        style, conf = "multicolor", "high"
-    elif set_light and solidity is None:  # single-colour glyphs in emoji/flag/logo sets
-        style, conf = "filled", "low"
+        color = "multicolor"
+    elif m.get("translucent") and ((m.get("tint") or 0) >= 0.05 or hint == "duotone"):
+        color = "duotone"
     else:
-        if m.get("translucent"):
-            raster = "duotone"
-        elif solidity is None:
+        color = "mono"
+    if set_light and solidity is None:  # emoji / flag / logo sets: drawn as shapes
+        shape, conf = "filled", "low"
+    else:
+        if solidity is None:
             raster = None
         elif solidity > 0.12 or (solidity >= 0.05 and (m.get("weight") or 0) >= 3.0):
             raster = "filled"
@@ -82,25 +92,20 @@ def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
             raster = "outline"
         else:
             raster = "mixed"
-        if hint and raster:
-            if hint == raster:
-                style, conf = raster, "high"
-            elif raster == "mixed":
-                style, conf = hint, "medium"
-            elif hint == "filled" and raster == "outline":
-                # line-only glyphs (plus, arrows, digits) inside a filled/solid
-                # variant: drawn with lines, but they belong to the filled family
-                style, conf = "filled", "medium"
-            else:  # the name and the drawing disagree: trust the drawing
-                style, conf = raster, "low"
+        shape_hint = hint if hint in ("filled", "outline") else None
+        if raster in ("filled", "outline"):
+            shape, conf = raster, ("high" if shape_hint in (None, raster) else "medium")
+        elif raster == "mixed" and shape_hint:
+            shape, conf = shape_hint, "medium"
         else:
-            style, conf = (raster or hint or "unknown"), "medium"
-    out["style"], out["style_conf"] = style, conf
+            shape, conf = (raster or shape_hint or "unknown"), "medium" if raster else "low"
+    style = color if color != "mono" else shape  # the older single label, kept for --style
+    out["shape"], out["color"], out["style"], out["style_conf"] = shape, color, style, conf
 
     # ---- weight ----------------------------------------------------------
     w = m.get("weight")
     linear = solidity is not None and solidity < 0.08
-    if w is not None and (style in ("outline", "duotone", "mixed") or (style == "filled" and linear)):
+    if w is not None and (shape in ("outline", "mixed") or linear):
         out["weight"] = round(w, 2)
         out["weight_class"] = next(label for top, label in WEIGHT_CLASSES if w < top)
         declared = m.get("declared_stroke")
@@ -109,17 +114,20 @@ def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
             out["weight_conf"] = "high" if abs(ref - w) / ref < 0.15 else "medium"
         else:
             out["weight_conf"] = "medium"
-    if style == "filled" and not linear:
+    if shape == "filled" and not linear:
         out["weight_class"] = "solid"
         out["weight_conf"] = "high" if conf == "high" else "medium"
 
     # ---- corners & curves --------------------------------------------------
-    r = m.get("roundness")
+    # corner_roundness only counts real corners (two straight runs meeting) and
+    # line ends; circles and arcs are not corners. None = the drawing has none,
+    # and the icon then follows its family (build_index).
+    r = m.get("corner_roundness") if "corner_roundness" in m else m.get("roundness")
     if r is not None:
         out["roundness"] = round(r, 2)
         out["corners"] = "rounded" if r >= 0.8 else ("sharp" if r <= 0.45 else "mixed")
-        out["corners_conf"] = "high" if (r >= 0.92 or r <= 0.4) else ("medium" if r >= 0.8 or r <= 0.55 else "low")
-        if m.get("linecap") in ("round", "square", "butt") and style == "outline":
+        out["corners_conf"] = "high" if (r >= 0.92 or r <= 0.3) else ("medium" if r >= 0.8 or r <= 0.45 else "low")
+        if m.get("linecap") in ("round", "square", "butt") and shape == "outline":
             cap_round = m["linecap"] == "round"
             if cap_round == (out["corners"] == "rounded"):
                 out["corners_conf"] = "high"
@@ -130,7 +138,7 @@ def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
 
     # ---- contrast, density, padding ---------------------------------------
     sc = m.get("stroke_contrast")
-    if sc is not None and style in ("outline", "duotone", "mixed"):
+    if sc is not None and shape in ("outline", "mixed"):
         out["contrast"] = round(sc, 2)
         out["contrast_class"] = "monoline" if sc < 0.15 else ("high" if sc > 0.45 else "moderate")
     d = m.get("density")

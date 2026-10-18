@@ -38,7 +38,7 @@ async function load(base, v = "") {
       const id = rows.length;
       const toks = r[0].toLowerCase().split(/[-_:]+/).filter(Boolean);
       const concept = toks.filter((t) => !styleTokens.has(t) && !/^\d+(px)?$/.test(t)).join("-") || r[0];
-      rows.push({ s: si, n: r[0], st: r[1], w: r[2], c: r[3], k: r[4], k2: r[5], pr: r[6], concept });
+      rows.push({ s: si, n: r[0], sh: r[1], co: r[2], w: r[3], c: r[4], k: r[5], k2: r[6], pr: r[7], d: r[8], concept });
       for (const t of new Set(toks)) {
         const base = t.replace(/\d+$/, "") || t;
         for (const key of base === t ? [t] : [t, base]) {
@@ -184,7 +184,8 @@ function search(opts) {
   const p = parse(opts.query || "");
   // glyphs have no style, stroke or corners: any of those filters means icons only
   const culture = meta.categories.findIndex(([k]) => k === "culture");
-  const glyphsOk = f.kind !== "icon" && f.style === null && f.corners === null && f.weight === null && (f.cat === null || f.cat === culture);
+  const glyphsOk = f.kind !== "icon" && f.shape === null && f.color === null && f.density === null && f.corners === null
+    && f.weight === null && (f.cat === null || f.cat === culture);
   let gl = [];
   if (glyphsOk) gl = p ? searchGlyphs(opts.query.trim(), p, f.kind === "glyph" ? opts.limit : 6) : f.kind === "glyph" ? glyphs.map((g) => glyphItem(g)) : [];
   if (f.kind === "glyph") return { total: gl.length, sets: 0, glyphs: gl.length, counts: null, all: null, rel: p ? p.rel : [], items: gl.slice(0, opts.limit) };
@@ -213,7 +214,10 @@ function searchIcons(opts, f, p) {
     const r = rows[id];
     const set = meta.setsInfo[r.s];
     if (f.commercial && set.t > 1) continue;
-    if (f.style !== null && r.st !== f.style) continue;
+    // filters always win: an icon shows only when it matches every one of them
+    if (f.shape !== null && r.sh !== f.shape) continue;
+    if (f.color !== null && r.co !== f.color) continue;
+    if (f.density !== null && r.d !== f.density) continue;
     if (f.corners !== null && r.c !== f.corners) continue;
     if (f.weight !== null && (r.w < 0 || Math.abs(r.w / 10 - f.weight) > 0.3)) continue;
     all++;
@@ -254,7 +258,7 @@ function searchIcons(opts, f, p) {
     total: scored.length, sets: setCount, counts, all, rel: p ? p.rel : [],
     items: items.map((id) => {
       const r = rows[id];
-      return { p: meta.setsInfo[r.s].p, n: r.n, st: r.st, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
+      return { p: meta.setsInfo[r.s].p, n: r.n, sh: r.sh, co: r.co, d: r.d, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
     }),
   };
 }
@@ -268,7 +272,7 @@ function alternatives(prefix, concept, commercial) {
     const r = rows[id], set = meta.setsInfo[r.s];
     if (seen.has(set.p) || (commercial && set.t > 1)) continue;
     seen.add(set.p);
-    out.push({ p: set.p, n: r.n, st: r.st, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept });
+    out.push({ p: set.p, n: r.n, sh: r.sh, co: r.co, d: r.d, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept });
     if (out.length >= 12) break;
   }
   return out;

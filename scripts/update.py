@@ -89,10 +89,13 @@ def main(argv=None):
     sources = json.loads(SOURCES.read_text()) if SOURCES.exists() else []
     ext_sig = [[s["prefix"], s.get("ref")] for s in sources if s.get("approved")]
     vis_sig = vision_signature()
+    from atlas.build_metrics import ANALYZER_VERSION
+    from atlas.classify import LABELS_VERSION
+    lab_sig = [ANALYZER_VERSION, LABELS_VERSION]
 
     version = latest_version() if not a.src else state.get("iconify_version", "local")
     if not a.force and version == state.get("iconify_version") and ext_sig == state.get("external") \
-            and vis_sig == state.get("vision"):
+            and vis_sig == state.get("vision") and lab_sig == state.get("labels"):
         print(f"up to date (Iconify {version})")
         _output(changed=False)
         return
@@ -137,7 +140,7 @@ def main(argv=None):
     old = log.read_text().split("\n", 2)[2] if log.exists() and log.read_text().startswith("# ") else ""
     log.write_text("# Changelog\n\n" + notes + "\n" + old)
 
-    state.update({"iconify_version": version, "built": today, "external": ext_sig, "vision": vis_sig,
+    state.update({"iconify_version": version, "built": today, "external": ext_sig, "vision": vis_sig, "labels": lab_sig,
                   "sets": stats["sets"], "icons": stats["icons"]})
     STATE.write_text(json.dumps(state, indent=1) + "\n")
     print(notes)
