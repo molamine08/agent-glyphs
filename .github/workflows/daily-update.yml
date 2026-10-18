@@ -87,9 +87,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ steps.update.outputs.tag }}" data/atlas.db.gz data/external-sets.json.gz \
-            --title "Index ${{ steps.update.outputs.tag }}" \
-            --notes-file .work/release-notes.md --latest
+          tag="${{ steps.update.outputs.tag }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            # a second build on the same day (e.g. after a vision change): replace its files
+            gh release upload "$tag" data/atlas.db.gz data/external-sets.json.gz --clobber
+            gh release edit "$tag" --notes-file .work/release-notes.md --latest
+          else
+            gh release create "$tag" data/atlas.db.gz data/external-sets.json.gz \
+              --title "Index $tag" --notes-file .work/release-notes.md --latest
+          fi
           # keep the last 14 data releases
           gh release list --limit 100 --json tagName --jq '.[].tagName' | grep '^data-' | tail -n +15 \
             | xargs -r -I{} gh release delete {} --yes --cleanup-tag
