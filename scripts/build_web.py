@@ -56,8 +56,24 @@ def main(argv=None):
         rows_by_set[s["prefix"]] = []
     set_meta = {s["p"]: s for s in sets}
 
-    for r in db.execute("SELECT prefix, name, concept, cat, cat2, shape, color, weight, corners, density_class, stroke "
-                        "FROM icons ORDER BY prefix, name"):
+    # an index built by older code may lack the newest labels: derive them, so the
+    # page can always be published (the next index update fills them in properly)
+    have = {c[1] for c in db.execute("PRAGMA table_info(icons)")}
+    from atlas.classify import STROKE_CLASSES
+    cols = ["prefix", "name", "concept", "cat", "cat2", "weight", "corners", "density_class", "style"]
+    cols += [c for c in ("shape", "color", "stroke") if c in have]
+
+    def labels(r):
+        r = dict(r)
+        st = r.get("style")
+        r.setdefault("shape", st if st in ("outline", "filled", "mixed") else ("filled" if st == "multicolor" else "outline"))
+        r.setdefault("color", st if st in ("duotone", "multicolor") else "mono")
+        if "stroke" not in r:
+            w = r["weight"]
+            r["stroke"] = next(label for top, label in STROKE_CLASSES if w < top) if w is not None else None
+        return r
+
+    for r in map(labels, db.execute(f"SELECT {', '.join(cols)} FROM icons ORDER BY prefix, name")):
         prior = set_prior(r["prefix"], set_meta[r["prefix"]]["c"], set_meta[r["prefix"]]["k"])
         prior += 0.5 * math.log(concept_sets.get(r["concept"], 1))
         rows_by_set[r["prefix"]].append([

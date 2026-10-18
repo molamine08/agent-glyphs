@@ -5,6 +5,12 @@ name: Daily index update
 on:
   schedule:
     - cron: "23 3 * * *"   # 03:23 UTC daily
+  # a change to how icons are measured or labelled rebuilds the index right away
+  # (update.py notices the new analyzer / labels version; otherwise it stops early)
+  push:
+    branches: [main]
+    paths: ["scripts/atlas/analyze.py", "scripts/atlas/classify.py", "scripts/atlas/build_index.py",
+            "scripts/atlas/build_metrics.py", "scripts/update.py"]
   workflow_dispatch:
     inputs:
       force:
