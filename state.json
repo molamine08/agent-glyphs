@@ -1,9 +1,30 @@
 {
  "iconify_version": "2.2.544",
  "built": "2026-10-18",
- "external": [],
- "sets": 248,
- "icons": 415236,
+ "external": [
+  [
+   "x-svgl",
+   null
+  ],
+  [
+   "x-lobe-icons",
+   null
+  ],
+  [
+   "x-vue-awesome",
+   null
+  ],
+  [
+   "x-hd-icons",
+   null
+  ],
+  [
+   "x-homelab-svg-assets",
+   null
+  ]
+ ],
+ "sets": 253,
+ "icons": 418521,
  "vision": "98631d0206a1",
  "labels": [
   5,
