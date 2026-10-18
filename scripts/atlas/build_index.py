@@ -38,7 +38,7 @@ CREATE TABLE icons(
   weight_conf TEXT, corners TEXT, corners_conf TEXT, roundness REAL,
   curviness REAL, curves TEXT, contrast REAL, contrast_class TEXT,
   density REAL, density_class TEXT, padding REAL, container TEXT,
-  complexity TEXT, w REAL, h REAL, license_tier TEXT, shape TEXT, color TEXT, stroke TEXT
+  complexity TEXT, w REAL, h REAL, license_tier TEXT, shape TEXT, color TEXT, stroke TEXT, animated INT
 );
 CREATE TABLE concepts(concept TEXT PRIMARY KEY, sets INT);
 CREATE VIRTUAL TABLE icons_fts USING fts5(
@@ -67,7 +67,18 @@ def _median(xs):
     return round(statistics.median(xs), 3) if xs else None
 
 
-def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
+ANIMATION = ("<animate", "<set ", "@keyframes", "animation:")
+
+
+def animated_names(src_dir: Path | None, prefix: str) -> set:
+    """Icons that move (SMIL or CSS animation), read from the set's own SVG data."""
+    if not src_dir or not (src_dir / f"{prefix}.json").exists():
+        return set()
+    data = json.loads((src_dir / f"{prefix}.json").read_text())
+    return {n for n, ic in data.get("icons", {}).items() if any(a in ic.get("body", "") for a in ANIMATION)}
+
+
+def build(metrics_dir: Path, out: Path, version: str | None, src_dir: Path | None = None) -> dict:
     if out.exists():
         out.unlink()
     db = sqlite3.connect(out)
@@ -79,6 +90,7 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
         with gzip.open(path, "rt") as f:
             rec = json.load(f)
         prefix, info = rec["prefix"], rec["info"]
+        moving = animated_names(src_dir, prefix)
         lic = info.get("license", {})
         tier = license_tier(lic.get("spdx"))
         author = info.get("author", {})
@@ -119,6 +131,7 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
                 extra += f" {c} {c_en} {norm_ar(c_ar)}"
             rows.append((name, var, concept, cats, lab, m, en, " ".join(norm_ar(w) for w in ar), extra))
             stats["icons"] += 1
+            stats["animated"] += int(name in moving or bool(m.get("animated")))
             stats[f"shape:{lab.get('shape')}"] += 1
             stats[f"color:{lab.get('color')}"] += 1
             if ar:
@@ -180,20 +193,21 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
         for name, var, concept, cats, lab, m, en, ar, extra in rows:
             icon_id += 1
             db.execute(
-                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (icon_id, prefix, name, fam_ids[var], concept, cats[0], cats[1] if len(cats) > 1 else None,
                  lab.get("style"), lab.get("style_conf"),
                  lab.get("weight"), lab.get("weight_class"), lab.get("weight_conf"), lab.get("corners"),
                  lab.get("corners_conf"), lab.get("roundness"), lab.get("curviness"), lab.get("curves"),
                  lab.get("contrast"), lab.get("contrast_class"), lab.get("density"), lab.get("density_class"),
                  lab.get("padding"), lab.get("container"), lab.get("complexity"), m.get("w"), m.get("h"), tier,
-                 lab.get("shape"), lab.get("color"), lab.get("stroke")),
+                 lab.get("shape"), lab.get("color"), lab.get("stroke"),
+                 int(name in moving or bool(m.get("animated")))),
             )
             db.execute("INSERT INTO icons_fts(rowid,en,ar,extra) VALUES(?,?,?,?)", (icon_id, en, ar, extra))
         stats["sets"] += 1
     # how many libraries draw a concept: a strong hint of the canonical name
     db.execute("INSERT INTO concepts SELECT concept, COUNT(DISTINCT prefix) FROM icons GROUP BY concept")
-    for col in ("prefix", "concept", "cat", "cat2", "style", "shape", "color", "stroke", "weight_class", "corners", "density_class",
+    for col in ("prefix", "concept", "cat", "cat2", "style", "shape", "color", "stroke", "animated", "weight_class", "corners", "density_class",
                 "family_id", "license_tier"):
         db.execute(f"CREATE INDEX ix_{col} ON icons({col})")
     db.execute("INSERT INTO meta VALUES('iconify_version', ?)", (version,))
@@ -209,8 +223,9 @@ def main(argv=None):
     ap.add_argument("--metrics", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--version")
+    ap.add_argument("--src", help="Iconify JSON folder, to tell which icons are animated")
     a = ap.parse_args(argv)
-    stats = build(Path(a.metrics), Path(a.out), a.version)
+    stats = build(Path(a.metrics), Path(a.out), a.version, Path(a.src) if a.src else None)
     print(json.dumps(stats, indent=1))
 
 

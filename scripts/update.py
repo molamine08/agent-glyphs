@@ -115,7 +115,7 @@ def main(argv=None):
 
     db_path = DATA / "atlas.db"
     before = snapshot(db_path)
-    stats = build_index.build(metrics, db_path, version)
+    stats = build_index.build(metrics, db_path, version, src)
     after = snapshot(db_path)
     with open(db_path, "rb") as f, gzip.open(DATA / "atlas.db.gz", "wb", compresslevel=9) as g:
         shutil.copyfileobj(f, g)

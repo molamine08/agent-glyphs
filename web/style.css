@@ -399,3 +399,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   .canvas { aspect-ratio: 1.6; }
   .preview { width: 34%; }
 }
+
+/* the "animated" type in the Type menu turns, like the icons it lists */
+.ui.spin { animation: spin 1.1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ui.spin { animation: none; } }

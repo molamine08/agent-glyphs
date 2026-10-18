@@ -22,6 +22,7 @@ The index (atlas.db) downloads itself on first use from the latest GitHub releas
 - Export: `python scripts/get.py tabler:wallet --format tsx --out src/icons` (svg | jsx | tsx; `--stroke 1.5 --size 20 --color "#0F766E" --mirror`)
 - Preview before choosing: `python scripts/preview.py lucide:house tabler:home -o choices.png`
 - List libraries: `python scripts/sets.py --search material`
+- Animated icons (SVG animation, e.g. loaders, weather): `python scripts/search.py "loading" --kind animated`
 - Glyphs (Unicode characters such as ﷺ ﷽ ۞ 🕌): `python scripts/search.py "صلى الله عليه وسلم" --kind glyph`, then `python scripts/get.py unicode:sallallahu-alayhi-wasallam` prints the character to paste as text
 
 ## Labels

@@ -12,7 +12,7 @@ import re
 from .taxonomy import STYLE_TOKENS
 
 # bump when the labels change, so the daily update rebuilds the index
-LABELS_VERSION = 3  # 3: four stroke classes; 2: shape and colour apart, corners from real corners, filters follow the drawing
+LABELS_VERSION = 4  # 4: animated icons; 3: four stroke classes; 2: shape and colour apart, corners from real corners, filters follow the drawing
 
 FILLED_HINTS = {"fill", "filled", "solid", "glyph"}
 OUTLINE_HINTS = {"outline", "outlined", "outlines", "line", "lines", "linear", "stroke", "stroked"}

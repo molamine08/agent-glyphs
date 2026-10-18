@@ -61,13 +61,14 @@ def main(argv=None):
     have = {c[1] for c in db.execute("PRAGMA table_info(icons)")}
     from atlas.classify import STROKE_CLASSES
     cols = ["prefix", "name", "concept", "cat", "cat2", "weight", "corners", "density_class", "style"]
-    cols += [c for c in ("shape", "color", "stroke") if c in have]
+    cols += [c for c in ("shape", "color", "stroke", "animated") if c in have]
 
     def labels(r):
         r = dict(r)
         st = r.get("style")
         r.setdefault("shape", st if st in ("outline", "filled", "mixed") else ("filled" if st == "multicolor" else "outline"))
         r.setdefault("color", st if st in ("duotone", "multicolor") else "mono")
+        r.setdefault("animated", r["prefix"] in ("line-md", "svg-spinners", "meteocons"))
         if "stroke" not in r:
             w = r["weight"]
             r["stroke"] = next(label for top, label in STROKE_CLASSES if w < top) if w is not None else None
@@ -87,6 +88,7 @@ def main(argv=None):
             max(0, min(99, round(prior * 10))),
             DENSITY.index(r["density_class"]) if r["density_class"] in DENSITY else -1,
             STROKES.index(r["stroke"]) if r["stroke"] in STROKES else -1,
+            1 if r.get("animated") else 0,
         ])
 
     icons = [{"p": p, "i": rows} for p, rows in rows_by_set.items()]
@@ -99,7 +101,7 @@ def main(argv=None):
     stats = json.loads(db.execute("SELECT value FROM meta WHERE key='stats'").fetchone()[0])
     version = db.execute("SELECT value FROM meta WHERE key='iconify_version'").fetchone()[0]
     meta = {
-        "version": version, "icons": stats["icons"], "sets": len(sets), "glyphs": len(glyphs_out),
+        "version": version, "icons": stats["icons"], "animated": stats.get("animated", 0), "sets": len(sets), "glyphs": len(glyphs_out),
         "shapes": SHAPES, "colors": COLORS, "density": DENSITY, "strokes": STROKES, "corners": CORNERS, "tiers": TIERS,
         "categories": [[k, en, ar] for k, (en, ar) in CATEGORIES.items()],
         "styleTokens": sorted(STYLE_TOKENS),
