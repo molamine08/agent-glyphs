@@ -44,8 +44,9 @@ const T = {
     next: "الخطوة التالية",
     browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…", hint: "ابحث عن أيقونات",
     shape: "الشكل", colors_: "الألوان", density: "الكثافة", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
-    any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
-    strokeTitle: "سُمك الخط على شبكة 24px",
+    any: "الكل", anyWeight: "أي سُمك", within: "على شبكة 24px",
+    strokeTitle: "سُمك الخط",
+    strokesL: { thin: "رفيع", light: "خفيف", regular: "عادي", bold: "عريض" },
     shapes: { outline: "خطية", filled: "مملوءة", mixed: "مختلطة" },
     colors: { mono: "لون واحد", duotone: "ثنائية اللون", multicolor: "ملوّنة" },
     densities: { airy: "خفيفة", balanced: "متوازنة", heavy: "كثيفة" },
@@ -101,8 +102,9 @@ const T = {
     next: "Next step",
     browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…", hint: "Search icons for",
     shape: "Shape", colors_: "Colours", density: "Density", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
-    any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
-    strokeTitle: "Stroke weight on a 24 px grid",
+    any: "Any", anyWeight: "Any weight", within: "On a 24 px grid",
+    strokeTitle: "Stroke weight",
+    strokesL: { thin: "Thin", light: "Light", regular: "Regular", bold: "Bold" },
     shapes: { outline: "Outline", filled: "Filled", mixed: "Mixed" },
     colors: { mono: "One colour", duotone: "Duotone", multicolor: "Multicolour" },
     densities: { airy: "Light", balanced: "Balanced", heavy: "Dense" },
@@ -140,7 +142,8 @@ const T = {
 };
 const SWATCHES = [null, "#0E0E10", "#2563EB", "#16A34A", "#DC2626", "#D97706"];
 const SIZES = [16, 20, 24, 32, 48];
-const WEIGHTS = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
+// four stroke classes (scripts/atlas/classify.py STROKE_CLASSES): what each looks like on a 24px grid
+const STROKE_SAMPLE = { thin: [1, "1"], light: [1.5, "1.5"], regular: [2, "2"], bold: [2.6, "2.5"] };
 
 // ---------------------------------------------------------------- where the visitor is
 // Read from the browser's time zone: no request leaves the page, nothing is stored.
@@ -291,7 +294,7 @@ let step = 0, installTab = 0, stepTimer = null, paused = false, demo = null;
 async function loadDemo() {
   // what the agent finds for the request in the second step, one icon per well-known library
   const L = t();
-  const filters = { ...EMPTY, shape: meta.shapes.indexOf("outline"), corners: meta.corners.indexOf("rounded"), weight: 1.5 };
+  const filters = { ...EMPTY, shape: meta.shapes.indexOf("outline"), corners: meta.corners.indexOf("rounded"), weight: meta.strokes.indexOf("light") };
   const res = await ask({ type: "search", query: L.query, filters, limit: 60 });
   const known = ["tabler", "lucide", "ph", "hugeicons", "iconoir", "solar", "mynaui", "mingcute", "ri", "fluent"];
   const rank = (it) => (known.includes(it.p) ? known.indexOf(it.p) : 99);
@@ -329,7 +332,7 @@ function renderStep(animate = true) {
         return `<span class="${i === 0 ? "chosen" : ""}" title="${esc(it.p + ":" + it.n)}">${ic ? toSvg(ic) : ""}</span>`;
       }).join("");
       const set = first && setOf(first.p);
-      body.innerHTML = `<p class="term small" dir="ltr">search.py "${esc(L.query)}" <span class="say">--weight</span> 1.5 <span class="say">--corners</span> rounded</p>
+      body.innerHTML = `<p class="term small" dir="ltr">search.py "${esc(L.query)}" <span class="say">--stroke</span> light <span class="say">--corners</span> rounded</p>
         <div class="picks">${picks}</div>
         ${first ? `<p class="done">${ui("check")}<span>${esc(L.done(`src/icons/${compName(first.n)}.tsx`, set?.l || ""))}</span></p>` : ""}`;
     }
@@ -367,7 +370,7 @@ function chipLabel(key) {
   if (key === "color") return state.color === null ? L.any : L.colors[meta.colors[state.color]];
   if (key === "density") return state.density === null ? L.any : L.densities[meta.density[state.density]];
   if (key === "corners") return state.corners === null ? L.any : L.cornersL[meta.corners[state.corners]];
-  if (key === "weight") return state.weight === null ? L.any : String(state.weight);
+  if (key === "weight") return state.weight === null ? L.any : L.strokesL[meta.strokes[state.weight]];
   if (key === "cat") return state.cat === null ? L.any : (lang === "ar" ? meta.categories[state.cat][2] : meta.categories[state.cat][1]).replace(/\s*\(.*\)$/, "");
   if (key === "kind") return state.kind === null ? L.any : L.kinds[state.kind];
   return state.commercial ? L.lic.commercial : L.lic.any;
@@ -406,7 +409,7 @@ function renderPop(wrap) {
   pop.addEventListener("click", (e) => e.stopPropagation());
   const opt = (val, label, checked, extra = "", lead = "") => `<button class="opt" type="button" role="menuitemradio" data-v="${val}" aria-checked="${checked}">${ui("check", "tick")}${lead}<span>${esc(label)}</span>${extra}</button>`;
   if (key === "weight") {
-    pop.innerHTML = `<h3>${esc(L.strokeTitle)}</h3><div class="sws">${WEIGHTS.map((w) => `<button class="sw" type="button" data-v="${w}" aria-checked="${state.weight === w}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="${w}"/></svg><span>${w}</span></button>`).join("")}</div>
+    pop.innerHTML = `<h3>${esc(L.strokeTitle)}</h3><div class="sws four">${meta.strokes.map((k, i) => `<button class="sw" type="button" data-v="${i}" aria-checked="${state.weight === i}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="${STROKE_SAMPLE[k][0]}"/></svg><span>${esc(L.strokesL[k])}</span><small dir="ltr">${STROKE_SAMPLE[k][1]}</small></button>`).join("")}</div>
       <div class="foot-row"><button type="button" data-v="null">${esc(L.anyWeight)}</button><span>${esc(L.within)}</span></div>`;
   } else if (key === "shape" || key === "color" || key === "density") {
     const [list, names] = key === "shape" ? [meta.shapes, L.shapes] : key === "color" ? [meta.colors, L.colors] : [meta.density, L.densities];
@@ -453,7 +456,7 @@ function agentCommand() {
   if (state.kind !== null) parts.push(["--kind", state.kind]);
   if (state.shape !== null) parts.push(["--shape", meta.shapes[state.shape]]);
   if (state.color !== null) parts.push(["--color", meta.colors[state.color]]);
-  if (state.weight !== null) parts.push(["--weight", String(state.weight)]);
+  if (state.weight !== null) parts.push(["--stroke", meta.strokes[state.weight]]);
   if (state.corners !== null) parts.push(["--corners", meta.corners[state.corners]]);
   if (state.density !== null) parts.push(["--density", meta.density[state.density]]);
   if (state.cat !== null) parts.push(["--cat", meta.categories[state.cat][0]]);
@@ -711,7 +714,7 @@ async function open(it, user) {
     [L.fShape, L.shapes[meta.shapes[it.sh]] || "-"],
     [L.fColor, L.colors[meta.colors[it.co]] || "-"],
     [L.fDensity, it.d >= 0 ? L.densities[meta.density[it.d]] : "-"],
-    [L.fWeight, it.w >= 0 ? (it.w / 10).toFixed(1) : "-"],
+    [L.fWeight, it.w >= 0 ? `${it.sk >= 0 ? L.strokesL[meta.strokes[it.sk]] + " · " : ""}${(it.w / 10).toFixed(1)}` : "-"],
     [L.fCorners, it.c >= 0 ? L.cornersL[meta.corners[it.c]] : "-"],
     [L.fGrid, set.g ? `${set.g}px` : "-"],
     [L.fCat, [it.k, it.k2].filter((k) => k >= 0).map(catName).join(lang === "ar" ? "، " : ", ")],

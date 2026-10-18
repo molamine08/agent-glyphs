@@ -38,7 +38,7 @@ async function load(base, v = "") {
       const id = rows.length;
       const toks = r[0].toLowerCase().split(/[-_:]+/).filter(Boolean);
       const concept = toks.filter((t) => !styleTokens.has(t) && !/^\d+(px)?$/.test(t)).join("-") || r[0];
-      rows.push({ s: si, n: r[0], sh: r[1], co: r[2], w: r[3], c: r[4], k: r[5], k2: r[6], pr: r[7], d: r[8], concept });
+      rows.push({ s: si, n: r[0], sh: r[1], co: r[2], w: r[3], c: r[4], k: r[5], k2: r[6], pr: r[7], d: r[8], sk: r[9], concept });
       for (const t of new Set(toks)) {
         const base = t.replace(/\d+$/, "") || t;
         for (const key of base === t ? [t] : [t, base]) {
@@ -219,7 +219,7 @@ function searchIcons(opts, f, p) {
     if (f.color !== null && r.co !== f.color) continue;
     if (f.density !== null && r.d !== f.density) continue;
     if (f.corners !== null && r.c !== f.corners) continue;
-    if (f.weight !== null && (r.w < 0 || Math.abs(r.w / 10 - f.weight) > 0.3)) continue;
+    if (f.weight !== null && r.sk !== f.weight) continue;  // stroke class: thin, light, regular, bold
     all++;
     counts[r.k]++;
     if (r.k2 >= 0) counts[r.k2]++;
@@ -258,7 +258,7 @@ function searchIcons(opts, f, p) {
     total: scored.length, sets: setCount, counts, all, rel: p ? p.rel : [],
     items: items.map((id) => {
       const r = rows[id];
-      return { p: meta.setsInfo[r.s].p, n: r.n, sh: r.sh, co: r.co, d: r.d, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
+      return { p: meta.setsInfo[r.s].p, n: r.n, sh: r.sh, co: r.co, d: r.d, sk: r.sk, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept };
     }),
   };
 }
@@ -272,7 +272,7 @@ function alternatives(prefix, concept, commercial) {
     const r = rows[id], set = meta.setsInfo[r.s];
     if (seen.has(set.p) || (commercial && set.t > 1)) continue;
     seen.add(set.p);
-    out.push({ p: set.p, n: r.n, sh: r.sh, co: r.co, d: r.d, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept });
+    out.push({ p: set.p, n: r.n, sh: r.sh, co: r.co, d: r.d, sk: r.sk, w: r.w, c: r.c, k: r.k, k2: r.k2, concept: r.concept });
     if (out.length >= 12) break;
   }
   return out;

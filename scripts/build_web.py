@@ -28,6 +28,7 @@ from atlas.taxonomy import CATEGORIES, STYLE_TOKENS  # noqa: E402
 SHAPES = ["outline", "filled", "mixed", "unknown"]
 COLORS = ["mono", "duotone", "multicolor"]
 DENSITY = ["airy", "balanced", "heavy"]
+STROKES = ["thin", "light", "regular", "bold"]
 CORNERS = ["rounded", "mixed", "sharp"]
 TIERS = ["permissive", "attribution", "share-alike", "non-commercial", "unknown"]
 
@@ -55,7 +56,7 @@ def main(argv=None):
         rows_by_set[s["prefix"]] = []
     set_meta = {s["p"]: s for s in sets}
 
-    for r in db.execute("SELECT prefix, name, concept, cat, cat2, shape, color, weight, corners, density_class "
+    for r in db.execute("SELECT prefix, name, concept, cat, cat2, shape, color, weight, corners, density_class, stroke "
                         "FROM icons ORDER BY prefix, name"):
         prior = set_prior(r["prefix"], set_meta[r["prefix"]]["c"], set_meta[r["prefix"]]["k"])
         prior += 0.5 * math.log(concept_sets.get(r["concept"], 1))
@@ -69,6 +70,7 @@ def main(argv=None):
             cats.index(r["cat2"]) if r["cat2"] in cats else -1,
             max(0, min(99, round(prior * 10))),
             DENSITY.index(r["density_class"]) if r["density_class"] in DENSITY else -1,
+            STROKES.index(r["stroke"]) if r["stroke"] in STROKES else -1,
         ])
 
     icons = [{"p": p, "i": rows} for p, rows in rows_by_set.items()]
@@ -82,7 +84,7 @@ def main(argv=None):
     version = db.execute("SELECT value FROM meta WHERE key='iconify_version'").fetchone()[0]
     meta = {
         "version": version, "icons": stats["icons"], "sets": len(sets), "glyphs": len(glyphs_out),
-        "shapes": SHAPES, "colors": COLORS, "density": DENSITY, "corners": CORNERS, "tiers": TIERS,
+        "shapes": SHAPES, "colors": COLORS, "density": DENSITY, "strokes": STROKES, "corners": CORNERS, "tiers": TIERS,
         "categories": [[k, en, ar] for k, (en, ar) in CATEGORIES.items()],
         "styleTokens": sorted(STYLE_TOKENS),
     }

@@ -50,6 +50,12 @@ class Calibration(unittest.TestCase):
             with self.subTest(icon=f"{p}:{n}"):
                 self.assertEqual(icon(p, n)["style"], style)
 
+    def test_stroke_classes(self):
+        for p, n, stroke in [("ph", "house-thin", "thin"), ("heroicons", "home", "light"), ("ph", "house", "light"),
+                             ("lucide", "house", "regular"), ("tabler", "home", "regular"), ("ph", "house-bold", "bold")]:
+            with self.subTest(icon=f"{p}:{n}"):
+                self.assertEqual(icon(p, n)["stroke"], stroke)
+
     def test_shape_and_color(self):
         # what the eye sees: a duotone Phosphor icon is an outline icon in two tones,
         # and a "filled"-named icon drawn with lines is an outline icon
