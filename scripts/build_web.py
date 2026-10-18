@@ -25,7 +25,9 @@ from atlas.concepts import groups as concept_groups, tables as concept_tables  #
 from atlas.semantics import norm_ar, terms  # noqa: E402
 from atlas.taxonomy import CATEGORIES, STYLE_TOKENS  # noqa: E402
 
-STYLES = ["outline", "filled", "duotone", "multicolor", "mixed", "unknown"]
+SHAPES = ["outline", "filled", "mixed", "unknown"]
+COLORS = ["mono", "duotone", "multicolor"]
+DENSITY = ["airy", "balanced", "heavy"]
 CORNERS = ["rounded", "mixed", "sharp"]
 TIERS = ["permissive", "attribution", "share-alike", "non-commercial", "unknown"]
 
@@ -53,18 +55,20 @@ def main(argv=None):
         rows_by_set[s["prefix"]] = []
     set_meta = {s["p"]: s for s in sets}
 
-    for r in db.execute("SELECT prefix, name, concept, cat, cat2, style, weight, corners, density, curves "
+    for r in db.execute("SELECT prefix, name, concept, cat, cat2, shape, color, weight, corners, density_class "
                         "FROM icons ORDER BY prefix, name"):
         prior = set_prior(r["prefix"], set_meta[r["prefix"]]["c"], set_meta[r["prefix"]]["k"])
         prior += 0.5 * math.log(concept_sets.get(r["concept"], 1))
         rows_by_set[r["prefix"]].append([
             r["name"],
-            STYLES.index(r["style"] or "unknown"),
+            SHAPES.index(r["shape"] if r["shape"] in SHAPES else "unknown"),
+            COLORS.index(r["color"] if r["color"] in COLORS else "mono"),
             round(r["weight"] * 10) if r["weight"] is not None else -1,
             CORNERS.index(r["corners"]) if r["corners"] else -1,
             cats.index(r["cat"]) if r["cat"] in cats else cats.index("other"),
             cats.index(r["cat2"]) if r["cat2"] in cats else -1,
             max(0, min(99, round(prior * 10))),
+            DENSITY.index(r["density_class"]) if r["density_class"] in DENSITY else -1,
         ])
 
     icons = [{"p": p, "i": rows} for p, rows in rows_by_set.items()]
@@ -78,7 +82,7 @@ def main(argv=None):
     version = db.execute("SELECT value FROM meta WHERE key='iconify_version'").fetchone()[0]
     meta = {
         "version": version, "icons": stats["icons"], "sets": len(sets), "glyphs": len(glyphs_out),
-        "styles": STYLES, "corners": CORNERS, "tiers": TIERS,
+        "shapes": SHAPES, "colors": COLORS, "density": DENSITY, "corners": CORNERS, "tiers": TIERS,
         "categories": [[k, en, ar] for k, (en, ar) in CATEGORIES.items()],
         "styleTokens": sorted(STYLE_TOKENS),
     }

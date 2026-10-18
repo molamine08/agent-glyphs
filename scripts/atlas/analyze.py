@@ -207,6 +207,126 @@ def contour_metrics(alpha: np.ndarray, px_per_unit: float, level: float = 0.5) -
     return out
 
 
+MIN_RUN = 0.5            # units of straight line on each side of a corner
+MAX_CORNER_RADIUS = 2.5  # units; wider bends are curves (circles, waves), not corners
+
+
+def corner_events(alpha: np.ndarray, px_per_unit: float, level: float = 0.5,
+                  weight: float | None = None) -> dict:
+    """Count the outward corners of the drawing, sharp or rounded.
+
+    A corner is a bend that joins two straight runs of the outline. Circles,
+    arcs and wheels have no straight runs on both sides, so they are not
+    corners at all (they used to make sharp icons such as Carbon's cart read
+    as rounded). A bend is sharp when it turns within a radius smaller than
+    ~0.15 units plus what anti-aliasing smears at this resolution.
+
+    Line ends are counted apart, because they are what the eye reads first:
+    a round cap is one ~180° rounded bend, a butt or square cap is two sharp
+    ~90° bends one stroke-width apart."""
+    padded = np.pad(alpha, 2)
+    out = {"joins_sharp": 0, "joins_rounded": 0, "caps_sharp": 0, "caps_rounded": 0}
+    min_run = max(2, int(round(MIN_RUN * px_per_unit)))
+    # straight = turning less than a 6-unit radius would (or 2.5° per px, whichever is smaller),
+    # so large rounded corners (rx=4) still count as bends
+    straight_lim = min(math.radians(2.5), 1.0 / (6.0 * px_per_unit))
+    sharp_radius = 3.8 / px_per_unit + 0.15  # in units
+    cap_gap = 1.6 * weight * px_per_unit if weight else 0  # px between the two bends of a butt cap
+    for c in find_contours(padded, level):
+        r = _resample(c, 1.0)
+        n = len(r)
+        if n < 12:
+            continue
+        nxt, prv = np.roll(r, -1, axis=0), np.roll(r, 1, axis=0)
+        d1, d2 = r - prv, nxt - r
+        signed = (np.arctan2(d2[:, 0], d2[:, 1]) - np.arctan2(d1[:, 0], d1[:, 1]) + np.pi) % (2 * np.pi) - np.pi
+        k = np.abs(np.convolve(np.concatenate([signed[-2:], signed, signed[:2]]), np.ones(5) / 5, mode="valid"))
+        straight = k < straight_lim
+        if straight.all() or not straight.any():
+            continue
+        start = int(np.argmax(~straight))
+        st, sg, rr = np.roll(straight, -start), np.roll(signed, -start), np.roll(r, -start, axis=0)
+        runs, i = [], 0
+        while i < n:
+            if st[i]:
+                j = i
+                while j < n and st[j]:
+                    j += 1
+                if j - i >= min_run:
+                    runs.append((i, j))
+                i = j
+            else:
+                i += 1
+        if not runs:
+            continue
+        bends = []  # (angle, sharp?, outward?, length of the straight run that follows)
+        for idx in range(len(runs)):
+            a_end, b_start = runs[idx][1], runs[(idx + 1) % len(runs)][0]
+            b_end = runs[(idx + 1) % len(runs)][1]
+            if b_start <= a_end:
+                b_start += n
+            seg = [t % n for t in range(a_end - 1, b_start + 1)]
+            ang = float(sg[seg].sum())
+            m = seg[int(np.argmax(np.abs(sg[seg])))]
+            d = (rr[(m + 1) % n] - rr[m]) - (rr[m] - rr[m - 1])
+            norm = float(np.linalg.norm(d))
+            outward = False
+            if norm > 1e-9:
+                probe = rr[m] + 1.5 * d / norm
+                # only corners that point out of the ink describe the style: the inner
+                # side of a stroked join is sharp even with round joins
+                outward = ndimage.map_coordinates(padded, [[probe[0]], [probe[1]]], order=1)[0] > level
+            radius = (len(seg) - 2) / max(abs(ang), 1e-6) / px_per_unit
+            follow = (b_end - (b_start % n)) % n if len(runs) > 1 else 0
+            if radius > MAX_CORNER_RADIUS:  # a sweeping curve, not a corner
+                outward = False
+            bends.append((ang, radius <= sharp_radius, outward, follow))
+        used = set()
+        for i, (ang, sharp, outward, follow) in enumerate(bends):
+            if i in used or not outward:
+                continue
+            a = abs(ang)
+            if math.radians(150) <= a <= math.radians(215):
+                out["caps_sharp" if sharp else "caps_rounded"] += 1  # a round cap turns 180° at once
+                continue
+            if not math.radians(35) <= a <= math.radians(150):
+                continue
+            j = (i + 1) % len(bends)
+            nang, nsharp, nout, _ = bends[j]
+            if (cap_gap and j != i and j not in used and nout and sharp and nsharp and follow <= cap_gap
+                    and math.radians(65) <= a <= math.radians(115) and math.radians(65) <= abs(nang) <= math.radians(115)
+                    and (ang > 0) == (nang > 0)):
+                out["caps_sharp"] += 1  # butt / square cap: two sharp quarter turns a stroke apart
+                used.update((i, j))
+                continue
+            out["joins_sharp" if sharp else "joins_rounded"] += 1
+    return out
+
+
+def corner_roundness(ev: dict) -> float | None:
+    """0 = all sharp, 1 = all rounded. Line ends weigh most when there are any."""
+    caps = ev["caps_sharp"] + ev["caps_rounded"]
+    joins = ev["joins_sharp"] + ev["joins_rounded"]
+    if not caps and not joins:
+        return None
+    j = ev["joins_rounded"] / joins if joins else None
+    if not caps:
+        return j
+    cp = ev["caps_rounded"] / caps
+    return cp if j is None else 0.7 * cp + 0.3 * j
+
+
+def tint_share(alpha: np.ndarray) -> float:
+    """Share of the ink drawn in a see-through tone (the light layer of a
+    duotone icon), ignoring the anti-aliased rim of opaque shapes."""
+    ink = alpha > 0.1
+    if not ink.any():
+        return 0.0
+    mid = (alpha > 0.1) & (alpha < 0.75)
+    core = ndimage.binary_opening(mid, iterations=1)  # 1-px edge bands disappear
+    return float(core.sum() / ink.sum())
+
+
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
@@ -250,11 +370,26 @@ def analyze(body: str, left: float, top: float, w: float, h: float) -> dict:
     # coverage, so it is sub-pixel accurate for line icons.
     if out.get("outline_len"):
         out["weight"] = 2 * (ink / px_per_unit**2) / out["outline_len"]
+    if src["translucent"]:
+        # duotone: the stroke is the opaque layer; the light tone must not thicken it
+        opaque = contour_metrics(alpha, px_per_unit, level=0.5)
+        if opaque.get("outline_len"):
+            out["weight"] = 2 * (float(alpha[mask].sum()) / px_per_unit**2) / opaque["outline_len"]
+    out["tint"] = tint_share(alpha) if src["translucent"] else 0.0
+    # Corners are read at double resolution (10 px per unit), four times for
+    # hairline strokes, where a round join is only a few pixels wide.
+    thin = bool(out.get("weight") and out["weight"] < 1.0 and out["solidity"] < 0.1)
+    alpha2, scale2 = render_alpha(body, left, top, w, h, size=RENDER * (4 if thin else 2))
+    level = 0.2 if src["translucent"] else 0.5
+    ppu2 = scale2 * h / 24.0
+    linear = out["solidity"] < 0.1
+    ev = corner_events(alpha2, ppu2, level, out.get("weight") if linear else None)
+    out.update(ev)
+    out["corner_roundness"] = corner_roundness(ev)
     # Thin strokes are only a few pixels wide at the default size, which makes
-    # round caps look square. Re-measure the outline at double resolution.
+    # round caps look square. Re-measure the outline at the finer resolution.
     if out.get("weight") and out["weight"] < 1.25 and out["solidity"] < 0.1:
-        alpha2, scale2 = render_alpha(body, left, top, w, h, size=RENDER * 2)
-        fine = contour_metrics(alpha2, scale2 * h / 24.0, level=0.2 if src["translucent"] else 0.5)
+        fine = contour_metrics(alpha2, ppu2, level=level)
         out["roundness"], out["curviness"] = fine["roundness"], fine["curviness"]
     # plain floats only (numpy scalars do not serialise to JSON)
     return {k: (float(v) if isinstance(v, np.floating) else v) for k, v in out.items()}

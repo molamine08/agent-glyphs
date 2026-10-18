@@ -43,14 +43,16 @@ const T = {
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "الخطوة التالية",
     browseLabel: "تصفّح الأيقونات", searchLabel: "ابحث عن أيقونة", placeholder: "محفظة، wallet، سلة…", hint: "ابحث عن أيقونات",
-    style: "النمط", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
+    shape: "الشكل", colors_: "الألوان", density: "الكثافة", corners: "الزوايا", stroke: "السُّمك", category: "التصنيف", licence: "الرخصة",
     any: "الكل", anyWeight: "أي سُمك", within: "ضمن ±0.3",
     strokeTitle: "سُمك الخط على شبكة 24px",
-    styles: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن" },
+    shapes: { outline: "خطية", filled: "مملوءة", mixed: "مختلطة" },
+    colors: { mono: "لون واحد", duotone: "ثنائية اللون", multicolor: "ملوّنة" },
+    densities: { airy: "خفيفة", balanced: "متوازنة", heavy: "كثيفة" },
     cornersL: { rounded: "دائرية", mixed: "مختلطة", sharp: "حادة" },
     lic: { commercial: "للاستخدام التجاري", any: "كل الرخص" },
     clear: "امسح الفلاتر", copyCmd: "انسخ الأمر", more: "اعرض المزيد",
-    stylesFull: { outline: "خطي", filled: "مصمت", duotone: "ثنائي اللون", multicolor: "ملوّن", mixed: "مختلط", unknown: "غير محدد" },
+
     loading: "يحمّل الفهرس…", loadErr: "تعذّر تحميل الفهرس. حدّث الصفحة بعد قليل.",
     count: (n, s) => `${n} أيقونة من ${s} مكتبة`, none: "لا نتائج. جرّب كلمة قريبة في المعنى أو خفّف الفلاتر.",
     tabs: { same: "نفس المعنى", agent: "لوكيلك", details: "التفاصيل" },
@@ -71,7 +73,7 @@ const T = {
     glyphPrompt: (ch, cp, name) => `استخدم مهارة Agent Glyphs وأدرج الجليف ${ch} (⁦${cp}⁩، ⁦${name}⁩) في النص كحرف، لا كصورة.`,
     glyphMeta: "بيانات الجليف",
     countG: (g) => `${g} جليف`,
-    fStyle: "النمط", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة", fLicence: "الرخصة",
+    fShape: "الشكل", fColor: "الألوان", fDensity: "الكثافة", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة", fLicence: "الرخصة",
     licLine: (l) => `الرخصة: ${l}.`, credit: "اذكر صاحبها عند الاستخدام.",
     noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
     setBy: (s, l) => `${s}، رخصة ${l}`, terms: (t) => `يُعثر عليها أيضاً بـ: ${t}`,
@@ -98,14 +100,16 @@ const T = {
     prompts: ["ready to execute", "waiting for your request", "done"],
     next: "Next step",
     browseLabel: "Browse icons", searchLabel: "Search icons", placeholder: "wallet, cart, محفظة…", hint: "Search icons for",
-    style: "Style", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
+    shape: "Shape", colors_: "Colours", density: "Density", corners: "Corners", stroke: "Stroke", category: "Category", licence: "Licence",
     any: "Any", anyWeight: "Any weight", within: "Within ±0.3",
     strokeTitle: "Stroke weight on a 24 px grid",
-    styles: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour" },
+    shapes: { outline: "Outline", filled: "Filled", mixed: "Mixed" },
+    colors: { mono: "One colour", duotone: "Duotone", multicolor: "Multicolour" },
+    densities: { airy: "Light", balanced: "Balanced", heavy: "Dense" },
     cornersL: { rounded: "Rounded", mixed: "Mixed", sharp: "Sharp" },
     lic: { commercial: "Commercial use", any: "Any licence" },
     clear: "Clear filters", copyCmd: "Copy command", more: "Show more",
-    stylesFull: { outline: "Outline", filled: "Filled", duotone: "Duotone", multicolor: "Colour", mixed: "Mixed", unknown: "Unknown" },
+
     loading: "Loading the index…", loadErr: "The index could not load. Refresh in a moment.",
     count: (n, s) => `${n} icons from ${s} libraries`, none: "No results. Try a word with a similar meaning or loosen the filters.",
     tabs: { same: "Same meaning", agent: "For your agent", details: "Details" },
@@ -126,7 +130,7 @@ const T = {
     glyphPrompt: (ch, cp, name) => `Use the Agent Glyphs skill to put the glyph ${ch} (${cp}, ${name}) in the text as a character, not an image.`,
     glyphMeta: "Glyph metadata",
     countG: (g) => `${g} glyphs`,
-    fStyle: "Style", fWeight: "Stroke", fCorners: "Corners", fCat: "Category", fGrid: "Grid", fLicence: "Licence",
+    fShape: "Shape", fColor: "Colour", fDensity: "Density", fWeight: "Stroke", fCorners: "Corners", fCat: "Category", fGrid: "Grid", fLicence: "Licence",
     licLine: (l) => `Licence: ${l}.`, credit: "Credit the author when you use it.",
     noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
     setBy: (s, l) => `${s}, ${l} licence`, terms: (t) => `Also found as: ${t}`,
@@ -187,8 +191,10 @@ let lang = (() => {
   return COUNTRY || speaksArabic ? "ar" : "en";
 })();
 let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
-const state = { kind: null, style: null, corners: null, cat: null, weight: null, commercial: true };
+const state = { kind: null, shape: null, color: null, corners: null, weight: null, density: null, cat: null, commercial: true };
+const EMPTY = { ...state };
 const glyphMode = () => state.kind === "glyph";
+const filledOnly = () => meta && state.shape !== null && meta.shapes[state.shape] === "filled";
 const view = { color: null, size: 24, stroke: null, mirror: false };
 const cache = new Map();
 const extSets = new Map();
@@ -285,7 +291,7 @@ let step = 0, installTab = 0, stepTimer = null, paused = false, demo = null;
 async function loadDemo() {
   // what the agent finds for the request in the second step, one icon per well-known library
   const L = t();
-  const filters = { style: meta.styles.indexOf("outline"), corners: meta.corners.indexOf("rounded"), weight: 1.5, cat: null, commercial: true };
+  const filters = { ...EMPTY, shape: meta.shapes.indexOf("outline"), corners: meta.corners.indexOf("rounded"), weight: 1.5 };
   const res = await ask({ type: "search", query: L.query, filters, limit: 60 });
   const known = ["tabler", "lucide", "ph", "hugeicons", "iconoir", "solar", "mynaui", "mingcute", "ri", "fluent"];
   const rank = (it) => (known.includes(it.p) ? known.indexOf(it.p) : 99);
@@ -357,7 +363,9 @@ let openPop = null, lastCounts = null, lastAll = null;
 
 function chipLabel(key) {
   const L = t();
-  if (key === "style") return state.style === null ? L.any : L.styles[meta.styles[state.style]];
+  if (key === "shape") return state.shape === null ? L.any : L.shapes[meta.shapes[state.shape]];
+  if (key === "color") return state.color === null ? L.any : L.colors[meta.colors[state.color]];
+  if (key === "density") return state.density === null ? L.any : L.densities[meta.density[state.density]];
   if (key === "corners") return state.corners === null ? L.any : L.cornersL[meta.corners[state.corners]];
   if (key === "weight") return state.weight === null ? L.any : String(state.weight);
   if (key === "cat") return state.cat === null ? L.any : (lang === "ar" ? meta.categories[state.cat][2] : meta.categories[state.cat][1]).replace(/\s*\(.*\)$/, "");
@@ -370,8 +378,10 @@ function renderFilters() {
   const L = t();
   const el = $("filters");
   // glyphs are characters: no style, corners, stroke or licence to pick
-  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["style", L.style], ["corners", L.corners], ["weight", L.stroke], ["cat", L.category], ["commercial", L.licence]])];
-  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
+  // filled icons have no stroke: the stroke filter goes away while "filled" is picked
+  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.colors_], ["corners", L.corners],
+    ...(filledOnly() ? [] : [["weight", L.stroke]]), ["density", L.density], ["cat", L.category], ["commercial", L.licence]])];
+  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small>${isSet(k) ? `<span>${esc(chipLabel(k))}</span>` : ""}${ui("down")}</button></div>`).join("")
     + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
     e.stopPropagation();
@@ -379,13 +389,13 @@ function renderFilters() {
     renderFilters();
   }));
   el.querySelector(".clear").addEventListener("click", () => {
-    Object.assign(state, { kind: null, style: null, corners: null, cat: null, weight: null, commercial: true });
+    Object.assign(state, EMPTY);
     openPop = null; newSearch();
   });
   if (openPop) renderPop(el.querySelector(`.fwrap[data-key="${openPop}"]`));
   renderAgentLine();
 }
-const anyFilter = () => state.kind !== null || state.style !== null || state.corners !== null || state.cat !== null || state.weight !== null || !state.commercial;
+const anyFilter = () => Object.keys(EMPTY).some((k) => state[k] !== EMPTY[k]);
 
 function renderPop(wrap) {
   const L = t();
@@ -398,8 +408,9 @@ function renderPop(wrap) {
   if (key === "weight") {
     pop.innerHTML = `<h3>${esc(L.strokeTitle)}</h3><div class="sws">${WEIGHTS.map((w) => `<button class="sw" type="button" data-v="${w}" aria-checked="${state.weight === w}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="${w}"/></svg><span>${w}</span></button>`).join("")}</div>
       <div class="foot-row"><button type="button" data-v="null">${esc(L.anyWeight)}</button><span>${esc(L.within)}</span></div>`;
-  } else if (key === "style") {
-    pop.innerHTML = opt("null", L.any, state.style === null) + ["outline", "filled", "duotone", "multicolor"].map((s) => opt(meta.styles.indexOf(s), L.styles[s], state.style === meta.styles.indexOf(s))).join("");
+  } else if (key === "shape" || key === "color" || key === "density") {
+    const [list, names] = key === "shape" ? [meta.shapes, L.shapes] : key === "color" ? [meta.colors, L.colors] : [meta.density, L.densities];
+    pop.innerHTML = opt("null", L.any, state[key] === null) + Object.keys(names).map((v) => opt(list.indexOf(v), names[v], state[key] === list.indexOf(v))).join("");
   } else if (key === "corners") {
     const glyph = (r) => `<svg class="ui" viewBox="0 0 24 24"><path d="M5 19V${5 + r}a${r} ${r} 0 0 1 ${r}-${r}H19" fill="none" stroke="currentColor" stroke-width="2"/></svg>`;
     pop.innerHTML = opt("null", L.any, state.corners === null) + [["rounded", 7], ["mixed", 3], ["sharp", 0.01]].map(([c, r]) => opt(meta.corners.indexOf(c), L.cornersL[c], state.corners === meta.corners.indexOf(c), "", glyph(r))).join("");
@@ -420,6 +431,7 @@ function renderPop(wrap) {
     if (key === "commercial") state.commercial = v === "true";
     else if (key === "kind") state.kind = v === "null" ? null : v;
     else state[key] = v === "null" ? null : Number(v);
+    if (filledOnly()) state.weight = null;  // a filled icon has no stroke to measure
     openPop = null;
     newSearch();
   }));
@@ -439,9 +451,11 @@ function agentCommand() {
   const q = $("q").value.trim();
   const parts = [["search.py", ""], [q ? `"${q}"` : "", ""]];
   if (state.kind !== null) parts.push(["--kind", state.kind]);
-  if (state.style !== null) parts.push(["--style", meta.styles[state.style]]);
+  if (state.shape !== null) parts.push(["--shape", meta.shapes[state.shape]]);
+  if (state.color !== null) parts.push(["--color", meta.colors[state.color]]);
   if (state.weight !== null) parts.push(["--weight", String(state.weight)]);
   if (state.corners !== null) parts.push(["--corners", meta.corners[state.corners]]);
+  if (state.density !== null) parts.push(["--density", meta.density[state.density]]);
   if (state.cat !== null) parts.push(["--cat", meta.categories[state.cat][0]]);
   if (!state.commercial && !glyphMode()) parts.push(["--license", "any"]);
   return parts.filter(([a]) => a);
@@ -595,7 +609,7 @@ function refreshAgent() {
   $("agentCmd").textContent = `python scripts/get.py ${id} \\\n  ${flags.join(" ")}`;
   const cat = (k) => (k >= 0 ? meta.categories[k][0] : null);
   $("agentJson").textContent = JSON.stringify({
-    id, set: set.n, style: meta.styles[current.st], weight: current.w >= 0 ? current.w / 10 : null,
+    id, set: set.n, shape: meta.shapes[current.sh], color: meta.colors[current.co], density: current.d >= 0 ? meta.density[current.d] : null, weight: current.w >= 0 ? current.w / 10 : null,
     corners: current.c >= 0 ? meta.corners[current.c] : null, category: [cat(current.k), cat(current.k2)].filter(Boolean),
     license: set.l, license_tier: meta.tiers[set.t], grid: set.g || null,
   }, null, 2);
@@ -660,7 +674,7 @@ async function loadGlyphAlts(it) {
   ul.innerHTML = "";
   // the glyph's own name ("star-and-crescent", "prayer-beads") as a search: every word must match
   const word = it.n.split("-").filter((w) => !["and", "of", "as", "wa", "al", "up"].includes(w)).join(" ");
-  const res = await ask({ type: "search", query: word, filters: { ...state, kind: "icon", style: null, corners: null, weight: null, cat: null }, limit: 11 });
+  const res = await ask({ type: "search", query: word, filters: { ...EMPTY, kind: "icon", commercial: state.commercial }, limit: 11 });
   if (!current || current.n !== it.n) return;
   $("noAlts").hidden = res.items.length > 0;
   $("noAlts").textContent = t().noGlyphAlts;
@@ -694,7 +708,9 @@ async function open(it, user) {
   $("dSet").textContent = L.setBy(set.n, set.l || "?");
   const catName = (k) => (lang === "ar" ? meta.categories[k][2] : meta.categories[k][1]);
   const facts = [
-    [L.fStyle, L.stylesFull[meta.styles[it.st]] || "-"],
+    [L.fShape, L.shapes[meta.shapes[it.sh]] || "-"],
+    [L.fColor, L.colors[meta.colors[it.co]] || "-"],
+    [L.fDensity, it.d >= 0 ? L.densities[meta.density[it.d]] : "-"],
     [L.fWeight, it.w >= 0 ? (it.w / 10).toFixed(1) : "-"],
     [L.fCorners, it.c >= 0 ? L.cornersL[meta.corners[it.c]] : "-"],
     [L.fGrid, set.g ? `${set.g}px` : "-"],
@@ -712,7 +728,7 @@ async function open(it, user) {
   if (strokeIcon) $("dStroke").value = it.w >= 0 ? (Math.round(it.w / 2.5) / 4).toFixed(2) : "2";
   const issue = new URLSearchParams({
     title: `Label: ${it.p}:${it.n}`,
-    body: `Icon: ${it.p}:${it.n}\nCurrent: style=${meta.styles[it.st]}, corners=${it.c >= 0 ? meta.corners[it.c] : "-"}, category=${meta.categories[it.k][0]}\n\nWhat it should be:\n`,
+    body: `Icon: ${it.p}:${it.n}\nCurrent: shape=${meta.shapes[it.sh]}, color=${meta.colors[it.co]}, density=${it.d >= 0 ? meta.density[it.d] : "-"}, corners=${it.c >= 0 ? meta.corners[it.c] : "-"}, category=${meta.categories[it.k][0]}\n\nWhat it should be:\n`,
   });
   $("report").href = `https://github.com/${REPO}/issues/new?${issue}`;
   renderControls();

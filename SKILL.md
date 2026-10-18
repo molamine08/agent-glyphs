@@ -27,9 +27,10 @@ downloads automatically on first use. Style matching and previews need:
 2. **Search** by meaning, with style filters:
    ```bash
    python scripts/search.py "shopping cart" --set lucide
-   python scripts/search.py "محفظة" --style outline --weight 1.5 --corners rounded
+   python scripts/search.py "محفظة" --shape outline --weight 1.5 --corners rounded
    python scripts/search.py "notification" --like tabler          # ranked by look
-   python scripts/search.py --cat finance --style filled --limit 40
+   python scripts/search.py --cat finance --shape filled --limit 40
+   python scripts/search.py "home" --shape outline --color duotone --density balanced
    ```
    Output: `prefix:name`, style, weight, corners, category, licence. Use only names
    returned by the search — never invent icon names.
@@ -55,13 +56,15 @@ right name, then import it.
 
 | Field | Values | Meaning |
 |---|---|---|
-| `style` | outline, filled, duotone, multicolor, mixed | drawing type, measured from the pixels; multicolor = has its own fixed colours (cannot be recoloured with CSS) |
+| `shape` | outline, filled, mixed | what the eye sees: lines only, filled areas, or lines with filled parts. An icon named "…-filled" that is drawn with lines is `outline` |
+| `color` | mono, duotone, multicolor | one colour, a second lighter tone, or its own fixed colours (multicolor cannot be recoloured with CSS). Combines with `shape`: an outline icon can be duotone |
+| `style` | outline, filled, mixed, duotone, multicolor | older single label (`--style`): the colour when it is not mono, else the shape |
 | `weight` | number | stroke width as it would be on a 24px icon (Lucide = 2, Heroicons = 1.5) |
 | `weight_class` | hairline <0.6, thin <1.1, light <1.4, regular <1.75, medium <2.25, bold <2.9, heavy; `solid` for filled |
-| `corners` | rounded, mixed, sharp | how the outer corners and line ends are drawn |
+| `corners` | rounded, mixed, sharp | how real corners (two straight lines meeting) and line ends are drawn; circles and arcs do not count. An icon with no corners takes its family's value |
 | `curves` | geometric, balanced, organic | share of the outline that is curved |
 | `contrast_class` | monoline, moderate, high | variation between thick and thin parts |
-| `density_class` | airy, balanced, heavy | how much of the canvas is ink |
+| `density_class` | airy, balanced, heavy | how much of the canvas is ink (`--density`); keep one density so icons sit together |
 | `container` | circle, square, none | icon drawn inside a circle or square |
 | `complexity` | simple, medium, detailed | amount of detail |
 | `cat`, `cat2` | arrows, interface, actions, status, communication, commerce, finance, business, media, files, text, design, devices, development, data, network, ai, security, people, health, transport, maps, weather, nature, food, buildings, home, time, education, sports, culture, tools, shapes, emoji, brands, flags, other |
