@@ -14,7 +14,7 @@ The index (atlas.db) downloads itself on first use from the latest GitHub releas
 
 ## Commands (run from the skill folder)
 
-- Search by meaning and shape: `python scripts/search.py "wallet" --shape outline --weight 1.5 --corners rounded --density balanced`
+- Search by meaning and shape: `python scripts/search.py "wallet" --shape outline --stroke light --corners rounded --density balanced`
 - Arabic works too: `python scripts/search.py "محفظة"`
 - Stay inside the project's library: `python scripts/search.py "bell" --set lucide`
 - Match a folder of existing icons: `python scripts/match.py ./src/icons --need cart wallet calendar`
@@ -29,7 +29,7 @@ The index (atlas.db) downloads itself on first use from the latest GitHub releas
 - shape: outline, filled, mixed (what the eye sees)
 - color: mono, duotone, multicolor (combines with shape)
 - density: airy, balanced, heavy
-- weight: stroke width as on a 24px icon (Lucide = 2, Heroicons = 1.5)
+- stroke: thin, light (≈1.5, Heroicons), regular (≈2, Lucide), bold; weight: the exact stroke width on a 24px icon
 - corners: rounded, mixed, sharp (real corners and line ends; circles do not count)
 - category (two per icon): arrows, interface, actions, status, communication, commerce, finance, business, media, files, text, design, devices, development, data, network, ai, security, people, health, transport, maps, weather, nature, food, buildings, home, time, education, sports, culture, tools, shapes, emoji, brands, flags, other
 - licence tiers: permissive and attribution allow commercial use (default); share-alike and non-commercial only with `--license any`

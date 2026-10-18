@@ -27,7 +27,7 @@ downloads automatically on first use. Style matching and previews need:
 2. **Search** by meaning, with style filters:
    ```bash
    python scripts/search.py "shopping cart" --set lucide
-   python scripts/search.py "محفظة" --shape outline --weight 1.5 --corners rounded
+   python scripts/search.py "محفظة" --shape outline --stroke light --corners rounded
    python scripts/search.py "notification" --like tabler          # ranked by look
    python scripts/search.py --cat finance --shape filled --limit 40
    python scripts/search.py "home" --shape outline --color duotone --density balanced
@@ -61,6 +61,7 @@ right name, then import it.
 | `style` | outline, filled, mixed, duotone, multicolor | older single label (`--style`): the colour when it is not mono, else the shape |
 | `weight` | number | stroke width as it would be on a 24px icon (Lucide = 2, Heroicons = 1.5) |
 | `weight_class` | hairline <0.6, thin <1.1, light <1.4, regular <1.75, medium <2.25, bold <2.9, heavy; `solid` for filled |
+| `stroke` | thin, light, regular, bold | stroke class on a 24px grid: thin < 1.25 (Phosphor Thin/Light), light ≈ 1.5 (Heroicons, Phosphor), regular ≈ 2 (Lucide, Tabler), bold > 2.15 (Phosphor Bold). `--stroke`; `--weight 1.5` still filters the exact value |
 | `corners` | rounded, mixed, sharp | how real corners (two straight lines meeting) and line ends are drawn; circles and arcs do not count. An icon with no corners takes its family's value |
 | `curves` | geometric, balanced, organic | share of the outline that is curved |
 | `contrast_class` | monoline, moderate, high | variation between thick and thin parts |

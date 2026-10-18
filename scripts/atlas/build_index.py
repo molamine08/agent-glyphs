@@ -16,7 +16,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from . import vision
-from .classify import classify, concept_of, license_tier, name_tokens
+from .classify import STROKE_CLASSES, classify, concept_of, license_tier, name_tokens
 from .semantics import arabic_terms, categories_for, map_set_category, norm_ar
 from .taxonomy import CATEGORIES, STYLE_TOKENS
 
@@ -38,7 +38,7 @@ CREATE TABLE icons(
   weight_conf TEXT, corners TEXT, corners_conf TEXT, roundness REAL,
   curviness REAL, curves TEXT, contrast REAL, contrast_class TEXT,
   density REAL, density_class TEXT, padding REAL, container TEXT,
-  complexity TEXT, w REAL, h REAL, license_tier TEXT, shape TEXT, color TEXT
+  complexity TEXT, w REAL, h REAL, license_tier TEXT, shape TEXT, color TEXT, stroke TEXT
 );
 CREATE TABLE concepts(concept TEXT PRIMARY KEY, sets INT);
 CREATE VIRTUAL TABLE icons_fts USING fts5(
@@ -131,8 +131,11 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
         # and an icon without corners (a circle, a wave) takes its family's
         # corners. An icon drawn with lines stays "outline" even inside a
         # filled family: filters show what the eye sees.
-        fam_major, fam_corners = {}, {}
+        fam_major, fam_corners, fam_weight = {}, {}, {}
         for var, labs in fams.items():
+            ws = [l["weight"] for l in labs if l.get("weight") and l.get("shape") == "outline"]
+            if len(ws) >= 20:
+                fam_weight[var] = statistics.median(ws)
             shapes = [l.get("shape") for l in labs]
             top = max(set(shapes), key=shapes.count)
             fam_major[var] = (top, shapes.count(top) / len(shapes))
@@ -148,6 +151,11 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
                 lab["shape"], lab["style_conf"] = top, "medium"
                 if lab.get("color", "mono") == "mono":
                     lab["style"] = top
+            # a family is drawn with one stroke: icons close to its median (detail-heavy
+            # icons measure a little heavier) take the family's stroke class
+            fw = fam_weight.get(row[1])
+            if fw and lab.get("weight") and abs(lab["weight"] - fw) <= 0.15 * fw:
+                lab["stroke"] = next(label for top, label in STROKE_CLASSES if fw < top)
             if not lab.get("corners") and row[1] in fam_corners and lab.get("shape") not in (None, "unknown"):
                 lab["corners"], lab["corners_conf"] = fam_corners[row[1]], "low"
 
@@ -172,20 +180,20 @@ def build(metrics_dir: Path, out: Path, version: str | None) -> dict:
         for name, var, concept, cats, lab, m, en, ar, extra in rows:
             icon_id += 1
             db.execute(
-                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO icons VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (icon_id, prefix, name, fam_ids[var], concept, cats[0], cats[1] if len(cats) > 1 else None,
                  lab.get("style"), lab.get("style_conf"),
                  lab.get("weight"), lab.get("weight_class"), lab.get("weight_conf"), lab.get("corners"),
                  lab.get("corners_conf"), lab.get("roundness"), lab.get("curviness"), lab.get("curves"),
                  lab.get("contrast"), lab.get("contrast_class"), lab.get("density"), lab.get("density_class"),
                  lab.get("padding"), lab.get("container"), lab.get("complexity"), m.get("w"), m.get("h"), tier,
-                 lab.get("shape"), lab.get("color")),
+                 lab.get("shape"), lab.get("color"), lab.get("stroke")),
             )
             db.execute("INSERT INTO icons_fts(rowid,en,ar,extra) VALUES(?,?,?,?)", (icon_id, en, ar, extra))
         stats["sets"] += 1
     # how many libraries draw a concept: a strong hint of the canonical name
     db.execute("INSERT INTO concepts SELECT concept, COUNT(DISTINCT prefix) FROM icons GROUP BY concept")
-    for col in ("prefix", "concept", "cat", "cat2", "style", "shape", "color", "weight_class", "corners", "density_class",
+    for col in ("prefix", "concept", "cat", "cat2", "style", "shape", "color", "stroke", "weight_class", "corners", "density_class",
                 "family_id", "license_tier"):
         db.execute(f"CREATE INDEX ix_{col} ON icons({col})")
     db.execute("INSERT INTO meta VALUES('iconify_version', ?)", (version,))

@@ -12,11 +12,17 @@ import re
 from .taxonomy import STYLE_TOKENS
 
 # bump when the labels change, so the daily update rebuilds the index
-LABELS_VERSION = 2  # 2: shape and colour apart, corners from real corners, filters follow the drawing
+LABELS_VERSION = 3  # 3: four stroke classes; 2: shape and colour apart, corners from real corners, filters follow the drawing
 
 FILLED_HINTS = {"fill", "filled", "solid", "glyph"}
 OUTLINE_HINTS = {"outline", "outlined", "outlines", "line", "lines", "linear", "stroke", "stroked"}
 DUO_HINTS = {"duotone", "twotone", "duo", "bulk", "two-tone"}
+
+# Four classes people pick from, calibrated on libraries with published strokes
+# (24-grid units): Phosphor Thin 0.75 / Light 1.1 -> thin; Heroicons, Phosphor,
+# Iconoir, Solar, Carbon 1.5 -> light; Lucide, Tabler, Mingcute, Material 2 ->
+# regular; Phosphor Bold 2.25 and heavier -> bold.
+STROKE_CLASSES = [(1.25, "thin"), (1.75, "light"), (2.15, "regular"), (99, "bold")]
 
 WEIGHT_CLASSES = [  # upper bounds, 24px grid units
     (0.6, "hairline"), (1.1, "thin"), (1.4, "light"), (1.75, "regular"),
@@ -108,6 +114,7 @@ def classify(prefix: str, name: str, m: dict, set_light: bool) -> dict:
     if w is not None and (shape in ("outline", "mixed") or linear):
         out["weight"] = round(w, 2)
         out["weight_class"] = next(label for top, label in WEIGHT_CLASSES if w < top)
+        out["stroke"] = next(label for top, label in STROKE_CLASSES if w < top)
         declared = m.get("declared_stroke")
         if declared:
             ref = declared * 24 / m["h"]

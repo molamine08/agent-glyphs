@@ -71,6 +71,7 @@ class Filters:
     shape: str | None = None  # outline | filled | mixed
     color: str | None = None  # mono | duotone | multicolor
     density: str | None = None  # airy | balanced | heavy
+    stroke: str | None = None  # thin | light | regular | bold
     weight: float | None = None
     weight_tol: float = 0.3
     weight_class: str | None = None
@@ -87,7 +88,7 @@ class Filters:
 
     def shape_filtered(self) -> bool:
         """Filters about how an icon is drawn, which a character does not have."""
-        return any(v is not None for v in (self.style, self.shape, self.color, self.density, self.weight, self.weight_class, self.corners, self.curves,
+        return any(v is not None for v in (self.style, self.shape, self.color, self.density, self.stroke, self.weight, self.weight_class, self.corners, self.curves,
                                             self.contrast, self.container, self.complexity, self.min_conf)) \
             or bool(self.sets and glyph_catalog.PREFIX not in self.sets)
 
@@ -149,6 +150,8 @@ def _search_icons(db, text, parts, f: Filters, limit, per_set, like) -> list[dic
     if f.density:
         where.append("i.density_class = ?"); args.append(f.density)
     filled = f.shape == "filled" or f.style == "filled"
+    if f.stroke and not filled:
+        where.append("i.stroke = ?"); args.append(f.stroke)
     if f.weight is not None and not filled:  # a filled icon has no stroke: the weight filter does not apply
         where.append("i.weight BETWEEN ? AND ?"); args += [f.weight - f.weight_tol, f.weight + f.weight_tol]
     for col, val in (("weight_class", f.weight_class), ("corners", f.corners), ("curves", f.curves),

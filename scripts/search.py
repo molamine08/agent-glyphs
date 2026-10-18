@@ -5,6 +5,7 @@ Examples
   python scripts/search.py "shopping cart"
   python scripts/search.py "سلة تسوق" --shape outline --weight 1.5 --corners rounded
   python scripts/search.py "home" --shape outline --color duotone --density balanced
+  python scripts/search.py "bell" --shape outline --stroke light --corners rounded
   python scripts/search.py "bell" --like lucide          # rank by visual match to Lucide
   python scripts/search.py "wallet" --like ./my-icon.svg  # rank by match to your own icon
   python scripts/search.py --cat finance --style filled --limit 40
@@ -37,7 +38,9 @@ def main(argv=None):
     ap.add_argument("--density", choices=["airy", "balanced", "heavy"], help="how much ink: airy, balanced or heavy")
     ap.add_argument("--style", choices=["outline", "filled", "duotone", "multicolor", "mixed"],
                     help="older single label (outline/filled/mixed = --shape, duotone/multicolor = --color)")
-    ap.add_argument("--weight", type=float, help="stroke width on a 24px grid, e.g. 1.5 or 2")
+    ap.add_argument("--stroke", choices=["thin", "light", "regular", "bold"],
+                    help="stroke class: thin (<1.25), light (~1.5), regular (~2), bold (>2.15) on a 24px grid")
+    ap.add_argument("--weight", type=float, help="exact stroke width on a 24px grid, e.g. 1.5 or 2")
     ap.add_argument("--weight-tol", type=float, default=0.3)
     ap.add_argument("--weight-class", choices=["hairline", "thin", "light", "regular", "medium", "bold", "heavy", "solid"])
     ap.add_argument("--corners", choices=["rounded", "mixed", "sharp"])
@@ -58,7 +61,7 @@ def main(argv=None):
 
     db = store.connect()
     like = resolve_like(db, a.like) if a.like else None
-    f = Filters(style=a.style, shape=a.shape, color=a.color, density=a.density, weight=a.weight, weight_tol=a.weight_tol, weight_class=a.weight_class,
+    f = Filters(style=a.style, shape=a.shape, color=a.color, density=a.density, stroke=a.stroke, weight=a.weight, weight_tol=a.weight_tol, weight_class=a.weight_class,
                 corners=a.corners, curves=a.curves, contrast=a.contrast, container=a.container,
                 complexity=a.complexity, cat=a.cat, sets=a.sets, license=a.license, min_conf=a.min_conf, kind=a.kind)
     rows = search(db, a.query, f, limit=a.limit, per_set=a.per_set, like=like)
