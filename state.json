@@ -1,8 +1,12 @@
 {
  "iconify_version": "2.2.544",
- "built": "2026-10-17",
+ "built": "2026-10-18",
  "external": [],
  "sets": 248,
  "icons": 415236,
- "vision": "81f4f6bcf68c"
+ "vision": "98631d0206a1",
+ "labels": [
+  5,
+  2
+ ]
 }
