@@ -1,1 +1,72 @@
-[]
+[
+ {
+  "prefix": "x-svgl",
+  "name": "svgl",
+  "repo": "pheralb/svgl",
+  "folder": "static/library",
+  "license": "MIT",
+  "license_url": "https://github.com/pheralb/svgl/blob/HEAD/LICENSE",
+  "stars": 6371,
+  "svgs": 1103,
+  "description": "🧩 A beautiful library with SVG logos. Built with Sveltekit & Tailwind CSS.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-18"
+ },
+ {
+  "prefix": "x-lobe-icons",
+  "name": "lobe-icons",
+  "repo": "lobehub/lobe-icons",
+  "folder": "packages/static-svg/icons",
+  "license": "MIT",
+  "license_url": "https://github.com/lobehub/lobe-icons/blob/HEAD/LICENSE",
+  "stars": 2611,
+  "svgs": 950,
+  "description": "🥨 Lobe Icons - Brings AI/LLM brand logos to your React & React Native apps — static SVG/PNG/WebP, no dependencies.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-18"
+ },
+ {
+  "prefix": "x-vue-awesome",
+  "name": "vue-awesome",
+  "repo": "Justineo/vue-awesome",
+  "folder": "assets/svg",
+  "license": "MIT",
+  "license_url": "https://github.com/Justineo/vue-awesome/blob/HEAD/LICENSE",
+  "stars": 2422,
+  "svgs": 59,
+  "description": "Awesome SVG icon component for Vue.js, built-in with Font Awesome icons.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-18"
+ },
+ {
+  "prefix": "x-hd-icons",
+  "name": "HD-Icons",
+  "repo": "xushier/HD-Icons",
+  "folder": "svg",
+  "license": "MIT",
+  "license_url": "https://github.com/xushier/HD-Icons/blob/HEAD/LICENSE",
+  "stars": 1902,
+  "svgs": 595,
+  "description": "高清仪表盘图标（1024x1024 分辨率）",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-18"
+ },
+ {
+  "prefix": "x-homelab-svg-assets",
+  "name": "homelab-svg-assets",
+  "repo": "loganmarchione/homelab-svg-assets",
+  "folder": "assets",
+  "license": "MIT",
+  "license_url": "https://github.com/loganmarchione/homelab-svg-assets/blob/HEAD/LICENSE",
+  "stars": 1259,
+  "svgs": 614,
+  "description": "Full-color SVG icons of homelab-related software, products, and brands",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-18"
+ }
+]
