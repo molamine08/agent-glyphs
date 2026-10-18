@@ -86,7 +86,8 @@ jobs:
           git commit -m "vision: $(tail -n 1 VISION_EVAL.md | cut -c1-120)" || { echo "nothing to commit"; exit 0; }
           # the branch may have moved while this job ran: replay our commit on top
           for i in 1 2 3; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            git rebase --abort 2>/dev/null || true
             sleep 10
           done
           exit 1
