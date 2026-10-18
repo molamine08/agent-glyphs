@@ -148,7 +148,8 @@ def _search_icons(db, text, parts, f: Filters, limit, per_set, like) -> list[dic
         where.append("i.color = ?"); args.append(color)
     if f.density:
         where.append("i.density_class = ?"); args.append(f.density)
-    if f.weight is not None:
+    filled = f.shape == "filled" or f.style == "filled"
+    if f.weight is not None and not filled:  # a filled icon has no stroke: the weight filter does not apply
         where.append("i.weight BETWEEN ? AND ?"); args += [f.weight - f.weight_tol, f.weight + f.weight_tol]
     for col, val in (("weight_class", f.weight_class), ("corners", f.corners), ("curves", f.curves),
                      ("contrast_class", f.contrast), ("container", f.container),

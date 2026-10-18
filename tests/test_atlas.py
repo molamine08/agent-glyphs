@@ -50,10 +50,21 @@ class Calibration(unittest.TestCase):
             with self.subTest(icon=f"{p}:{n}"):
                 self.assertEqual(icon(p, n)["style"], style)
 
+    def test_shape_and_color(self):
+        # what the eye sees: a duotone Phosphor icon is an outline icon in two tones,
+        # and a "filled"-named icon drawn with lines is an outline icon
+        for p, n, shape, color in [("ph", "house-duotone", "outline", "duotone"), ("ph", "house-fill", "filled", "mono"),
+                                   ("lucide", "house", "outline", "mono"), ("fluent", "link-20-filled", "outline", "mono")]:
+            with self.subTest(icon=f"{p}:{n}"):
+                lab = icon(p, n)
+                self.assertEqual((lab["shape"], lab["color"]), (shape, color))
+
     def test_corners(self):
         for p, n, corners in [("lucide", "house", "rounded"), ("tabler", "home", "rounded"),
                               ("material-symbols", "home-outline-rounded", "rounded"),
-                              ("material-symbols", "home-outline", "sharp"), ("mdi", "check", "sharp")]:
+                              ("material-symbols", "home-outline", "sharp"), ("mdi", "check", "sharp"),
+                              # wheels are circles, not corners: Carbon's cart is sharp
+                              ("carbon", "shopping-cart", "sharp"), ("heroicons", "shopping-cart", "rounded")]:
             with self.subTest(icon=f"{p}:{n}"):
                 self.assertEqual(icon(p, n)["corners"], corners)
 
@@ -86,9 +97,9 @@ class Index(unittest.TestCase):
         self.assertTrue(rows and all("cart" in r["name"] or "basket" in r["name"] or "bag" in r["name"] or "shop" in r["name"] for r in rows[:5]))
 
     def test_filters(self):
-        rows = self.search(self.db, "bell", self.Filters(style="outline", corners="rounded", weight=1.5), limit=10)
+        rows = self.search(self.db, "bell", self.Filters(shape="outline", corners="rounded", weight=1.5), limit=10)
         for r in rows:
-            self.assertEqual(r["style"], "outline")
+            self.assertEqual(r["shape"], "outline")
             self.assertLessEqual(abs(r["weight"] - 1.5), 0.31)
 
     def test_no_noncommercial_by_default(self):

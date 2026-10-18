@@ -194,6 +194,7 @@ let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null,
 const state = { kind: null, shape: null, color: null, corners: null, weight: null, density: null, cat: null, commercial: true };
 const EMPTY = { ...state };
 const glyphMode = () => state.kind === "glyph";
+const filledOnly = () => meta && state.shape !== null && meta.shapes[state.shape] === "filled";
 const view = { color: null, size: 24, stroke: null, mirror: false };
 const cache = new Map();
 const extSets = new Map();
@@ -377,8 +378,9 @@ function renderFilters() {
   const L = t();
   const el = $("filters");
   // glyphs are characters: no style, corners, stroke or licence to pick
-  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.color], ["corners", L.corners], ["weight", L.stroke],
-    ["density", L.density], ["cat", L.category], ["commercial", L.licence]])];
+  // filled icons have no stroke: the stroke filter goes away while "filled" is picked
+  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.color], ["corners", L.corners],
+    ...(filledOnly() ? [] : [["weight", L.stroke]]), ["density", L.density], ["cat", L.category], ["commercial", L.licence]])];
   el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small><span>${esc(chipLabel(k))}</span>${ui("down")}</button></div>`).join("")
     + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
@@ -429,6 +431,7 @@ function renderPop(wrap) {
     if (key === "commercial") state.commercial = v === "true";
     else if (key === "kind") state.kind = v === "null" ? null : v;
     else state[key] = v === "null" ? null : Number(v);
+    if (filledOnly()) state.weight = null;  // a filled icon has no stroke to measure
     openPop = null;
     newSearch();
   }));
