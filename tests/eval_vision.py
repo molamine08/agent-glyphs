@@ -68,6 +68,11 @@ def main():
     best = max(WEIGHTS, key=lambda w: (table[w]["tune"][0], table[w]["tune"][1], -w))
     helps = lambda s: table[best][s][0] >= base[s][0] + 1.0 and table[best][s][1] >= base[s][1] - 0.5  # noqa: E731
     chosen = best if best > 0 and helps("tune") and helps("test") else 0.0
+    cfg_path = ROOT / "config.json"
+    cfg = json.loads(cfg_path.read_text())
+    locked = bool(cfg.get("vision_weight_locked"))
+    if locked:  # the maintainer set the weight by hand: keep measuring, never change it
+        chosen = float(cfg.get("vision_weight", 0.0))
 
     lines = ["# Vision model evaluation", "",
              f"Model: CLIP {MODEL[0]} ({MODEL[1]}), "
@@ -78,15 +83,18 @@ def main():
         t, s = table[w]["tune"], table[w]["test"]
         mark = " **chosen**" if w == chosen else ""
         lines.append(f"| {w}{mark} | {t[0]:.1f}% | {t[1]:.1f}% | {s[0]:.1f}% | {s[1]:.1f}% |")
-    verdict = (f"Adopted weight {chosen}: test accuracy {base['test'][0]:.1f}% → {table[chosen]['test'][0]:.1f}% (primary)."
+    verdict = (f"Weight {chosen} set by hand (config.json vision_weight_locked): test accuracy "
+               f"{base['test'][0]:.1f}% → {table[chosen]['test'][0]:.1f}% (primary), "
+               f"{base['test'][1]:.1f}% → {table[chosen]['test'][1]:.1f}% (either)."
+               if locked and chosen in table else
+               f"Weight {chosen} set by hand (config.json vision_weight_locked)." if locked else
+               f"Adopted weight {chosen}: test accuracy {base['test'][0]:.1f}% → {table[chosen]['test'][0]:.1f}% (primary)."
                if chosen else "Not adopted: the vision votes did not improve both halves. Names only (weight 0).")
     lines += ["", verdict]
     report = "\n".join(lines) + "\n"
     Path(a.report).write_text(report)
     print(report)
-    if a.apply:
-        cfg_path = ROOT / "config.json"
-        cfg = json.loads(cfg_path.read_text())
+    if a.apply and not locked:
         cfg["vision_weight"] = chosen
         cfg_path.write_text(json.dumps(cfg, indent=2) + "\n")
 

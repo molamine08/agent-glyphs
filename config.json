@@ -1,6 +1,7 @@
 {
   "repo": "molamine08/agent-glyphs",
   "index_url": "https://github.com/molamine08/agent-glyphs/releases/latest/download/atlas.db.gz",
-  "vision_weight": 0.0,
-  "discover_auto_add": true
+  "vision_weight": 0.75,
+  "discover_auto_add": true,
+  "vision_weight_locked": true
 }
