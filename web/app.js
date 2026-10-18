@@ -64,7 +64,7 @@ const T = {
     prompt: (id, set, lic, opts) => `استخدم مهارة Agent Glyphs وأضف الأيقونة ⁦${id}⁩ من ⁨${set}⁩ (رخصة ⁦${lic}⁩)${opts}.`,
     optStroke: (w) => ` بسُمك خط ${w}`, optSize: (s) => ` بحجم ${s}px`, optMirror: " معكوسة للواجهة العربية", optColor: (c) => ` باللون ${c}`,
     report: "التصنيف غير دقيق؟ أخبرنا",
-    kind: "النوع", kinds: { icon: "أيقونات", glyph: "جليفات" },
+    kind: "النوع", kinds: { icon: "أيقونات", animated: "متحركة", glyph: "جليفات" },
     kindNote: "الجليف حرف يونيكود يُنسخ نصاً مثل الإيموجي، وليس رسمة.",
     glyphBy: "حرف يونيكود، يُنسخ نصاً", copyChar: "انسخ الحرف", copyHtml: "انسخ HTML",
     gCode: "الرمز", gName: "اسمه في يونيكود", gHtml: "HTML", gCss: "CSS", gType: "النوع", gTypeV: "جليف، حرف يونيكود",
@@ -122,7 +122,7 @@ const T = {
     prompt: (id, set, lic, opts) => `Use the Agent Glyphs skill to add the icon ${id} from ${set} (${lic} licence)${opts}.`,
     optStroke: (w) => `, stroke ${w}`, optSize: (s) => `, ${s}px`, optMirror: ", mirrored for right-to-left", optColor: (c) => `, colour ${c}`,
     report: "Wrong label? Tell us",
-    kind: "Type", kinds: { icon: "Icons", glyph: "Glyphs" },
+    kind: "Type", kinds: { icon: "Icons", animated: "Animated", glyph: "Glyphs" },
     kindNote: "A glyph is a Unicode character you paste as text, like an emoji. It is not a drawing.",
     glyphBy: "Unicode character, pasted as text", copyChar: "Copy character", copyHtml: "Copy HTML",
     gCode: "Code point", gName: "Unicode name", gHtml: "HTML", gCss: "CSS", gType: "Type", gTypeV: "Glyph, a Unicode character",
@@ -424,7 +424,9 @@ function renderPop(wrap) {
       + rows.map(([i, label, n]) => opt(i, label, state.cat === i, n !== null ? `<span class="n">${fmt(n)}</span>` : "")).join("");
   } else if (key === "kind") {
     const g = meta.glyphs ? `<span class="n">${fmt(meta.glyphs)}</span>` : "";
-    pop.innerHTML = opt("null", L.any, state.kind === null) + opt("icon", L.kinds.icon, state.kind === "icon", `<span class="n">${fmt(meta.icons)}</span>`)
+    const moving = meta.animated || 0;
+    pop.innerHTML = opt("null", L.any, state.kind === null) + opt("icon", L.kinds.icon, state.kind === "icon", `<span class="n">${fmt(meta.icons - moving)}</span>`)
+      + (moving ? opt("animated", L.kinds.animated, state.kind === "animated", `<span class="n">${fmt(moving)}</span>`, `<svg class="ui spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`) : "")
       + opt("glyph", L.kinds.glyph, state.kind === "glyph", g, '<span class="glyph-mark" aria-hidden="true">ﷺ</span>') + `<p class="pop-note">${esc(L.kindNote)}</p>`;
   } else {
     pop.innerHTML = opt("true", L.lic.commercial, state.commercial) + opt("false", L.lic.any, !state.commercial);

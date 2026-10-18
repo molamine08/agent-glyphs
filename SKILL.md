@@ -101,7 +101,8 @@ Full list: `python scripts/sets.py` (filter with `--search`).
 - Glyphs are Unicode characters, not drawings: Islamic and Arabic characters that no icon library
   draws (﷽ ﷺ ﷻ ۞ ۩ ﴾ ﴿, honorifics such as ﵁ رضي الله عنه) and related emoji (🕌 🕋 📿 ☪).
   `search.py` returns them with the icons (prefix `unicode`, `"kind": "glyph"`, the `char` and its
-  `codepoint`); `--kind glyph` returns glyphs only, `--kind icon` icons only. Put a glyph in the text
+  `codepoint`); `--kind glyph` returns glyphs only, `--kind icon` still icons only, `--kind animated`
+  icons that move (SVG animation: line-md, svg-spinners, meteocons…; the exported SVG keeps the animation). Put a glyph in the text
   as the character itself (or its HTML entity `&#xFDFA;` / CSS `content: "\FDFA"`), never as an image
   or SVG. `get.py unicode:<name>` prints the character. The character needs no licence; the font that
   draws it does (Noto Naskh Arabic, Amiri and Scheherazade New are OFL).

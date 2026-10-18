@@ -84,7 +84,7 @@ class Filters:
     sets: list[str] | None = None
     license: str = "commercial"  # commercial | permissive | any
     min_conf: str | None = None  # high | medium
-    kind: str | None = None  # icon | glyph (None: both)
+    kind: str | None = None  # icon (still) | animated | glyph (None: all)
 
     def shape_filtered(self) -> bool:
         """Filters about how an icon is drawn, which a character does not have."""
@@ -122,7 +122,7 @@ def search(db: sqlite3.Connection, text: str | None, f: Filters, limit: int = 20
     matching glyphs follow the first icons."""
     parts = expand(text) if text else []
     glyphs = []
-    if f.kind != "icon" and not f.shape_filtered() and not like and f.cat in (None, "culture"):
+    if f.kind not in ("icon", "animated") and not f.shape_filtered() and not like and f.cat in (None, "culture"):
         glyphs = glyph_catalog.search(text or "", parts, limit=limit if f.kind == "glyph" else 6)
         if not text and f.kind == "glyph":
             glyphs = [glyph_catalog.public(g) for g in glyph_catalog.catalog()][:limit]
@@ -159,6 +159,10 @@ def _search_icons(db, text, parts, f: Filters, limit, per_set, like) -> list[dic
                      ("complexity", f.complexity)):
         if val:
             where.append(f"i.{col} = ?"); args.append(val)
+    if f.kind == "animated":
+        where.append("i.animated = 1")
+    elif f.kind == "icon":
+        where.append("COALESCE(i.animated, 0) = 0")
     if f.cat:
         where.append("(i.cat = ? OR i.cat2 = ?)"); args += [f.cat, f.cat]
     sets = [x for x in (f.sets or []) if x != glyph_catalog.PREFIX]

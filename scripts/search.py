@@ -53,7 +53,8 @@ def main(argv=None):
     ap.add_argument("--license", choices=["commercial", "permissive", "any"], default="commercial")
     ap.add_argument("--min-conf", choices=["high", "medium"])
     ap.add_argument("--like", help="family/set (lucide, ph:bold), an icon (tabler:home) or an SVG file")
-    ap.add_argument("--kind", choices=["icon", "glyph"], help="only icons (SVG) or only glyphs (Unicode characters)")
+    ap.add_argument("--kind", choices=["icon", "animated", "glyph"],
+                    help="icon: still SVG icons; animated: icons that move (SVG animation); glyph: Unicode characters")
     ap.add_argument("--per-set", type=int, default=2, help="max results per icon set (variety)")
     ap.add_argument("--limit", type=int, default=20)
     ap.add_argument("--json", action="store_true", help="full JSON output")
@@ -79,6 +80,8 @@ def main(argv=None):
         w = f"{r['weight']:.2f}" if r.get("weight") is not None else "-"
         dist = f"  match={r['style_distance']}" if "style_distance" in r else ""
         look = r.get("shape") or r.get("style") or "-"
+        if r.get("animated"):
+            look += "+animated"
         if r.get("color") not in (None, "mono"):
             look += "+" + r["color"]
         print(f"{r['prefix']}:{r['name']:<34} {look:<16} w={w:<5} {r['corners'] or '-':<8} {r.get('density_class') or '-':<8} "
