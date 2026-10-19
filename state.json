@@ -21,10 +21,30 @@
   [
    "x-homelab-svg-assets",
    null
+  ],
+  [
+   "x-radiance",
+   null
+  ],
+  [
+   "x-blade-flags",
+   null
+  ],
+  [
+   "x-material-symbols",
+   null
+  ],
+  [
+   "x-naive-icons",
+   null
+  ],
+  [
+   "x-icons",
+   null
   ]
  ],
- "sets": 253,
- "icons": 419302,
+ "sets": 258,
+ "icons": 429280,
  "vision": "98631d0206a1",
  "labels": [
   5,
