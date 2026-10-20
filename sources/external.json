@@ -138,5 +138,47 @@
   "approved": true,
   "auto": true,
   "found": "2026-10-19"
+ },
+ {
+  "prefix": "x-dashboard-icons",
+  "name": "dashboard-icons",
+  "repo": "homarr-labs/dashboard-icons",
+  "folder": "svg",
+  "license": "Apache-2.0",
+  "license_url": "https://github.com/homarr-labs/dashboard-icons/blob/HEAD/LICENSE",
+  "stars": 8888,
+  "svgs": 3633,
+  "description": "3,400+ curated icons and logos for dashboards and AI agents. SVG, PNG and WEBP on a free CDN, plus an MCP server for Claude Code, Codex, ChatGPT, Cursor, Hermes and OpenClaw.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-20"
+ },
+ {
+  "prefix": "x-bank-logos",
+  "name": "bank-logos",
+  "repo": "icongo/bank-logos",
+  "folder": "logos",
+  "license": "MIT",
+  "license_url": "https://github.com/icongo/bank-logos/blob/HEAD/LICENSE",
+  "stars": 86,
+  "svgs": 422,
+  "description": "Bank Logos(svg)",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-20"
+ },
+ {
+  "prefix": "x-typo3-icons",
+  "name": "TYPO3.Icons",
+  "repo": "TYPO3/TYPO3.Icons",
+  "folder": "dist/svgs/actions",
+  "license": "MIT",
+  "license_url": "https://github.com/TYPO3/TYPO3.Icons/blob/HEAD/LICENSE",
+  "stars": 63,
+  "svgs": 413,
+  "description": "SVG icons for the TYPO3 Backend",
+  "approved": true,
+  "auto": true,
+  "found": "2026-10-20"
  }
 ]
