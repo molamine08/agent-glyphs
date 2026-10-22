@@ -49,7 +49,9 @@
 "raysan5/riconpacker",
 "react-icons/react-icons",
 "ronilan/rusticon",
+"rossmoody/svg-gobbler",
 "samzydd/sakaniui",
+"saoudi-h/solar-icons",
 "sarah-haddad/design-resources",
 "seeb4coding/svg-ora-studio",
 "simple-icons/simple-icons-font",
@@ -60,5 +62,6 @@
 "vkcom/icons",
 "wikimedia/design-codex",
 "xushier/hd-icons",
+"yammadev/flag-icons",
 "yangxu52/vite-plugin-svg-icons-ng"
 ]
