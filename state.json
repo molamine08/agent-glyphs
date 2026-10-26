@@ -1,6 +1,6 @@
 {
- "iconify_version": "2.2.547",
- "built": "2026-10-24",
+ "iconify_version": "2.2.548",
+ "built": "2026-10-26",
  "external": [
   [
    "x-svgl",
@@ -55,8 +55,8 @@
    null
   ]
  ],
- "sets": 261,
- "icons": 435982,
+ "sets": 262,
+ "icons": 436774,
  "vision": "2c695036b432",
  "labels": [
   5,
