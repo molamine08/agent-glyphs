@@ -180,5 +180,19 @@
   "approved": true,
   "auto": true,
   "found": "2026-10-20"
+ },
+ {
+  "prefix": "x-mingcute-icons",
+  "name": "mingcute-icons",
+  "repo": "mingcute-design/mingcute-icons",
+  "folder": "packages/svg/core-filled",
+  "license": "Apache-2.0",
+  "license_url": "https://github.com/mingcute-design/mingcute-icons/blob/HEAD/LICENSE",
+  "stars": 1654,
+  "svgs": 2263,
+  "description": "Carefully designed icons for modern interfaces. MingCute is a simple, elegant open-source icon library built for web and mobile products.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-11-01"
  }
 ]
