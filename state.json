@@ -53,10 +53,14 @@
   [
    "x-typo3-icons",
    null
+  ],
+  [
+   "x-mingcute-icons",
+   null
   ]
  ],
- "sets": 294,
- "icons": 478198,
+ "sets": 295,
+ "icons": 480461,
  "vision": "588121387285",
  "labels": [
   5,
