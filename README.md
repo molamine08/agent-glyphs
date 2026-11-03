@@ -86,6 +86,13 @@ Libraries outside Iconify have no npm package or public API, so their sanitised 
 ships with each release as `external-sets.json.gz`. Libraries with non-commercial or
 missing licences are never added.
 
+## New signs fonts do not draw yet
+
+Some characters are newer than most fonts. The **Saudi Riyal sign ⃁** (U+20C1, Unicode 17)
+ships here with a tiny fallback font, [`fonts/riyal/`](fonts/riyal/) (Regular, Medium, Bold;
+under 1 KB each). List it after your text font and a price stays one string, `45 ⃁`,
+instead of text plus an SVG that breaks right-to-left order and spacing.
+
 ## Licences
 
 - Code: MIT (see `LICENSE`).
@@ -120,6 +127,10 @@ missing licences are never added.
   يجد المكتبات الأقرب لأيقوناتك، ثم يكمل الناقص بنفس الشكل.
 - **التصدير:** `python scripts/get.py lucide:house --format tsx --out src/icons`
   كملفات SVG أو مكونات React، مع ملف نسب الحقوق تلقائياً.
+
+**رمز الريال السعودي ⃁ كحرف:** أغلب الخطوط لا ترسم الرمز الجديد (U+20C1) بعد، لذلك يأتي معه
+خط احتياطي صغير في [`fonts/riyal/`](fonts/riyal/) بثلاثة أوزان. أضفه بعد خطك ويبقى السعر نصاً
+واحداً `45 ⃁` بدل نص وأيقونة SVG، ويظهر الرمز يسار الرقم في الواجهات العربية.
 
 **التحديث اليومي:** بوت يضيف ويصنّف تلقائياً كل ما يصدر في Iconify، وبوت ثانٍ يكتشف
 مكتبات جديدة خارجها ويضيف تلقائياً كل مكتبة رخصتها تسمح بالاستخدام التجاري وتجتاز الفحوص،

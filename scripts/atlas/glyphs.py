@@ -18,6 +18,8 @@ from .semantics import has_arabic, norm_ar
 CATALOG = Path(__file__).resolve().parents[2] / "sources" / "glyphs" / "unicode.json"
 PREFIX = "unicode"
 LICENSE = "Unicode character (no licence needed; the font that draws it has its own)"
+FONT_NOTE = ("Most fonts do not draw this character yet: ship the fallback font in this folder and list it "
+             "after the text font (see its README); keep the character in the text, never an SVG.")
 
 
 @lru_cache(maxsize=1)
@@ -88,4 +90,5 @@ def public(g: dict, lv: int = 4) -> dict:
         "unicode_name": g["unicode_name"], "html": "".join(f"&#x{ord(c):X};" for c in g["char"]),
         "css": "".join(f"\\{ord(c):X}" for c in g["char"]), "cat": g.get("cat"), "license": LICENSE,
         "license_tier": "permissive", "match": "related" if lv == 1 else "same", "level": lv,
+        **({"font": g["font"], "font_note": FONT_NOTE} if g.get("font") else {}),
     }

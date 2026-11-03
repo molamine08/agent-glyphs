@@ -76,6 +76,8 @@ def main(argv=None):
         if r.get("kind") == "glyph":
             print(f"{r['prefix']}:{r['name']:<34} glyph  {r['char']}  {r['codepoint']:<8} HTML {r['html']:<10} "
                   f"(a Unicode character: paste it as text, like an emoji)")
+            if r.get("font"):
+                print(f"{'':<44}font: {r['font']}/ - most fonts do not draw it yet; list this fallback font after the text font")
             continue
         w = f"{r['weight']:.2f}" if r.get("weight") is not None else "-"
         dist = f"  match={r['style_distance']}" if "style_distance" in r else ""

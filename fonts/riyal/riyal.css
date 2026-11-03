@@ -1,0 +1,6 @@
+/* Agent Glyphs Riyal: draws only the Saudi Riyal sign (U+20C1).
+   unicode-range means the browser downloads it only when the page uses the sign.
+   Then list it after your own font:  font-family: "Your Font", "Agent Glyphs Riyal", sans-serif; */
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("AgentGlyphsRiyal-Regular.woff2") format("woff2"); font-weight: 100 449; font-display: swap; unicode-range: U+20C1; }
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("AgentGlyphsRiyal-Medium.woff2") format("woff2"); font-weight: 450 599; font-display: swap; unicode-range: U+20C1; }
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("AgentGlyphsRiyal-Bold.woff2") format("woff2"); font-weight: 600 900; font-display: swap; unicode-range: U+20C1; }

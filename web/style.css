@@ -16,8 +16,8 @@
   --line: 1.5px solid var(--ink);
   --edge: #D2D2D7;            /* outline of large cards: lighter than the ink line */
   --line-soft: 1.5px solid var(--edge);
-  --font-en: "Satoshi", "IBM Plex Sans Arabic", system-ui, sans-serif;
-  --font-ar: "IBM Plex Sans Arabic", "Satoshi", system-ui, sans-serif;
+  --font-en: "Satoshi", "IBM Plex Sans Arabic", "Agent Glyphs Riyal", system-ui, sans-serif;
+  --font-ar: "IBM Plex Sans Arabic", "Satoshi", "Agent Glyphs Riyal", system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
   --gutter: 48px;
@@ -252,7 +252,11 @@ html[dir="rtl"] .agent-line { margin-left: 0; margin-right: auto; }
 .tile[aria-current="true"] { border: 2px solid var(--ink); background: var(--wash); }
 .tile .ic svg { width: 30px; height: 30px; }
 /* glyphs: Unicode characters shown as text, with their code point */
-:root { --font-glyph: "Noto Naskh Arabic", "Amiri", "Scheherazade New", "Geeza Pro", "Segoe UI", serif; }
+/* signs most fonts do not draw yet (Saudi Riyal U+20C1): fonts/riyal, loaded only when used */
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("fonts/AgentGlyphsRiyal-Regular.woff2") format("woff2"); font-weight: 100 449; font-display: swap; unicode-range: U+20C1; }
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("fonts/AgentGlyphsRiyal-Medium.woff2") format("woff2"); font-weight: 450 599; font-display: swap; unicode-range: U+20C1; }
+@font-face { font-family: "Agent Glyphs Riyal"; src: url("fonts/AgentGlyphsRiyal-Bold.woff2") format("woff2"); font-weight: 600 900; font-display: swap; unicode-range: U+20C1; }
+:root { --font-glyph: "Noto Naskh Arabic", "Amiri", "Scheherazade New", "Geeza Pro", "Segoe UI", "Agent Glyphs Riyal", serif; }
 .tile.glyph { position: relative; grid-template-rows: 1fr auto; padding: 8px 4px 9px; overflow: hidden; container-type: inline-size; }
 .tile.glyph .ch { font: 400 34px/1 var(--font-glyph); align-self: center; padding-top: 6px; }
 .tile.glyph.wide .ch { font-size: 7cqw; }  /* the basmala ligature is about twelve times wider than tall */

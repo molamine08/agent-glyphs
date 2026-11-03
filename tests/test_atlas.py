@@ -115,3 +115,25 @@ class Index(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRiyalGlyph(unittest.TestCase):
+    """The Saudi Riyal sign is newer than most fonts: it ships with a fallback font."""
+
+    def test_catalog_entry_and_font(self):
+        from atlas import glyphs
+        g = glyphs.by_name("saudi-riyal-sign")
+        self.assertIsNotNone(g)
+        self.assertEqual(g["char"], "⃁")
+        p = glyphs.public(g)
+        self.assertEqual(p["font"], "fonts/riyal")
+        for w in ("Regular", "Medium", "Bold"):
+            for path in (ROOT / "fonts" / "riyal" / f"AgentGlyphsRiyal-{w}.ttf",
+                         ROOT / "fonts" / "riyal" / f"AgentGlyphsRiyal-{w}.woff2",
+                         ROOT / "web" / "fonts" / f"AgentGlyphsRiyal-{w}.woff2"):
+                self.assertTrue(path.exists(), path)
+            try:
+                from fontTools.ttLib import TTFont
+            except ImportError:
+                continue  # fonttools is only needed to build the font
+            self.assertIn(0x20C1, TTFont(str(ROOT / "fonts" / "riyal" / f"AgentGlyphsRiyal-{w}.ttf")).getBestCmap())

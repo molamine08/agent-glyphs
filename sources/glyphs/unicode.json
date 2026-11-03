@@ -204,12 +204,12 @@
   "unicode_name": "RIAL SIGN",
   "en": [
    "rial",
-   "riyal",
+   "iran",
    "currency"
   ],
   "ar": [
-   "ريال",
-   "علامة الريال"
+   "ريال إيراني",
+   "علامة الريال الإيراني"
   ],
   "cat": "culture",
   "kind": "text"
@@ -849,5 +849,31 @@
   ],
   "cat": "culture",
   "kind": "emoji"
+ },
+ {
+  "name": "saudi-riyal-sign",
+  "char": "⃁",
+  "cp": "U+20C1",
+  "unicode_name": "SAUDI RIYAL SIGN",
+  "en": [
+   "riyal",
+   "saudi",
+   "sar",
+   "currency",
+   "price",
+   "money"
+  ],
+  "ar": [
+   "ريال",
+   "ريال سعودي",
+   "رمز الريال",
+   "علامة الريال",
+   "رمز الريال السعودي",
+   "عملة",
+   "سعر"
+  ],
+  "cat": "finance",
+  "kind": "text",
+  "font": "fonts/riyal"
  }
 ]

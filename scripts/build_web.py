@@ -97,7 +97,7 @@ def main(argv=None):
     for g in glyph_catalog.catalog():
         glyphs_out.append({"n": g["name"], "ch": g["char"], "cp": g["cp"], "un": g["unicode_name"],
                            "t": sorted(g["_tags"]), "a": g["_ar"], "f": sorted(g["_forms"]),
-                           **({"e": 1} if g.get("kind") == "emoji" else {}), **({"w": 1} if g.get("wide") else {})})
+                           **({"e": 1} if g.get("kind") == "emoji" else {}), **({"w": 1} if g.get("wide") else {}), **({"fo": g["font"]} if g.get("font") else {})})
     stats = json.loads(db.execute("SELECT value FROM meta WHERE key='stats'").fetchone()[0])
     version = db.execute("SELECT value FROM meta WHERE key='iconify_version'").fetchone()[0]
     meta = {

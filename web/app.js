@@ -73,6 +73,7 @@ const T = {
     noGlyphAlts: "لا توجد أيقونة بنفس المعنى، استخدم الحرف نفسه.",
     glyphPrompt: (ch, cp, name) => `استخدم مهارة Agent Glyphs وأدرج الجليف ${ch} (⁦${cp}⁩، ⁦${name}⁩) في النص كحرف، لا كصورة.`,
     glyphMeta: "بيانات الجليف",
+    gFontK: "خط احتياطي", gFontV: "أغلب الخطوط لا ترسمه بعد، أضف هذا الخط بعد خطك",
     countG: (g) => `${g} جليف`,
     fShape: "الشكل", fColor: "الألوان", fDensity: "الكثافة", fWeight: "سُمك الخط", fCorners: "الزوايا", fCat: "التصنيف", fGrid: "الشبكة", fLicence: "الرخصة",
     licLine: (l) => `الرخصة: ${l}.`, credit: "اذكر صاحبها عند الاستخدام.",
@@ -131,6 +132,7 @@ const T = {
     noGlyphAlts: "No icon has this meaning: use the character itself.",
     glyphPrompt: (ch, cp, name) => `Use the Agent Glyphs skill to put the glyph ${ch} (${cp}, ${name}) in the text as a character, not an image.`,
     glyphMeta: "Glyph metadata",
+    gFontK: "Fallback font", gFontV: "most fonts do not draw it yet, list this font after yours",
     countG: (g) => `${g} glyphs`,
     fShape: "Shape", fColor: "Colour", fDensity: "Density", fWeight: "Stroke", fCorners: "Corners", fCat: "Category", fGrid: "Grid", fLicence: "Licence",
     licLine: (l) => `Licence: ${l}.`, credit: "Credit the author when you use it.",
@@ -657,6 +659,7 @@ function openGlyph(it, user) {
   $("dName").textContent = it.n;
   $("dSet").textContent = L.glyphBy;
   const facts = [[L.gType, L.gTypeV], [L.gCode, it.cp], [L.gName, it.un], [L.gHtml, htmlEntity(it.ch)], [L.gCss, `content: "${cssEscape(it.ch)}"`]];
+  if (it.fo) facts.push([L.gFontK, `${it.fo}/ · ${L.gFontV}`]);
   $("dFacts").innerHTML = facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd dir="ltr">${esc(v)}</dd></div>`).join("");
   $("dLicense").textContent = L.gLicence;
   document.querySelector('[data-i18n="metadata"]').textContent = L.glyphMeta;

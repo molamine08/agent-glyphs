@@ -3,8 +3,9 @@
 
 A glyph stays a character: agents paste "ﷺ" into text the way they paste an
 emoji, and the page shows it as text. Nothing is converted into a drawing.
-This first catalogue covers Islamic and Arabic characters that no icon library
-draws (honorific ligatures, Quranic marks) and the related emoji.
+This catalogue covers Islamic and Arabic characters that no icon library draws
+(honorific ligatures, Quranic marks), the related emoji, and new signs most fonts do
+not draw yet, such as the Saudi Riyal sign (shipped with a fallback font in fonts/).
 
     python scripts/make_glyph_catalog.py
 """
@@ -38,7 +39,7 @@ INFO = {
     0xFDFA: ("sallallahu-alayhi-wasallam", ["sallallahu", "pbuh", "saw", "salawat", "honorific"],
              ["صلى الله عليه وسلم", "الصلاة على النبي", "صلعم", "عليه الصلاة والسلام"]),
     0xFDFB: ("jalla-jalaluhu", ["jalla", "jalaluhu", "honorific"], ["جل جلاله", "جل وعلا"]),
-    0xFDFC: ("rial-sign", ["rial", "riyal", "currency"], ["ريال", "علامة الريال"]),
+    0xFDFC: ("rial-sign", ["rial", "iran", "currency"], ["ريال إيراني", "علامة الريال الإيراني"]),
     0xFDFD: ("bismillah", ["bismillah", "basmala", "basmalah"],
              ["بسم الله الرحمن الرحيم", "بسملة", "بسم الله"]),
     0xFDCF: ("salamuhu-alayna", ["salamuhu", "honorific"], ["سلامه علينا"]),
@@ -81,6 +82,14 @@ INFO = {
 }
 WIDE = {0xFDFD}  # drawn far wider than tall: shown smaller in grids
 
+# Characters newer than this Python's Unicode data (unicodedata cannot name them), and
+# characters most fonts do not draw yet: they ship with a small fallback font in fonts/.
+NEW = {
+    0x20C1: ("SAUDI RIYAL SIGN", "finance", "fonts/riyal"),  # Unicode 17.0 (2025)
+}
+INFO[0x20C1] = ("saudi-riyal-sign", ["riyal", "saudi", "sar", "currency", "price", "money"],
+                ["ريال", "ريال سعودي", "رمز الريال", "علامة الريال", "رمز الريال السعودي", "عملة", "سعر"])
+
 
 def slug(cp: int) -> str:
     if cp in INFO:
@@ -92,15 +101,17 @@ def slug(cp: int) -> str:
 
 def main():
     out = []
-    for cp in ISLAMIC + EMOJI:
-        try:
-            uname = unicodedata.name(chr(cp))
-        except ValueError:
-            continue  # not assigned in this Python's Unicode version
+    for cp in ISLAMIC + EMOJI + list(NEW):
+        uname, cat, font = NEW.get(cp, (None, "culture", None))
+        if not uname:
+            try:
+                uname = unicodedata.name(chr(cp))
+            except ValueError:
+                continue  # not assigned in this Python's Unicode version
         _, en, ar = INFO.get(cp, ("", [], []))
         out.append({"name": slug(cp), "char": chr(cp), "cp": f"U+{cp:04X}", "unicode_name": uname,
-                    "en": en, "ar": ar, "cat": "culture", "kind": "emoji" if cp in EMOJI else "text",
-                    **({"wide": True} if cp in WIDE else {})})
+                    "en": en, "ar": ar, "cat": cat, "kind": "emoji" if cp in EMOJI else "text",
+                    **({"wide": True} if cp in WIDE else {}), **({"font": font} if font else {})})
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
     print(f"{len(out)} glyphs -> {OUT.relative_to(ROOT)}")
