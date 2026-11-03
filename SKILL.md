@@ -106,6 +106,11 @@ Full list: `python scripts/sets.py` (filter with `--search`).
   as the character itself (or its HTML entity `&#xFDFA;` / CSS `content: "\FDFA"`), never as an image
   or SVG. `get.py unicode:<name>` prints the character. The character needs no licence; the font that
   draws it does (Noto Naskh Arabic, Amiri and Scheherazade New are OFL).
+- New signs most fonts do not draw yet ship with a tiny fallback font: the Saudi Riyal sign ⃁
+  (`unicode:saudi-riyal-sign`, U+20C1) has `fonts/riyal/` (Regular/Medium/Bold, woff2 + ttf, `riyal.css`).
+  The result carries `"font": "fonts/riyal"`. Copy that folder into the project, list
+  `"Agent Glyphs Riyal"` after the text font, and write prices as one string (`45 ⃁`, number
+  first: in RTL the sign shows on the left of the number). Never an SVG next to the number.
 - Search by meaning, not exact names. Arabic and English words are expanded through ~3,900 concept
   groups: synonyms, plurals and dialect or loanwords (سيتنج → settings, داشبورد → dashboard,
   مسلمين → islam), and closely related things ("مسلم" also finds mosque, crescent, quran). Each JSON

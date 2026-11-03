@@ -65,6 +65,8 @@ def main(argv=None):
                 continue
             p = glyphs.public(g)
             print(f"{p['char']}\t{p['codepoint']}\tHTML {p['html']}\tCSS content: \"{p['css']}\"\t{ref}")
+            if p.get("font"):
+                print(f"  font: {p['font']}/ (fallback font) - {p['font_note']}")
             continue
         if not name:
             raise SystemExit(f"'{ref}': use prefix:name, e.g. lucide:house")
