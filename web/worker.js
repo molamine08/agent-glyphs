@@ -114,6 +114,12 @@ function expand(text) {
         const g = lookupAr(words.slice(i, i + n).join(" "));
         if (g.length) { hit = [words.slice(i, i + n).join(" "), g, n]; break; }
       }
+      // English phrases written as one icon-name token: "image search" -> image-search
+      if (i + n <= words.length && n <= 3 && !words.slice(i, i + n).some((w) => AR.test(w))) {
+        const joined = words.slice(i, i + n).join("-");
+        const g = lookupEn(joined);
+        if (g.length) { hit = [joined, g, n]; break; }
+      }
     }
     if (!hit) { const w = words[i]; hit = [w, AR.test(w) ? lookupAr(w) : lookupEn(w), 1]; }
     const [t, gids, n] = hit;

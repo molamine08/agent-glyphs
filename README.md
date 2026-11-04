@@ -49,6 +49,7 @@ Labels: independent review of a random sample of 240 icons. Details and known li
 
 - Any agent that supports skills (Claude Code, Cursor, Codex…): `npx skills add molamine08/agent-glyphs`
 - Claude Code by hand: `git clone https://github.com/molamine08/agent-glyphs ~/.claude/skills/agent-glyphs`
+  (use this if `npx skills add` stops to ask questions, as it does when an agent runs it without a terminal)
 - Claude app: download the [zip](https://github.com/molamine08/agent-glyphs/archive/refs/heads/main.zip)
   and upload it in Settings → Capabilities → Skills.
 

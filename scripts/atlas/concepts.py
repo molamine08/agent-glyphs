@@ -147,6 +147,13 @@ def expand(text: str) -> list[Part]:
                 if gids:
                     hit = (" ".join(words[i:i + n]), gids, n)
                     break
+            # English phrases written as one icon-name token: "image search" -> image-search
+            if i + n <= len(words) and n <= 3 and not any(has_arabic(w) for w in words[i:i + n]):
+                joined = "-".join(words[i:i + n])
+                gids = _lookup_en(joined)
+                if gids:
+                    hit = (joined, gids, n)
+                    break
         if not hit:
             w = words[i]
             gids = _lookup_ar(w) if has_arabic(w) else _lookup_en(w)

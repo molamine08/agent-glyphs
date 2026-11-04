@@ -105,6 +105,8 @@ def _fts_query(parts) -> str:
             if words:  # a phrase ("رضي الله عنه") needs all its words, not any one of them
                 alts.append("(" + " AND ".join(f'ar:"{w}"*' for w in words) + ")" if len(words) > 1
                             else f'ar:"{words[0]}"*')
+        elif "-" in p.text:  # a phrase matched as one token ("image search" -> image-search): all its words
+            alts.append("(" + " AND ".join(f'{{en extra}}:"{x}"*' for x in p.text.split("-")) + ")")
         else:
             alts.append(f'{{en extra}}:"{p.text}"*')
         for tok in sorted(p.strong | p.related):
