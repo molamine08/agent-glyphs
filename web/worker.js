@@ -185,7 +185,7 @@ function search(opts) {
   // glyphs have no style, stroke or corners: any of those filters means icons only
   const culture = meta.categories.findIndex(([k]) => k === "culture");
   const glyphsOk = f.kind !== "icon" && f.kind !== "animated" && f.shape === null && f.color === null && f.density === null && f.corners === null
-    && f.weight === null && (f.cat === null || f.cat === culture);
+    && f.weight === null && !f.set && (f.cat === null || f.cat === culture);
   let gl = [];
   if (glyphsOk) gl = p ? searchGlyphs(opts.query.trim(), p, f.kind === "glyph" ? opts.limit : 6) : f.kind === "glyph" ? glyphs.map((g) => glyphItem(g)) : [];
   if (f.kind === "glyph") return { total: gl.length, sets: 0, glyphs: gl.length, counts: null, all: null, rel: p ? p.rel : [], items: gl.slice(0, opts.limit) };
@@ -213,6 +213,7 @@ function searchIcons(opts, f, p) {
   for (const id of candidates) {
     const r = rows[id];
     const set = meta.setsInfo[r.s];
+    if (f.set && set.p !== f.set) continue;  // one library, picked from the libraries list
     if (f.commercial && set.t > 1) continue;
     // filters always win: an icon shows only when it matches every one of them
     if (f.kind === "animated" && !r.an) continue;

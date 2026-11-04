@@ -31,6 +31,8 @@ DENSITY = ["airy", "balanced", "heavy"]
 STROKES = ["thin", "light", "regular", "bold"]
 CORNERS = ["rounded", "mixed", "sharp"]
 TIERS = ["permissive", "attribution", "share-alike", "non-commercial", "unknown"]
+# what a library card shows first, when the library has them
+SAMPLE_CONCEPTS = ["home", "search", "heart", "star", "user", "settings", "bell", "camera", "mail", "calendar"]
 
 
 def main(argv=None):
@@ -46,12 +48,20 @@ def main(argv=None):
     cats = list(CATEGORIES)
     concept_sets = dict(db.execute("SELECT concept, sets FROM concepts"))
 
+    # the day each library joined the index: the page marks the last 7 days as "new"
+    root = Path(__file__).resolve().parents[1]
+    dates_file = root / "sources" / "set_dates.json"
+    dates = json.loads(dates_file.read_text()) if dates_file.exists() else {}
+    ext_file = root / "sources" / "external.json"
+    for e in (json.loads(ext_file.read_text()) if ext_file.exists() else []):
+        dates.setdefault(e["prefix"], e.get("found"))
+
     sets, rows_by_set = [], {}
     for s in db.execute("SELECT * FROM sets ORDER BY prefix"):
         sets.append({
             "p": s["prefix"], "n": s["name"], "a": s["author"], "au": s["author_url"],
             "l": s["license"], "lu": s["license_url"], "t": TIERS.index(s["license_tier"]),
-            "g": s["grid"], "c": s["category"], "k": s["total"],
+            "g": s["grid"], "c": s["category"], "k": s["total"], "d": dates.get(s["prefix"]),
         })
         rows_by_set[s["prefix"]] = []
     set_meta = {s["p"]: s for s in sets}
@@ -90,6 +100,23 @@ def main(argv=None):
             STROKES.index(r["stroke"]) if r["stroke"] in STROKES else -1,
             1 if r.get("animated") else 0,
         ])
+
+    # four icons that show what each library looks like, for its card in the libraries list
+    for st in sets:
+        names = [r[0] for r in rows_by_set[st["p"]]]
+        picked = []
+        for want in SAMPLE_CONCEPTS:
+            hit = next((n for n in names if n == want or n.startswith(want + "-")), None)
+            if hit and hit not in picked:
+                picked.append(hit)
+            if len(picked) == 4:
+                break
+        for n in names:
+            if len(picked) == 4:
+                break
+            if n not in picked:
+                picked.append(n)
+        st["x"] = picked
 
     icons = [{"p": p, "i": rows} for p, rows in rows_by_set.items()]
     # glyphs: Unicode characters, searched by their own words (scripts/atlas/glyphs.py)

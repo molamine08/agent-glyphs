@@ -31,6 +31,7 @@
       </a>
       <nav class="nav">
         <a href="#browse" data-i18n="navBrowse">تصفّح</a>
+        <a href="#libraries" data-i18n="navLibs">المكتبات</a>
         <a href="#agents" data-i18n="navAgents">للوكلاء</a>
         <a href="llms.txt" dir="ltr">llms.txt</a>
       </nav>
@@ -151,6 +152,23 @@
           </div>
         </aside>
       </div>
+    </section>
+
+    <section class="libs" id="libraries" aria-labelledby="libsTitle">
+      <div class="libs-head">
+        <h2 class="label" id="libsTitle" data-i18n="libsTitle">المكتبات</h2>
+        <span class="count" id="libsCount"></span>
+      </div>
+      <p class="libs-note" data-i18n="libsNote">اختر مكتبة لتتصفّح أيقوناتها وحدها.</p>
+      <ul class="lib-grid" id="libGrid"></ul>
+      <button class="pill out more" id="libsMore" type="button" hidden></button>
+
+      <div class="libs-head new-head">
+        <h2 class="label" id="newTitle" data-i18n="newTitle">جديد هذا الأسبوع</h2>
+        <span class="count" id="newCount"></span>
+      </div>
+      <p class="libs-note" data-i18n="newNote">مكتبات أضافها البوت خلال آخر 7 أيام.</p>
+      <ul class="lib-grid" id="newGrid"></ul>
     </section>
 
     <footer class="foot"><p id="footText"></p></footer>

@@ -31,6 +31,8 @@ DATA = ROOT / "data"
 WORK = ROOT / ".work"
 STATE = ROOT / "state.json"
 SOURCES = ROOT / "sources" / "external.json"
+# the day each library first entered the index (shown as "new" on the page for 7 days)
+SET_DATES = ROOT / "sources" / "set_dates.json"
 
 
 def fetch_iconify(dest: Path) -> str:
@@ -122,7 +124,14 @@ def main(argv=None):
     bundle_external(src, ext)
 
     today = dt.date.today().isoformat()
-    added = sorted(set(after) - set(before))
+    # CI starts without the previous atlas.db, so "before" is often empty: the dates
+    # file remembers which libraries were already in the index
+    dates = json.loads(SET_DATES.read_text()) if SET_DATES.exists() else {}
+    known = set(dates) | set(before)
+    added = sorted(set(after) - known)
+    for p in added:
+        dates[p] = today
+    SET_DATES.write_text(json.dumps(dates, indent=1, sort_keys=True) + "\n")
     removed = sorted(set(before) - set(after))
     grown = {p: after[p] - before[p] for p in after if p in before and after[p] != before[p]}
     lines = [f"## {today} — Iconify {version}", "",

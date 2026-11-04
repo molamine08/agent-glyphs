@@ -333,6 +333,43 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 #dTerms { margin: var(--s2) 4px 0; font-size: 13.5px; }
 .report { display: inline-block; margin: var(--s3) 4px var(--s1); font-size: 13.5px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
 
+/* ------------------------------------------------------------ libraries */
+.libs { padding: var(--s7) 0 var(--s6); border-top: 1.5px solid var(--hair); scroll-margin-top: var(--s4); }
+.libs-head { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
+.libs-head.new-head { margin-top: var(--s8); }
+.libs-note { margin-top: var(--s1); color: var(--ink-2); font-size: 15px; }
+.lib-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: var(--s5); }
+.lib-grid .empty { grid-column: 1 / -1; padding: var(--s5); border: 1.5px dashed var(--hair); border-radius: 20px; color: var(--ink-2); font-size: 15px; text-align: center; }
+.lib {
+  position: relative; width: 100%; height: 100%; display: grid; gap: 6px; align-content: start; text-align: start;
+  padding: 16px 16px 14px; border-radius: 20px; border: 1.5px solid var(--hair); background: var(--paper);
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.lib:hover { border-color: var(--ink-3); }
+.lib[aria-pressed="true"] { border: 2px solid var(--ink); padding: 15.5px 15.5px 13.5px; background: var(--wash); }
+.lib-icons { display: flex; gap: 10px; height: 24px; margin-bottom: 8px; color: var(--ink); }
+.lib-ic .ic { display: grid; place-items: center; width: 24px; height: 24px; }
+.lib-ic .ic svg { width: 22px; height: 22px; }
+.lib-ic .ic:empty { border-radius: 7px; background: var(--wash); }
+.lib-name { font-family: var(--font-en); font-weight: 700; font-size: 15.5px; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html[dir="rtl"] .lib-name { text-align: right; }
+.lib-meta { display: flex; gap: var(--s2); flex-wrap: wrap; font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.lib-date { font-size: 13px; color: var(--ink-2); }
+.new-tag {
+  position: absolute; top: 14px; inset-inline-end: 14px; padding: 2px 9px; border-radius: 999px;
+  background: var(--ink); color: var(--on-ink); font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: .02em;
+}
+.fwrap[data-key="set"] .chip .ui { width: 14px; height: 14px; }
+@media (max-width: 760px) {
+  .libs { padding-top: var(--s6); }
+  .libs-head.new-head { margin-top: var(--s7); }
+  .lib-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .lib { padding: 12px 12px 11px; border-radius: 16px; }
+  .lib[aria-pressed="true"] { padding: 11.5px 11.5px 10.5px; }
+  .lib-icons { gap: 8px; }
+  .new-tag { top: 10px; inset-inline-end: 10px; }
+}
+
 .foot { padding: var(--s6) 0 var(--s7); color: var(--ink-2); font-size: 14px; text-align: center; white-space: nowrap; }
 @media (max-width: 1000px) { .foot { white-space: normal; text-wrap: balance; } }
 
