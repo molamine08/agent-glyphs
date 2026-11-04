@@ -80,8 +80,8 @@ const T = {
     noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
     setBy: (s, l) => `${s}، رخصة ${l}`, terms: (t) => `يُعثر عليها أيضاً بـ: ${t}`,
     copy: "انسخ", copied: "نُسخ", downloaded: "نُزّل الملف",
-    navLibs: "المكتبات", libsTitle: "المكتبات", libsNote: "اختر مكتبة لتتصفّح أيقوناتها وحدها.",
-    newTitle: "جديد هذا الأسبوع", newNote: "مكتبات أضافها البوت خلال آخر 7 أيام.",
+    navLibs: "المكتبات", libsTitle: "المكتبات",
+    newTitle: "جديد هذا الأسبوع",
     libsCount: (n) => `${n} مكتبة`, newCount: (n) => `${n} مكتبة جديدة`,
     libsAll: (n) => `اعرض كل المكتبات (${n})`, libsLess: "اعرض أقل",
     libIcons: (n) => `${n} أيقونة`, newTag: "جديد", added: (d) => `أُضيفت ${d}`,
@@ -148,8 +148,8 @@ const T = {
     noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
     setBy: (s, l) => `${s}, ${l} licence`, terms: (t) => `Also found as: ${t}`,
     copy: "Copy", copied: "Copied", downloaded: "Downloaded",
-    navLibs: "Libraries", libsTitle: "Libraries", libsNote: "Pick a library to browse only its icons.",
-    newTitle: "New this week", newNote: "Libraries the bot added in the last 7 days.",
+    navLibs: "Libraries", libsTitle: "Libraries",
+    newTitle: "New this week",
     libsCount: (n) => `${n} libraries`, newCount: (n) => `${n} new`,
     libsAll: (n) => `Show all libraries (${n})`, libsLess: "Show fewer",
     libIcons: (n) => `${n} icons`, newTag: "New", added: (d) => `Added ${d}`,
@@ -945,7 +945,7 @@ function applyLang() {
   $("q").placeholder = "";
   renderHint();
   $("lede").innerHTML = L.lede;
-  $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
+  renderTag();
   $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;
   $("copyCmd").innerHTML = ui("copy");
   $("copyCmd").setAttribute("aria-label", L.copyCmd);
@@ -959,6 +959,22 @@ function applyLang() {
   if (meta) { renderFilters(); run(); loadDemo(); renderLibs(); }
   if (current) open(current, current.pinned);
 }
+// the live count from today's index: it counts up once when the index arrives
+let tagCounted = false, tagFrame = 0;
+function renderTag() {
+  const L = t();
+  if (!meta) { $("tag").textContent = L.loading; return; }
+  cancelAnimationFrame(tagFrame);
+  if (tagCounted || reduced()) { $("tag").textContent = L.tag(fmt(meta.icons), fmt(meta.sets)); tagCounted = true; return; }
+  const start = performance.now(), ms = 1400;
+  const step = (now) => {
+    const k = Math.min(1, (now - start) / ms), e = 1 - Math.pow(1 - k, 3);
+    $("tag").textContent = T[lang].tag(fmt(Math.round(meta.icons * e)), fmt(Math.round(meta.sets * e)));
+    if (k < 1) tagFrame = requestAnimationFrame(step); else tagCounted = true;
+  };
+  tagFrame = requestAnimationFrame(step);
+}
+
 // light / dark: follows the device until the visitor picks one, then remembers it
 const isDark = () => (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
 function renderTheme() {

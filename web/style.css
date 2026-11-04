@@ -337,16 +337,14 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .libs { padding: var(--s7) 0 var(--s6); border-top: 1.5px solid var(--hair); scroll-margin-top: var(--s4); }
 .libs-head { display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap; }
 .libs-head.new-head { margin-top: var(--s8); }
-.libs-note { margin-top: var(--s1); color: var(--ink-2); font-size: 15px; }
-.libs-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; }
-.libs-bar .libs-note { margin-top: 0; }
+.libs-bar { display: flex; justify-content: flex-end; margin-top: var(--s3); }
 .lib-search { display: flex; align-items: center; gap: var(--s2); width: min(360px, 100%); height: 44px; padding: 0 16px; border-radius: 999px; background: var(--wash); transition: box-shadow .15s ease; }
 .lib-search:focus-within { box-shadow: 0 0 0 1.5px var(--edge); }
 .lib-search-icon .ui { width: 18px; height: 18px; color: var(--ink-2); }
 #libQ { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; font-size: 15px; }
 #libQ::placeholder { color: var(--ink-3); }
 #libQ::-webkit-search-cancel-button { display: none; }
-.lib-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: var(--s5); }
+.lib-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: var(--s4); }
 .lib-grid .empty { grid-column: 1 / -1; padding: var(--s5); border: 1.5px dashed var(--hair); border-radius: 20px; color: var(--ink-2); font-size: 15px; text-align: center; }
 .lib {
   position: relative; width: 100%; height: 100%; display: grid; gap: 6px; align-content: start; text-align: start;
