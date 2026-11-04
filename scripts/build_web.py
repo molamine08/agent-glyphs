@@ -166,6 +166,17 @@ def main(argv=None):
                 {"prefix": p, "icons": data["icons"], "width": data.get("width", 24), "height": data.get("height", 24)},
                 separators=(",", ":")))
         print(f"ext/: {len(list(ext_dir.glob('*.json')))} libraries outside Iconify")
+    # the page's share text and llms.txt state today's count, not a number written by hand
+    import re
+    web = out.parent
+    count = f"{stats['icons']:,}"
+    for name, pattern, repl in (
+        ("index.html", r'content="[\d,]+ open-source icons', f'content="{count} open-source icons'),
+        ("llms.txt", r"(Iconify\): )(?:over )?[\d,]+ icons", f"\\g<1>{count} icons"),
+    ):
+        f = web / name
+        if f.exists():
+            f.write_text(re.sub(pattern, repl, f.read_text(), count=1))
     for f in ("meta.json", "icons.json", "ar.json", "glyphs.json"):
         print(f"{f}: {(out / f).stat().st_size / 1e6:.1f} MB")
 

@@ -945,7 +945,7 @@ function applyLang() {
   $("q").placeholder = "";
   renderHint();
   $("lede").innerHTML = L.lede;
-  $("tag").textContent = meta ? L.tag(fmt(meta.icons), fmt(meta.sets)) : L.loading;
+  renderTag();
   $("installCopy").innerHTML = `${ui("copy")}<span>${esc(L.installCopy)}</span>`;
   $("copyCmd").innerHTML = ui("copy");
   $("copyCmd").setAttribute("aria-label", L.copyCmd);
@@ -959,6 +959,22 @@ function applyLang() {
   if (meta) { renderFilters(); run(); loadDemo(); renderLibs(); }
   if (current) open(current, current.pinned);
 }
+// the live count from today's index: it counts up once when the index arrives
+let tagCounted = false, tagFrame = 0;
+function renderTag() {
+  const L = t();
+  if (!meta) { $("tag").textContent = L.loading; return; }
+  cancelAnimationFrame(tagFrame);
+  if (tagCounted || reduced()) { $("tag").textContent = L.tag(fmt(meta.icons), fmt(meta.sets)); tagCounted = true; return; }
+  const start = performance.now(), ms = 1400;
+  const step = (now) => {
+    const k = Math.min(1, (now - start) / ms), e = 1 - Math.pow(1 - k, 3);
+    $("tag").textContent = T[lang].tag(fmt(Math.round(meta.icons * e)), fmt(Math.round(meta.sets * e)));
+    if (k < 1) tagFrame = requestAnimationFrame(step); else tagCounted = true;
+  };
+  tagFrame = requestAnimationFrame(step);
+}
+
 // light / dark: follows the device until the visitor picks one, then remembers it
 const isDark = () => (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
 function renderTheme() {
