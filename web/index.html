@@ -159,7 +159,14 @@
         <h2 class="label" id="libsTitle" data-i18n="libsTitle">المكتبات</h2>
         <span class="count" id="libsCount"></span>
       </div>
-      <p class="libs-note" data-i18n="libsNote">اختر مكتبة لتتصفّح أيقوناتها وحدها.</p>
+      <div class="libs-bar">
+        <p class="libs-note" data-i18n="libsNote">اختر مكتبة لتتصفّح أيقوناتها وحدها.</p>
+        <label class="lib-search">
+          <span class="lib-search-icon" id="libSearchIcon" aria-hidden="true"></span>
+          <span class="visually-hidden" data-i18n="libsSearchLabel">ابحث عن مكتبة</span>
+          <input id="libQ" type="search" autocomplete="off" spellcheck="false">
+        </label>
+      </div>
       <ul class="lib-grid" id="libGrid"></ul>
       <button class="pill out more" id="libsMore" type="button" hidden></button>
 
