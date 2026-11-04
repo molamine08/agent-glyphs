@@ -13,7 +13,8 @@ with their licence.
 
 All commands run from this skill's folder. The index (`data/atlas.db`, ~160 MB; a 33 MB download)
 downloads automatically on first use. Style matching and previews need:
-`pip install -r requirements.txt` (search and export alone need only Python 3.10+).
+`pip install -r requirements.txt`. Search and export need only Python 3.9+ and its standard library
+(no numpy). Older Python? `uv run --python 3.12 scripts/search.py ...` runs them without installing one.
 
 ## Workflow
 
@@ -43,6 +44,7 @@ downloads automatically on first use. Style matching and previews need:
    python scripts/get.py ph:bell --format tsx --out src/components/icons        # React (jsx|tsx)
    python scripts/get.py tabler:wallet --stroke 1.5 --size 20 --color "#0F766E" # restyle
    python scripts/get.py mdi:home --stdout                                      # print inline
+   python scripts/get.py lucide:house --format xcassets --out ios/App/Assets.xcassets  # iOS/macOS asset (vector, tintable)
    ```
    `get.py` writes/updates `ATTRIBUTION.md` next to the files.
 5. **Fill gaps in a set** in one step:

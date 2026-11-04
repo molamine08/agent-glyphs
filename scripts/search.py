@@ -23,7 +23,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from atlas import store  # noqa: E402
 from atlas.query import Filters, search  # noqa: E402
-from atlas.profile import resolve_like  # noqa: E402
 
 SHOW = ["prefix", "name", "family", "shape", "color", "style", "weight", "weight_class", "corners", "curves",
         "contrast_class", "density_class", "container", "cat", "license", "license_tier"]
@@ -61,7 +60,15 @@ def main(argv=None):
     a = ap.parse_args(argv)
 
     db = store.connect()
-    like = resolve_like(db, a.like) if a.like else None
+    like = None
+    if a.like:
+        # matching by look measures icons (numpy, scipy...); a plain search needs only the standard library
+        try:
+            from atlas.profile import resolve_like
+        except ImportError as e:
+            raise SystemExit(f"--like measures icons and needs {e.name}: pip install -r requirements.txt "
+                             "(searching without --like needs nothing extra)")
+        like = resolve_like(db, a.like)
     f = Filters(style=a.style, shape=a.shape, color=a.color, density=a.density, stroke=a.stroke, weight=a.weight, weight_tol=a.weight_tol, weight_class=a.weight_class,
                 corners=a.corners, curves=a.curves, contrast=a.contrast, container=a.container,
                 complexity=a.complexity, cat=a.cat, sets=a.sets, license=a.license, min_conf=a.min_conf, kind=a.kind)

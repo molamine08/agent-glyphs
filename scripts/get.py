@@ -7,12 +7,14 @@ Examples
   python scripts/get.py lucide:search --format tsx --out src/components/icons
   python scripts/get.py lucide:arrow-right --mirror        # RTL: points left
   python scripts/get.py mdi:home --stdout
+  python scripts/get.py lucide:house --format xcassets --out ios/App/Assets.xcassets   # iOS asset catalog
   python scripts/get.py unicode:sallallahu-alayhi-wasallam   # a glyph: prints the character ﷺ
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from collections import defaultdict
@@ -42,6 +44,34 @@ def jsx(svg: str, name: str, ts: bool) -> str:
     return f"{head}export default function {component_name(name)}({props}) {{\n  return (\n    {inner}\n  );\n}}\n"
 
 
+def license_cell(lic, url) -> str:
+    """The licence as a Markdown link; never a link to "None" when the set has no licence URL."""
+    lic = lic or "unknown"
+    if not url and re.fullmatch(r"[A-Za-z0-9.+-]+", lic) and lic != "unknown":
+        url = f"https://spdx.org/licenses/{lic}.html"
+    return f"[{lic}]({url})" if url else lic
+
+
+def write_imageset(out: Path, asset: str, svg: str, color: str | None) -> Path:
+    """An Xcode asset (<asset>.imageset) that keeps the vector and tints like an SF Symbol."""
+    # Xcode does not resolve currentColor: one-colour icons are drawn in black (or --color)
+    # and marked as template images, so the app tints them; multicolour icons keep their colours
+    template = "currentColor" in svg
+    svg = re.sub(r'\sstyle="color:[^"]*"', "", svg).replace("currentColor", color or "#000000")
+    folder = out / f"{asset}.imageset"
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{asset}.svg").write_text(svg)
+    (folder / "Contents.json").write_text(json.dumps({
+        "images": [{"filename": f"{asset}.svg", "idiom": "universal"}],
+        "info": {"author": "xcode", "version": 1},
+        "properties": {"preserves-vector-representation": True,
+                       "template-rendering-intent": "template" if template else "original"},
+    }, indent=2) + "\n")
+    if out.suffix == ".xcassets" and not (out / "Contents.json").exists():
+        (out / "Contents.json").write_text(json.dumps({"info": {"author": "xcode", "version": 1}}, indent=2) + "\n")
+    return folder
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("refs", nargs="+", help="prefix:name")
@@ -50,7 +80,8 @@ def main(argv=None):
     ap.add_argument("--color", help="sets CSS color; icons use currentColor")
     ap.add_argument("--stroke", type=float, help="new stroke width (24-grid units), stroke icons only")
     ap.add_argument("--mirror", action="store_true", help="flip horizontally (directional icons in RTL/Arabic UIs)")
-    ap.add_argument("--format", choices=["svg", "jsx", "tsx"], default="svg")
+    ap.add_argument("--format", choices=["svg", "jsx", "tsx", "xcassets"], default="svg",
+                    help="xcassets: an iOS/macOS <name>.imageset (vector SVG + Contents.json) for an asset catalog")
     ap.add_argument("--stdout", action="store_true", help="print instead of writing files")
     a = ap.parse_args(argv)
 
@@ -89,6 +120,14 @@ def main(argv=None):
             if a.mirror:
                 data = {**data, "hFlip": not data.get("hFlip", False)}
             svg = to_svg(data, size=size, color=a.color, stroke=a.stroke)
+            if a.format == "xcassets":
+                if a.stdout:
+                    raise SystemExit("--format xcassets writes folders: use --out instead of --stdout")
+                folder = write_imageset(out, f"{prefix}-{name}", svg, a.color)
+                print(f"wrote {folder}  (in Swift: Image(\"{prefix}-{name}\"))")
+                if s:
+                    notes.append((f"{prefix}:{name}", s["name"], s["author"], s["license"], s["license_url"], s["license_tier"]))
+                continue
             text = svg if a.format == "svg" else jsx(svg, name, a.format == "tsx")
             if a.stdout:
                 print(text)
@@ -101,12 +140,13 @@ def main(argv=None):
             if s:
                 notes.append((f"{prefix}:{name}", s["name"], s["author"], s["license"], s["license_url"], s["license_tier"]))
     if notes and not a.stdout:
-        att = out / "ATTRIBUTION.md"
+        # beside an asset catalog, not inside it (Xcode only expects assets there)
+        att = (out.parent if out.suffix == ".xcassets" else out) / "ATTRIBUTION.md"
         header = ["# Icon attributions", "", "| Icon | Set | Author | License | Credit required |",
                   "|---|---|---|---|---|"]
         old = [ln for ln in att.read_text().splitlines() if ln.startswith("| ") and not ln.startswith("| Icon")] \
             if att.exists() else []
-        new = [f"| {i} | {n} | {au} | [{lic}]({url}) | {'no' if tier == 'permissive' else 'YES'} |"
+        new = [f"| {i} | {n} | {au or '-'} | {license_cell(lic, url)} | {'no' if tier == 'permissive' else 'YES'} |"
                for i, n, au, lic, url, tier in notes]
         att.write_text("\n".join(header + list(dict.fromkeys(old + new))) + "\n")
         need = [i for i, *_, tier in notes if tier != "permissive"]

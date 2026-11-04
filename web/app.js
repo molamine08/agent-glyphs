@@ -80,6 +80,13 @@ const T = {
     noncom: "لا تسمح بالاستخدام التجاري.", share: "تفرض مشاركة التعديلات بنفس الرخصة.",
     setBy: (s, l) => `${s}، رخصة ${l}`, terms: (t) => `يُعثر عليها أيضاً بـ: ${t}`,
     copy: "انسخ", copied: "نُسخ", downloaded: "نُزّل الملف",
+    navLibs: "المكتبات", libsTitle: "المكتبات", libsNote: "اختر مكتبة لتتصفّح أيقوناتها وحدها.",
+    newTitle: "جديد هذا الأسبوع", newNote: "مكتبات أضافها البوت خلال آخر 7 أيام.",
+    libsCount: (n) => `${n} مكتبة`, newCount: (n) => `${n} مكتبة جديدة`,
+    libsAll: (n) => `اعرض كل المكتبات (${n})`, libsLess: "اعرض أقل",
+    libIcons: (n) => `${n} أيقونة`, newTag: "جديد", added: (d) => `أُضيفت ${d}`,
+    noNew: "لم تُضف مكتبات جديدة خلال آخر 7 أيام. يبحث البوت عن مكتبات جديدة كل يوم.",
+    fLib: "المكتبة", libPick: (n) => `تصفّح أيقونات ${n}`,
     foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
   },
   en: {
@@ -139,6 +146,13 @@ const T = {
     noncom: "Not for commercial use.", share: "Changes must be shared under the same licence.",
     setBy: (s, l) => `${s}, ${l} licence`, terms: (t) => `Also found as: ${t}`,
     copy: "Copy", copied: "Copied", downloaded: "Downloaded",
+    navLibs: "Libraries", libsTitle: "Libraries", libsNote: "Pick a library to browse only its icons.",
+    newTitle: "New this week", newNote: "Libraries the bot added in the last 7 days.",
+    libsCount: (n) => `${n} libraries`, newCount: (n) => `${n} new`,
+    libsAll: (n) => `Show all libraries (${n})`, libsLess: "Show fewer",
+    libIcons: (n) => `${n} icons`, newTag: "New", added: (d) => `Added ${d}`,
+    noNew: "No new libraries in the last 7 days. The bot looks for new ones every day.",
+    fLib: "Library", libPick: (n) => `Browse the icons of ${n}`,
     foot: (v) => `Code under MIT. Every icon keeps its library's licence and comes from Iconify or the library's own repository. The index updates daily (Iconify ${v}).`,
   },
 };
@@ -196,7 +210,7 @@ let lang = (() => {
   return COUNTRY || speaksArabic ? "ar" : "en";
 })();
 let meta = null, terms = {}, labels = {}, seq = 0, limit = PAGE, current = null, lastRes = null, tab = "same";
-const state = { kind: null, shape: null, color: null, corners: null, weight: null, density: null, cat: null, commercial: true };
+const state = { set: null, kind: null, shape: null, color: null, corners: null, weight: null, density: null, cat: null, commercial: true };
 const EMPTY = { ...state };
 const glyphMode = () => state.kind === "glyph";
 const filledOnly = () => meta && state.shape !== null && meta.shapes[state.shape] === "filled";
@@ -375,6 +389,7 @@ function chipLabel(key) {
   if (key === "weight") return state.weight === null ? L.any : L.strokesL[meta.strokes[state.weight]];
   if (key === "cat") return state.cat === null ? L.any : (lang === "ar" ? meta.categories[state.cat][2] : meta.categories[state.cat][1]).replace(/\s*\(.*\)$/, "");
   if (key === "kind") return state.kind === null ? L.any : L.kinds[state.kind];
+  if (key === "set") return setOf(state.set)?.n || state.set;
   return state.commercial ? L.lic.commercial : L.lic.any;
 }
 const isSet = (key) => (key === "commercial" ? state.commercial : state[key] !== null);
@@ -384,12 +399,15 @@ function renderFilters() {
   const el = $("filters");
   // glyphs are characters: no style, corners, stroke or licence to pick
   // filled icons have no stroke: the stroke filter goes away while "filled" is picked
-  const keys = [["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.colors_], ["corners", L.corners],
+  const keys = [...(state.set ? [["set", L.fLib]] : []), ["kind", L.kind], ...(glyphMode() ? [] : [["shape", L.shape], ["color", L.colors_], ["corners", L.corners],
     ...(filledOnly() ? [] : [["weight", L.stroke]]), ["density", L.density], ["cat", L.category], ["commercial", L.licence]])];
-  el.innerHTML = keys.map(([k, label]) => `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small>${isSet(k) ? `<span>${esc(chipLabel(k))}</span>` : ""}${ui("down")}</button></div>`).join("")
+  el.innerHTML = keys.map(([k, label]) => k === "set"
+    ? `<div class="fwrap" data-key="set"><button class="chip set" type="button" aria-label="${esc(L.clear)}: ${esc(chipLabel(k))}"><small>${esc(label)}</small><span dir="ltr">${esc(chipLabel(k))}</span>${ui("close")}</button></div>`
+    : `<div class="fwrap" data-key="${k}"><button class="chip${isSet(k) ? " set" : ""}" type="button" aria-haspopup="true" aria-expanded="${openPop === k}"><small>${esc(label)}</small>${isSet(k) ? `<span>${esc(chipLabel(k))}</span>` : ""}${ui("down")}</button></div>`).join("")
     + `<button class="clear" type="button" ${anyFilter() ? "" : "hidden"}>${esc(L.clear)}</button>`;
   el.querySelectorAll(".fwrap").forEach((w) => w.querySelector(".chip").addEventListener("click", (e) => {
     e.stopPropagation();
+    if (w.dataset.key === "set") { state.set = null; openPop = null; newSearch(); return; }
     openPop = openPop === w.dataset.key ? null : w.dataset.key;
     renderFilters();
   }));
@@ -399,6 +417,7 @@ function renderFilters() {
   });
   if (openPop) renderPop(el.querySelector(`.fwrap[data-key="${openPop}"]`));
   renderAgentLine();
+  document.querySelectorAll(".lib").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === state.set)));
 }
 const anyFilter = () => Object.keys(EMPTY).some((k) => state[k] !== EMPTY[k]);
 
@@ -457,6 +476,7 @@ document.addEventListener("click", () => { if (openPop) { openPop = null; render
 function agentCommand() {
   const q = $("q").value.trim();
   const parts = [["search.py", ""], [q ? `"${q}"` : "", ""]];
+  if (state.set) parts.push(["--set", state.set]);
   if (state.kind !== null) parts.push(["--kind", state.kind]);
   if (state.shape !== null) parts.push(["--shape", meta.shapes[state.shape]]);
   if (state.color !== null) parts.push(["--color", meta.colors[state.color]]);
@@ -534,6 +554,54 @@ function render(res) {
   if (desktop() && (!current || !res.items.some((i) => i.p === current.p && i.n === current.n)) && !current?.pinned) open(res.items[0], false);
 }
 
+// ---------------------------------------------------------------- libraries, and the ones added this week
+const LIBS_PAGE = 24;
+const WEEK = 7 * 864e5;
+let libsOpen = false;
+const isNew = (s) => !!s.d && Date.now() - Date.parse(`${s.d}T00:00:00Z`) < WEEK;
+const dayName = (d) => new Intl.DateTimeFormat(lang === "ar" ? "ar-u-nu-latn" : "en-GB", { day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${d}T00:00:00Z`));
+
+function fillLibs(ul, list, withDate) {
+  const L = t();
+  ul.innerHTML = list.map((s) => `<li><button class="lib" type="button" data-set="${esc(s.p)}" aria-pressed="${s.p === state.set}" title="${esc(L.libPick(s.n))}">
+    <span class="lib-icons" aria-hidden="true">${(s.x || []).map((n) => `<span class="lib-ic" data-p="${esc(s.p)}" data-n="${esc(n)}"><span class="ic"></span></span>`).join("")}</span>
+    <span class="lib-name" dir="ltr">${esc(s.n)}</span>
+    <span class="lib-meta"><span>${esc(L.libIcons(fmt(s.k)))}</span><span aria-hidden="true">·</span><span dir="ltr">${esc(s.l || "?")}</span></span>
+    ${isNew(s) ? `<span class="new-tag">${esc(L.newTag)}</span>` : ""}
+    ${withDate && s.d ? `<span class="lib-date">${esc(L.added(dayName(s.d)))}</span>` : ""}
+  </button></li>`).join("");
+  ul.querySelectorAll(".lib-ic").forEach((el) => {
+    const { p, n } = el.dataset;
+    const ic = cache.get(`${p}:${n}`);
+    if (ic) el.querySelector(".ic").innerHTML = toSvg(ic); else io.observe(el);
+  });
+  ul.querySelectorAll(".lib").forEach((b) => b.addEventListener("click", () => {
+    state.set = b.dataset.set;
+    if ((setOf(state.set)?.t ?? 0) > 1) state.commercial = false;  // its licence would hide every icon
+    openPop = null;
+    newSearch();
+    $("browse").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+  }));
+}
+
+function renderLibs() {
+  if (!meta) return;
+  const L = t();
+  const all = [...meta.setsInfo].sort((a, b) => b.k - a.k);
+  const fresh = all.filter(isNew).sort((a, b) => b.d.localeCompare(a.d) || b.k - a.k);
+  $("libsCount").textContent = L.libsCount(fmt(all.length));
+  fillLibs($("libGrid"), libsOpen ? all : all.slice(0, LIBS_PAGE), false);
+  $("libsMore").hidden = all.length <= LIBS_PAGE;
+  $("libsMore").textContent = libsOpen ? L.libsLess : L.libsAll(fmt(all.length));
+  $("newCount").textContent = fresh.length ? L.newCount(fmt(fresh.length)) : "";
+  if (fresh.length) fillLibs($("newGrid"), fresh, true);
+  else $("newGrid").innerHTML = `<li class="empty">${esc(L.noNew)}</li>`;
+}
+$("libsMore").addEventListener("click", () => {
+  libsOpen = !libsOpen;
+  renderLibs();
+  if (!libsOpen) $("libraries").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
+});
 
 worker.onmessage = (e) => {
   const m = e.data;
@@ -863,7 +931,7 @@ function applyLang() {
   renderTabs();
   renderControls();
   renderStep(false);
-  if (meta) { renderFilters(); run(); loadDemo(); }
+  if (meta) { renderFilters(); run(); loadDemo(); renderLibs(); }
   if (current) open(current, current.pinned);
 }
 // light / dark: follows the device until the visitor picks one, then remembers it

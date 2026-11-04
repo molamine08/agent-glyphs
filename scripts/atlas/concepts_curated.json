@@ -264,5 +264,69 @@
   "rel": [
    "alayhi"
   ]
+ },
+ {
+  "ar": [
+   "بحث بالصورة",
+   "البحث بالصورة",
+   "بحث بالصور",
+   "البحث بالصور",
+   "ابحث بالصورة",
+   "بحث مرئي",
+   "البحث المرئي",
+   "بحث بالكاميرا",
+   "البحث بالكاميرا",
+   "بحث عن صورة"
+  ],
+  "en": [
+   "search-visual",
+   "image-search",
+   "visual-search",
+   "scan-image",
+   "scan-search",
+   "photo-search",
+   "google-lens",
+   "reverse-image"
+  ],
+  "rel": [
+   "scan",
+   "lens",
+   "camera",
+   "image",
+   "photo"
+  ]
+ },
+ {
+  "ar": [
+   "مشابه",
+   "مشابهة",
+   "مشابهه",
+   "منتجات مشابهة",
+   "مماثل",
+   "مماثلة",
+   "شبيه",
+   "متشابه",
+   "ذات صلة",
+   "اقتراحات",
+   "مقترحات"
+  ],
+  "en": [
+   "similar",
+   "similarity",
+   "related",
+   "alike",
+   "lookalike"
+  ],
+  "rel": [
+   "compare",
+   "duplicate",
+   "copy",
+   "layers",
+   "recommend",
+   "suggestion",
+   "cards",
+   "grid",
+   "link"
+  ]
  }
 ]
