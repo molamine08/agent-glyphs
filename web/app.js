@@ -87,6 +87,8 @@ const T = {
     libIcons: (n) => `${n} أيقونة`, newTag: "جديد", added: (d) => `أُضيفت ${d}`,
     noNew: "لم تُضف مكتبات جديدة خلال آخر 7 أيام. يبحث البوت عن مكتبات جديدة كل يوم.",
     fLib: "المكتبة", libPick: (n) => `تصفّح أيقونات ${n}`,
+    libsSearchLabel: "ابحث عن مكتبة", libsSearch: "ابحث عن مكتبة: الاسم، الصانع، الرخصة…",
+    libsFound: (n, all) => `${n} من ${all} مكتبة`, libsNone: (q) => `لا توجد مكتبة تطابق «${q}».`,
     foot: (v) => `الكود برخصة MIT. كل أيقونة تبقى برخصة مكتبتها، وتأتي من Iconify أو من مستودع مكتبتها. يتحدّث الفهرس يومياً (Iconify ${v}).`,
   },
   en: {
@@ -153,6 +155,8 @@ const T = {
     libIcons: (n) => `${n} icons`, newTag: "New", added: (d) => `Added ${d}`,
     noNew: "No new libraries in the last 7 days. The bot looks for new ones every day.",
     fLib: "Library", libPick: (n) => `Browse the icons of ${n}`,
+    libsSearchLabel: "Search libraries", libsSearch: "Search libraries: name, author, licence…",
+    libsFound: (n, all) => `${n} of ${all} libraries`, libsNone: (q) => `No library matches “${q}”.`,
     foot: (v) => `Code under MIT. Every icon keeps its library's licence and comes from Iconify or the library's own repository. The index updates daily (Iconify ${v}).`,
   },
 };
@@ -584,19 +588,40 @@ function fillLibs(ul, list, withDate) {
   }));
 }
 
+// library search: every word must appear in the name, prefix, author or licence
+const fold = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[\s_.-]+/g, "");
+function libMatches(s, q) {
+  const hay = fold(`${s.n} ${s.p} ${s.a} ${s.l}`) + " " + fold(s.n.replace(/\s+icons?$/i, ""));
+  return q.split(/\s+/).filter(Boolean).every((w) => hay.includes(fold(w)));
+}
+
 function renderLibs() {
   if (!meta) return;
   const L = t();
   const all = [...meta.setsInfo].sort((a, b) => b.k - a.k);
   const fresh = all.filter(isNew).sort((a, b) => b.d.localeCompare(a.d) || b.k - a.k);
-  $("libsCount").textContent = L.libsCount(fmt(all.length));
-  fillLibs($("libGrid"), libsOpen ? all : all.slice(0, LIBS_PAGE), false);
-  $("libsMore").hidden = all.length <= LIBS_PAGE;
-  $("libsMore").textContent = libsOpen ? L.libsLess : L.libsAll(fmt(all.length));
+  const q = $("libQ").value.trim();
+  $("libQ").placeholder = L.libsSearch;
+  if (q) {
+    // a search shows every library that matches, best known (most icons) first
+    const hits = all.filter((s) => libMatches(s, q));
+    $("libsCount").textContent = L.libsFound(fmt(hits.length), fmt(all.length));
+    if (hits.length) fillLibs($("libGrid"), hits, false);
+    else $("libGrid").innerHTML = `<li class="empty">${esc(L.libsNone(q))}</li>`;
+    $("libsMore").hidden = true;
+  } else {
+    $("libsCount").textContent = L.libsCount(fmt(all.length));
+    fillLibs($("libGrid"), libsOpen ? all : all.slice(0, LIBS_PAGE), false);
+    $("libsMore").hidden = all.length <= LIBS_PAGE;
+    $("libsMore").textContent = libsOpen ? L.libsLess : L.libsAll(fmt(all.length));
+  }
   $("newCount").textContent = fresh.length ? L.newCount(fmt(fresh.length)) : "";
   if (fresh.length) fillLibs($("newGrid"), fresh, true);
   else $("newGrid").innerHTML = `<li class="empty">${esc(L.noNew)}</li>`;
 }
+let libDebounce;
+$("libQ").addEventListener("input", () => { clearTimeout(libDebounce); libDebounce = setTimeout(renderLibs, 80); });
+$("libSearchIcon").innerHTML = ui("search");
 $("libsMore").addEventListener("click", () => {
   libsOpen = !libsOpen;
   renderLibs();
