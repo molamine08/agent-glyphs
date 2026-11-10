@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-10 — Iconify 2.2.555
+
+- 295 sets, 498,561 icons
+
 ## 2026-11-07 — Iconify 2.2.554
 
 - 295 sets, 496,849 icons
