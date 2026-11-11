@@ -579,13 +579,7 @@ function fillLibs(ul, list, withDate) {
     const ic = cache.get(`${p}:${n}`);
     if (ic) el.querySelector(".ic").innerHTML = toSvg(ic); else io.observe(el);
   });
-  ul.querySelectorAll(".lib").forEach((b) => b.addEventListener("click", () => {
-    state.set = b.dataset.set;
-    if ((setOf(state.set)?.t ?? 0) > 1) state.commercial = false;  // its licence would hide every icon
-    openPop = null;
-    newSearch();
-    $("browse").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
-  }));
+  ul.querySelectorAll(".lib").forEach((b) => b.addEventListener("click", () => showLibrary(b.dataset.set)));
 }
 
 // library search: every word must appear in the name, prefix, author or licence
@@ -593,6 +587,17 @@ const fold = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[\u
 function libMatches(s, q) {
   const hay = fold(`${s.n} ${s.p} ${s.a} ${s.l}`) + " " + fold(s.n.replace(/\s+icons?$/i, ""));
   return q.split(/\s+/).filter(Boolean).every((w) => hay.includes(fold(w)));
+}
+
+// every icon of one library: the library filter on, the search word cleared
+function showLibrary(p) {
+  state.set = p;
+  if ((setOf(p)?.t ?? 0) > 1) state.commercial = false;  // its licence would hide every icon
+  $("q").value = "";
+  $("qHint").hidden = false;
+  openPop = null;
+  newSearch();
+  $("browse").scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
 }
 
 function renderLibs() {
@@ -806,7 +811,9 @@ async function open(it, user) {
   if (current.p !== it.p || current.n !== it.n) return;
   const ic = cache.get(`${it.p}:${it.n}`);
   $("dName").textContent = it.n;
-  $("dSet").textContent = L.setBy(set.n, set.l || "?");
+  // the library name opens every icon of that library in the results
+  $("dSet").innerHTML = L.setBy(`<button class="set-link" type="button" dir="ltr" title="${esc(L.libPick(set.n))}">${esc(set.n)}</button>`, esc(set.l || "?"));
+  $("dSet").querySelector(".set-link").addEventListener("click", () => showLibrary(set.p));
   const catName = (k) => (lang === "ar" ? meta.categories[k][2] : meta.categories[k][1]);
   const facts = [
     [L.fShape, L.shapes[meta.shapes[it.sh]] || "-"],

@@ -296,6 +296,8 @@ html[dir="rtl"] .inspector.is-glyph .facts dd { text-align: right; }
 .inspector h2 { font-family: var(--font-en); font-size: 28px; letter-spacing: -.04em; line-height: 1.05; margin: 18px 4px 0; overflow-wrap: anywhere; text-align: start; }
 html[dir="rtl"] .inspector h2 { text-align: right; }
 .by { color: var(--ink-2); margin: 6px 4px 0; font-size: 14.5px; }
+.set-link { color: var(--ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--edge); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+.set-link:hover { text-decoration-color: var(--ink); }
 .actions { display: flex; gap: var(--s2); margin: var(--s4) 4px 0; }
 .tabs { display: flex; gap: 22px; margin: 22px 4px 0; font-size: 15px; font-weight: 600; }
 .tabs button { color: var(--ink-3); padding: 4px 0; }
