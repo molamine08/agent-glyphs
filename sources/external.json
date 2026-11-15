@@ -194,5 +194,19 @@
   "approved": true,
   "auto": true,
   "found": "2026-11-01"
+ },
+ {
+  "prefix": "x-developer-icons",
+  "name": "developer-icons",
+  "repo": "xandemon/developer-icons",
+  "folder": "icons",
+  "license": "MIT",
+  "license_url": "https://github.com/xandemon/developer-icons/blob/HEAD/LICENSE",
+  "stars": 2683,
+  "svgs": 332,
+  "description": "A collection of well-optimized SVG tech logos for developers and designers—customizable, scalable, and free.",
+  "approved": true,
+  "auto": true,
+  "found": "2026-11-15"
  }
 ]
