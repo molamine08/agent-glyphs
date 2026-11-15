@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-15 — Iconify 2.2.557
+
+- 299 sets, 573,402 icons
+- new libraries: evicons, uix, uix-sharp, uix-solid
+
 ## 2026-11-12 — Iconify 2.2.556
 
 - 295 sets, 502,753 icons
