@@ -57,10 +57,14 @@
   [
    "x-mingcute-icons",
    null
+  ],
+  [
+   "x-developer-icons",
+   null
   ]
  ],
- "sets": 299,
- "icons": 573402,
+ "sets": 300,
+ "icons": 573734,
  "vision": "c8ed851406f1",
  "labels": [
   5,
