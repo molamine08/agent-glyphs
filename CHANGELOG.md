@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-18 — Iconify 2.2.558
+
+- 301 sets, 577,724 icons
+- new libraries: x-svg-autocrop
+
 ## 2026-11-17 — Iconify 2.2.558
 
 - 300 sets, 577,573 icons
