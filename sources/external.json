@@ -208,5 +208,19 @@
   "approved": true,
   "auto": true,
   "found": "2026-11-15"
+ },
+ {
+  "prefix": "x-svg-autocrop",
+  "name": "svg-autocrop",
+  "repo": "cncf/svg-autocrop",
+  "folder": "fixtures",
+  "license": "Apache-2.0",
+  "license_url": "https://github.com/cncf/svg-autocrop/blob/HEAD/LICENSE",
+  "stars": 112,
+  "svgs": 156,
+  "description": "🚗🌽🔳An NPM module to autocrop and slim down SVGs",
+  "approved": true,
+  "auto": true,
+  "found": "2026-11-18"
  }
 ]
