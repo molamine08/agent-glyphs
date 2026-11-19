@@ -4,6 +4,10 @@
 
 - 301 sets, 578,365 icons
 
+## 2026-11-19 — Iconify 2.2.559
+
+- 301 sets, 578,365 icons
+
 ## 2026-11-18 — Iconify 2.2.558
 
 - 301 sets, 577,724 icons
