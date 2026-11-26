@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-26 — Iconify 2.2.562
+
+- 302 sets, 587,582 icons
+- new libraries: xero-emoji
+
 ## 2026-11-24 — Iconify 2.2.561
 
 - 301 sets, 581,730 icons
