@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-28 — Iconify 2.2.563
+
+- 306 sets, 600,614 icons
+- new libraries: iconaut, noviair, noviair-light, pullo
+
 ## 2026-11-26 — Iconify 2.2.562
 
 - 302 sets, 587,582 icons
